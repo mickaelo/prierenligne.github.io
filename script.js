@@ -9,16 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const iconButtons = document.querySelectorAll('.icon-btn');
     const iconImage = document.querySelector('.jesus-icon img');
     
-    let selectedDuration = 0.167; // 10 secondes par défaut
+    let selectedDuration = 60; // 1 heure par défaut
     let startTime = 0;
     let animationFrameId = null;
     let isAnimating = false;
     let isUnlimited = false;
     let timer = null;
 
-    // Sélectionner le bouton 10s par défaut
+    // Sélectionner le bouton 1h par défaut
     durationButtons.forEach(btn => {
-        if (parseFloat(btn.dataset.duration) === 0.167) {
+        if (parseFloat(btn.dataset.duration) === 60) {
             btn.classList.add('active');
         }
     });
@@ -38,24 +38,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // Calcul du progrès de la fonte (0 à 1)
         const progress = 1 - (remaining / (selectedDuration * 60000));
         
-        // Ajustement de la hauteur du cierge
-        const candleScale = 1 - (progress * 0.7);
-        
-        // Appliquer la transformation au cierge entier
-        candle.style.transform = `scaleY(${candleScale})`;
+        // Ne faire fondre la bougie que si la durée n'est pas illimitée
+        if (!isUnlimited) {
+            // Calcul de la nouvelle hauteur (de 160px à 5px)
+            const newHeight = 160 - (progress * 155); // 155 = 160 - 5
+            
+            // Appliquer la transformation pour la fonte
+            candle.style.transform = `scaleY(${newHeight/160})`;
+            candle.style.transformOrigin = 'bottom';
+            
+            // Ajouter l'effet de fonte
+            wax.classList.add('melting');
+        }
         
         // Ajuster la flamme
         const flameScale = 1 - (progress * 0.3);
         flame.style.transform = `translateX(-50%) scale(${flameScale})`;
         flame.style.opacity = 1 - (progress * 0.5);
-        
-        // Ajuster la mèche
-        const wickScale = 1 - (progress * 0.7);
-        wick.style.transform = `translateX(-50%) scaleY(${wickScale})`;
-        
-        // Ajuster la cire
-        const waxScale = 1 - (progress * 0.7);
-        wax.style.transform = `scaleY(${waxScale})`;
         
         requestAnimationFrame(updateTimer);
     }
@@ -70,16 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Réinitialiser les transformations
         candle.classList.remove('extinguished');
         candle.style.transform = 'scaleY(1)';
+        candle.style.transformOrigin = 'bottom';
+        wax.classList.remove('melting');
         flame.style.transform = 'translateX(-50%) scale(1)';
-        wick.style.transform = 'translateX(-50%) scaleY(1)';
-        wax.style.transform = 'scaleY(1)';
+        flame.style.opacity = '1';
         
         // Allumer la bougie
         flame.classList.add('lit');
-        flame.style.opacity = '1';
         
-        // Afficher l'icône de Jésus
-        jesusIcon.classList.add('visible');
+        // On ne fait plus apparaître l'icône automatiquement
+        // jesusIcon.classList.add('visible');
         
         startButton.disabled = true;
         
@@ -97,15 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         startButton.disabled = false;
         candle.classList.remove('extinguished');
-        jesusIcon.classList.remove('visible');
         flame.classList.remove('lit');
+        wax.classList.remove('melting');
         
-        // Réinitialiser toutes les transformations
-        candle.style.transform = 'scaleY(1)';
         flame.style.transform = 'translateX(-50%) scale(1)';
         flame.style.opacity = '0';
-        wick.style.transform = 'translateX(-50%) scaleY(1)';
-        wax.style.transform = 'scaleY(1)';
         
         isAnimating = false;
 
@@ -169,9 +164,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Gestion du changement d'icône
     iconButtons.forEach(button => {
         button.addEventListener('click', () => {
-            iconButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            iconImage.src = button.dataset.icon;
+            const isCurrentlyActive = button.classList.contains('active');
+            
+            // Si l'icône est déjà active, on la désélectionne
+            if (isCurrentlyActive) {
+                button.classList.remove('active');
+                iconImage.src = ''; // Enlever l'image
+                jesusIcon.classList.remove('visible');
+            } else {
+                // Sinon, on désélectionne toutes les autres et on active celle-ci
+                iconButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                iconImage.src = button.dataset.icon;
+                // On affiche toujours l'icône, qu'il y ait une prière en cours ou non
+                jesusIcon.classList.add('visible');
+            }
         });
     });
 }); 
