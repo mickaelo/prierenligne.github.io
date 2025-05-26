@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bougie de Prière</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="jesus-icon">
+            <img src="https://www.traditions-monastiques.com/1092-large_default/christ-pantocrator-ic-232.jpg" alt="Christ Pantocrator">
+        </div>
+        <div class="prayer-section">
+            <div class="candle">
+                <div class="flame">
+                    <div class="outer"></div>
+                    <div class="inner"></div>
+                </div>
+                <div class="wick"></div>
+                <div class="wax"></div>
+            </div>
+            <div class="prayer-controls">
+                <button id="startPrayer" class="prayer-button">
+                    <img src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f64f.png" alt="Mains jointes" class="prayer-icon">
+                </button>
+                <div class="duration-selector">
+                    <button class="duration-btn active" data-duration="5">5m</button>
+                    <button class="duration-btn" data-duration="10">10m</button>
+                    <button class="duration-btn" data-duration="30">30m</button>
+                    <button class="duration-btn unlimited" data-duration="0">Oraison</button>
+                </div>
+                <div class="icon-selector">
+                    <button class="icon-btn active" data-icon="https://www.traditions-monastiques.com/1092-large_default/christ-pantocrator-ic-232.jpg">Christ</button>
+                    <button class="icon-btn" data-icon="https://www.traditions-monastiques.com/3262-large_default/collection-icone-sainte-vierge-marie.jpg">Marie</button>
+                    <button class="icon-btn" data-icon="https://www.traditions-monastiques.com/4540-large_default/icone-sainte-famille-ic-116.jpg">Sainte Famille</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
