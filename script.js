@@ -4,78 +4,84 @@ document.addEventListener('DOMContentLoaded', () => {
     const durationButtons = document.querySelectorAll('.duration-btn');
     const jesusIcon = document.querySelector('.jesus-icon');
     const flame = document.querySelector('.flame');
+    const wick = document.querySelector('.wick');
+    const wax = document.querySelector('.wax');
     const iconButtons = document.querySelectorAll('.icon-btn');
     const iconImage = document.querySelector('.jesus-icon img');
-    let timeLeft = 5 * 60;
-    let selectedDuration = 5;
-    let totalDuration = 5 * 60;
+    
+    let selectedDuration = 0.167; // 10 secondes par défaut
     let startTime = 0;
     let animationFrameId = null;
     let isAnimating = false;
     let isUnlimited = false;
     let timer = null;
 
-    function updateTimer(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = (timestamp - startTime) / 1000;
-        const remainingTime = isUnlimited ? totalDuration : Math.max(0, totalDuration - elapsed);
-        
-        const progress = remainingTime / totalDuration;
-        
-        const candleScale = 0.3 + (progress * 0.7);
-        const flameScale = 0.6 + (progress * 0.4);
-        const flameOpacity = 0.5 + (progress * 0.5);
-
-        // Mise à jour de la fumée en fonction de la fonte
-        const smokeElements = candle.querySelectorAll('.smoke span');
-        smokeElements.forEach((smoke, index) => {
-            const baseSize = 45 + (index * 5);
-            const meltingSize = baseSize * (1 + (1 - progress));
-            smoke.style.width = `${meltingSize}px`;
-            smoke.style.height = `${meltingSize}px`;
-            
-            const smokeOpacity = 0.3 + (progress * 0.7);
-            smoke.style.opacity = smokeOpacity;
-        });
-
-        candle.style.transform = `scaleY(${candleScale})`;
-        flame.style.transform = `translateX(-50%) scale(${flameScale})`;
-        flame.style.opacity = flameOpacity;
-
-        if (!isUnlimited && remainingTime <= 0) {
-            cancelAnimationFrame(animationFrameId);
-            candle.classList.add('extinguished');
-            jesusIcon.classList.remove('visible');
-            startButton.disabled = false;
-            durationButtons.forEach(btn => btn.disabled = false);
-            isAnimating = false;
-        } else {
-            animationFrameId = requestAnimationFrame(updateTimer);
+    // Sélectionner le bouton 10s par défaut
+    durationButtons.forEach(btn => {
+        if (parseFloat(btn.dataset.duration) === 0.167) {
+            btn.classList.add('active');
         }
+    });
+
+    function updateTimer() {
+        if (!isAnimating) return;
+        
+        const now = new Date().getTime();
+        const elapsed = now - startTime;
+        const remaining = selectedDuration * 60000 - elapsed;
+        
+        if (remaining <= 0) {
+            endPrayer();
+            return;
+        }
+        
+        // Calcul du progrès de la fonte (0 à 1)
+        const progress = 1 - (remaining / (selectedDuration * 60000));
+        
+        // Ajustement de la hauteur du cierge
+        const candleScale = 1 - (progress * 0.7);
+        
+        // Appliquer la transformation au cierge entier
+        candle.style.transform = `scaleY(${candleScale})`;
+        
+        // Ajuster la flamme
+        const flameScale = 1 - (progress * 0.3);
+        flame.style.transform = `translateX(-50%) scale(${flameScale})`;
+        flame.style.opacity = 1 - (progress * 0.5);
+        
+        // Ajuster la mèche
+        const wickScale = 1 - (progress * 0.7);
+        wick.style.transform = `translateX(-50%) scaleY(${wickScale})`;
+        
+        // Ajuster la cire
+        const waxScale = 1 - (progress * 0.7);
+        wax.style.transform = `scaleY(${waxScale})`;
+        
+        requestAnimationFrame(updateTimer);
     }
 
     function startPrayer() {
         if (isAnimating) return;
         
         isAnimating = true;
-        startTime = 0;
-        timeLeft = Math.round(selectedDuration * 60);
-        totalDuration = Math.round(selectedDuration * 60);
+        startTime = new Date().getTime();
         isUnlimited = selectedDuration === 0;
         
+        // Réinitialiser les transformations
         candle.classList.remove('extinguished');
         candle.style.transform = 'scaleY(1)';
+        flame.style.transform = 'translateX(-50%) scale(1)';
+        wick.style.transform = 'translateX(-50%) scaleY(1)';
+        wax.style.transform = 'scaleY(1)';
         
         // Allumer la bougie
         flame.classList.add('lit');
-        flame.style.transform = 'translateX(-50%) scale(1)';
         flame.style.opacity = '1';
         
         // Afficher l'icône de Jésus
         jesusIcon.classList.add('visible');
         
         startButton.disabled = true;
-        durationButtons.forEach(btn => btn.disabled = true);
         
         animationFrameId = requestAnimationFrame(updateTimer);
 
@@ -93,9 +99,14 @@ document.addEventListener('DOMContentLoaded', () => {
         candle.classList.remove('extinguished');
         jesusIcon.classList.remove('visible');
         flame.classList.remove('lit');
+        
+        // Réinitialiser toutes les transformations
+        candle.style.transform = 'scaleY(1)';
         flame.style.transform = 'translateX(-50%) scale(1)';
         flame.style.opacity = '0';
-        candle.style.transform = 'scaleY(1)';
+        wick.style.transform = 'translateX(-50%) scaleY(1)';
+        wax.style.transform = 'scaleY(1)';
+        
         isAnimating = false;
 
         if (animationFrameId) {
@@ -109,34 +120,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function selectDuration(duration) {
-        if (isAnimating) return;
+    function updatePrayerDuration(newDuration) {
+        if (!isAnimating) return;
         
-        selectedDuration = duration;
-        totalDuration = Math.round(duration * 60);
-        timeLeft = Math.round(duration * 60);
-        isUnlimited = duration === 0;
+        selectedDuration = newDuration;
+        isUnlimited = newDuration === 0;
         
-        durationButtons.forEach(btn => {
-            btn.classList.remove('active');
-            if (parseFloat(btn.dataset.duration) === duration) {
-                btn.classList.add('active');
-            }
-        });
+        // Réinitialiser le timer
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
         
-        candle.classList.remove('extinguished');
-        candle.style.transform = 'scaleY(1)';
-        const flame = candle.querySelector('.flame');
-        flame.style.transform = 'translateX(-50%) scale(1)';
-        flame.style.opacity = '1';
+        // Mettre à jour le temps de début pour le nouveau calcul
+        startTime = new Date().getTime();
         
-        // Réinitialiser la fumée
-        const smokeElements = candle.querySelectorAll('.smoke span');
-        smokeElements.forEach(smoke => {
-            smoke.style.width = '';
-            smoke.style.height = '';
-            smoke.style.opacity = '';
-        });
+        // Démarrer un nouveau timer si la durée n'est pas illimitée
+        if (selectedDuration > 0) {
+            timer = setTimeout(() => {
+                endPrayer();
+            }, selectedDuration * 60 * 1000);
+        }
     }
 
     // Gestion des événements du bouton
@@ -150,10 +154,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     durationButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            if (!startButton.disabled) {
-                durationButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedDuration = parseInt(btn.dataset.duration);
+            const newDuration = parseFloat(btn.dataset.duration);
+            durationButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (isAnimating) {
+                updatePrayerDuration(newDuration);
+            } else {
+                selectedDuration = newDuration;
             }
         });
     });
