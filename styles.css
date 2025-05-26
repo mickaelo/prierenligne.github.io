@@ -18,7 +18,7 @@ body {
     width: 100vw;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0;
     margin: 0;
     overflow: hidden;
@@ -35,7 +35,6 @@ body {
     overflow: hidden;
     transform: translateY(50px);
     pointer-events: none;
-    margin-top: 60px;
 }
 
 .jesus-icon.visible {
@@ -47,7 +46,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(100%);
+    filter: none;
 }
 
 .candle {
@@ -449,11 +448,12 @@ body {
     background: none;
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: rgba(255, 255, 255, 0.7);
-    padding: 4px 8px;
-    font-size: 14px;
+    padding: 8px 16px;
+    font-size: 16px;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
+    min-width: 60px;
 }
 
 .duration-btn:hover {
@@ -526,11 +526,12 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.7);
-    padding: 4px 8px;
+    padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 14px;
+    font-size: 16px;
+    min-width: 80px;
 }
 
 .icon-btn:hover {
@@ -548,4 +549,175 @@ body {
     width: 48px;
     height: 48px;
     object-fit: contain;
+}
+
+/* Media Queries pour les tablettes */
+@media screen and (max-width: 1024px) {
+    .jesus-icon {
+        width: 400px;
+        height: 400px;
+    }
+
+    .prayer-button {
+        padding: 15px;
+    }
+
+    .prayer-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .duration-btn {
+        padding: 6px 12px;
+        font-size: 14px;
+        min-width: 50px;
+    }
+
+    .icon-btn {
+        padding: 6px 12px;
+        font-size: 14px;
+        min-width: 70px;
+    }
+}
+
+/* Media Queries pour les smartphones */
+@media screen and (max-width: 768px) {
+    .jesus-icon {
+        width: 200px;
+        height: 200px;
+    }
+
+    .candle {
+        width: 30px;
+        height: 120px;
+    }
+
+    .flame {
+        width: 15px;
+        height: 60px;
+        top: -45px;
+    }
+
+    .wick {
+        width: 3px;
+        height: 12px;
+    }
+
+    .prayer-button {
+        padding: 12px;
+    }
+
+    .prayer-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .duration-selector {
+        gap: 3px;
+    }
+
+    .duration-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+        min-width: 40px;
+    }
+
+    .icon-selector {
+        gap: 5px;
+    }
+
+    .icon-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+        min-width: 60px;
+    }
+
+    .prayer-section {
+        margin-bottom: 15px;
+    }
+}
+
+/* Media Queries pour les petits smartphones */
+@media screen and (max-width: 480px) {
+    .jesus-icon {
+        width: 150px;
+        height: 150px;
+    }
+
+    .candle {
+        width: 25px;
+        height: 100px;
+    }
+
+    .flame {
+        width: 12px;
+        height: 50px;
+        top: -35px;
+    }
+
+    .wick {
+        width: 2px;
+        height: 10px;
+    }
+
+    .prayer-button {
+        padding: 10px;
+    }
+
+    .prayer-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .duration-selector {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .duration-btn {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+
+    .icon-selector {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .icon-btn {
+        padding: 2px 3px;
+        font-size: 11px;
+    }
+
+    .prayer-section {
+        margin-bottom: 10px;
+    }
+}
+
+/* Ajustements pour l'orientation paysage sur mobile */
+@media screen and (max-height: 480px) and (orientation: landscape) {
+    .container {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    .jesus-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0;
+    }
+
+    .prayer-section {
+        margin: 0;
+    }
+
+    .prayer-controls {
+        flex-direction: row;
+        gap: 15px;
+    }
+
+    .duration-selector, .icon-selector {
+        flex-direction: row;
+    }
 } 
