@@ -190,7 +190,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeReadingsBtn && readingsSection) {
         closeReadingsBtn.addEventListener('click', () => {
             readingsSection.classList.add('hidden');
-            toggleReadingsBtn.textContent = '📖 Lectio divina';
+            if (toggleReadingsBtn) {
+                toggleReadingsBtn.textContent = '📖 Lectio divina';
+                toggleReadingsBtn.classList.add('disabled');
+            }
         });
     }
 
@@ -306,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Sélectionner le bouton 1h par défaut
     durationButtons.forEach(btn => {
-        if (parseFloat(btn.dataset.duration) === 60) {
+        if (parseFloat(btn.dataset.duration) === 10) {
             btn.classList.add('active');
         }
     });

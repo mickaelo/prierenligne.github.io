@@ -34,8 +34,8 @@ body {
 
 .jesus-icon {
     position: relative;
-    width: 400px;
-    height: 400px;
+    width: 40vh;
+    height: 45vh;
     margin: 0 auto;
     opacity: 0;
     transition: opacity 3s ease, transform 3s ease;
@@ -43,6 +43,8 @@ body {
     transform: translateY(50px);
     pointer-events: none;
     background: rgba(255, 255, 255, 0.05);
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .jesus-icon.visible {
@@ -65,7 +67,7 @@ body {
 .candle {
     position: relative;
     width: 40px;
-    height: 130px;
+    height: 80px;
     margin: 60px auto 0;
     transform-origin: bottom;
     transition: transform 0.1s linear;
@@ -534,18 +536,14 @@ body {
 }
 
 .prayer-section {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
     box-sizing: border-box;
     width: 75%;
     max-width: 800px;
+    margin: 0 auto;
 }
 
 .icon-selector {
@@ -714,8 +712,8 @@ body {
 /* Media Queries pour les tablettes */
 @media screen and (max-width: 1024px) {
     .jesus-icon {
-        width: 400px;
-        height: 400px;
+        width: 35vh;
+        height: 35vh;
     }
 
     .prayer-button {
@@ -765,14 +763,18 @@ body {
         justify-content: flex-start;
         gap: 5px;
     }
+
+    .prayer-section {
+        width: 65%;
+    }
 }
 
 /* Media Queries pour les smartphones */
 @media screen and (max-width: 768px) {
     .jesus-icon {
-        width: 200px;
-        height: 200px;
-        margin-top: 40px;
+        width: 30vh;
+        height: 30vh;
+        margin-top: 20px;
     }
 
     .candle {
@@ -806,7 +808,7 @@ body {
 
     .duration-btn {
         padding: 4px 8px;
-        font-size: 12px;
+        font-size: 14px;
         min-width: 40px;
     }
 
@@ -816,11 +818,12 @@ body {
 
     .icon-btn {
         padding: 4px 8px;
-        font-size: 12px;
+        font-size: 14px;
         min-width: 60px;
     }
 
     .prayer-section {
+        width: 90%;
         margin-bottom: 15px;
     }
 
@@ -835,7 +838,7 @@ body {
         margin: 0;
         border-radius: 4px;
         padding: 4px 8px;
-        font-size: 12px;
+        font-size: 14px;
         min-width: 40px;
     }
     
@@ -844,11 +847,15 @@ body {
     }
     
     .reading h3 {
-        font-size: 16px;
+        font-size: 18px;
     }
     
     .reading .text {
-        font-size: 12px;
+        font-size: 15px;
+    }
+
+    .reading .reference {
+        font-size: 16px;
     }
 
     .close-readings {
@@ -866,20 +873,24 @@ body {
         justify-content: flex-start;
         gap: 5px;
     }
+
+    .nav-btn {
+        font-size: 16px;
+    }
 }
 
 /* Media Queries pour les petits smartphones */
 @media screen and (max-width: 480px) {
     .jesus-icon {
-        width: 150px;
-        height: 150px;
-        margin-top: 30px;
+        width: 25vh;
+        height: 40vh;
+        margin-top: 15px;
     }
 
     .candle {
         top: 30px;
         width: 25px;
-        height: 80px;
+        height: 60px;
         margin-top: 10px;
     }
 
@@ -911,7 +922,7 @@ body {
 
     .duration-btn {
         padding: 3px 6px;
-        font-size: 11px;
+        font-size: 13px;
     }
 
     .icon-selector {
@@ -920,10 +931,11 @@ body {
 
     .icon-btn {
         padding: 2px 3px;
-        font-size: 11px;
+        font-size: 13px;
     }
 
     .prayer-section {
+        width: 95%;
         margin-bottom: 10px;
     }
 
@@ -938,7 +950,7 @@ body {
         margin: 0;
         border-radius: 4px;
         padding: 3px 6px;
-        font-size: 11px;
+        font-size: 13px;
         min-width: 35px;
     }
     
@@ -947,11 +959,15 @@ body {
     }
     
     .reading h3 {
-        font-size: 14px;
+        font-size: 17px;
     }
     
     .reading .text {
-        font-size: 11px;
+        font-size: 14px;
+    }
+
+    .reading .reference {
+        font-size: 15px;
     }
 
     .close-readings {
@@ -969,6 +985,10 @@ body {
         justify-content: flex-start;
         gap: 5px;
     }
+
+    .nav-btn {
+        font-size: 15px;
+    }
 }
 
 /* Ajustements pour l'orientation paysage sur mobile */
@@ -980,13 +1000,13 @@ body {
     }
 
     .jesus-icon {
-        width: 120px;
-        height: 120px;
-        margin: 0;
+        width: 25vh;
+        height: 25vh;
     }
 
     .prayer-section {
-        margin: 0;
+        width: 70%;
+        margin: 0 auto;
     }
 
     .prayer-controls {
