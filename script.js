@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const iconButtons = document.querySelectorAll('.icon-btn');
     const iconImage = document.querySelector('.jesus-icon img');
     const toggleReadingsBtn = document.querySelector('.toggle-readings');
+    const closeReadingsBtn = document.querySelector('.close-readings');
     const readingsSection = document.querySelector('.readings');
     const prevSundayBtn = document.getElementById('prevSunday');
     const nextSundayBtn = document.getElementById('nextSunday');
@@ -181,6 +182,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     } else {
         console.error('Toggle button or readings section not found');
+    }
+
+    // Gestion du bouton de fermeture
+    if (closeReadingsBtn && readingsSection) {
+        closeReadingsBtn.addEventListener('click', () => {
+            readingsSection.classList.add('hidden');
+            toggleReadingsBtn.textContent = '📖 Lectio divina';
+        });
     }
 
     let selectedDuration = 10; // 10 minutes par défaut
