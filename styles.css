@@ -58,8 +58,8 @@ body {
 .candle {
     position: relative;
     width: 40px;
-    height: 160px;
-    margin: 0 auto;
+    height: 130px;
+    margin-top: 60px;
     transform-origin: bottom;
     transition: transform 0.1s linear;
     will-change: transform;
@@ -598,7 +598,7 @@ body {
 
     .candle {
         width: 30px;
-        height: 120px;
+        height: 100px;
     }
 
     .flame {
@@ -656,7 +656,8 @@ body {
     .candle {
         top: 30px;
         width: 25px;
-        height: 100px;
+        height: 80px;
+        margin-top: 10px;
     }
 
     .flame {
