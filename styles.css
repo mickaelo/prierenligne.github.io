@@ -649,19 +649,19 @@ body {
     text-align: center;
 }
 
-.toggle-readings:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.toggle-readings:disabled {
+.toggle-readings.disabled {
     opacity: 0.5;
-    cursor: not-allowed;
     background: rgba(255, 255, 255, 0.05);
     color: rgba(255, 215, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
-.toggle-readings:disabled:hover {
+.toggle-readings.disabled:hover {
     background: rgba(255, 255, 255, 0.05);
+}
+
+.toggle-readings:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .readings.hidden {

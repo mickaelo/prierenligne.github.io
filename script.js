@@ -170,6 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         readingsSection.classList.add('hidden');
         if (toggleReadingsBtn) {
             toggleReadingsBtn.textContent = '📖 Lectio divina';
+            toggleReadingsBtn.classList.add('disabled');
         }
     }
     
@@ -179,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Toggle button clicked');
             readingsSection.classList.toggle('hidden');
             toggleReadingsBtn.textContent = '📖 Lectio divina';
+            toggleReadingsBtn.classList.toggle('disabled', readingsSection.classList.contains('hidden'));
         });
     } else {
         console.error('Toggle button or readings section not found');
