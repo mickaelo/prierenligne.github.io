@@ -877,6 +877,12 @@ body {
     .nav-btn {
         font-size: 16px;
     }
+
+    .contact-link {
+        font-size: 11px;
+        bottom: 5px;
+        right: 5px;
+    }
 }
 
 /* Media Queries pour les petits smartphones */
@@ -988,6 +994,12 @@ body {
 
     .nav-btn {
         font-size: 15px;
+    }
+
+    .contact-link {
+        font-size: 11px;
+        bottom: 5px;
+        right: 5px;
     }
 }
 
@@ -1150,4 +1162,19 @@ body {
         -webkit-flex-wrap: nowrap;
         flex-wrap: nowrap;
     }
+}
+
+.contact-link {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    color: rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.3s ease;
+    z-index: 1000;
+}
+
+.contact-link:hover {
+    color: rgba(255, 255, 255, 0.6);
 } 
