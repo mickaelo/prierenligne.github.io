@@ -3,23 +3,31 @@ body {
     padding: 0;
     height: 100vh;
     width: 100vw;
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: center;
     justify-content: center;
+    -webkit-align-items: center;
     align-items: center;
     background-color: #1a1a1a;
     font-family: Arial, sans-serif;
     overflow: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .container {
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: center;
     justify-content: center;
+    -webkit-align-items: center;
     align-items: center;
     min-height: 100vh;
     width: 100vw;
     background-color: #1a1a1a;
     padding: 0;
     margin: 0;
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
     position: relative;
 }
@@ -446,8 +454,11 @@ body {
 }
 
 .controls-row {
+    display: -webkit-flex;
     display: flex;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
     justify-content: center;
     gap: 10px;
 }
@@ -538,11 +549,15 @@ body {
 }
 
 .icon-selector {
+    display: -webkit-flex;
     display: flex;
     gap: 10px;
     margin-top: 15px;
     opacity: 0.7;
+    -webkit-transition: opacity 0.3s ease;
     transition: opacity 0.3s ease;
+    -webkit-justify-content: center;
+    justify-content: center;
 }
 
 .icon-selector:hover {
@@ -587,13 +602,19 @@ body {
     color: #fff;
     overflow-y: auto;
     height: 100vh;
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
     flex-direction: column;
+    -webkit-align-items: center;
     align-items: center;
     margin: 0;
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    -webkit-transition: -webkit-transform 0.3s ease;
     transition: transform 0.3s ease;
     z-index: 1000;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Styles pour les scrollbars */
@@ -644,6 +665,7 @@ body {
 }
 
 .readings.hidden {
+    -webkit-transform: translateX(-100%);
     transform: translateX(-100%);
 }
 
@@ -737,7 +759,9 @@ body {
     }
 
     .controls-row {
+        -webkit-flex-direction: row;
         flex-direction: row;
+        -webkit-justify-content: flex-start;
         justify-content: flex-start;
         gap: 5px;
     }
@@ -836,7 +860,9 @@ body {
     }
 
     .controls-row {
+        -webkit-flex-direction: row;
         flex-direction: row;
+        -webkit-justify-content: flex-start;
         justify-content: flex-start;
         gap: 5px;
     }
@@ -937,7 +963,9 @@ body {
     }
 
     .controls-row {
+        -webkit-flex-direction: row;
         flex-direction: row;
+        -webkit-justify-content: flex-start;
         justify-content: flex-start;
         gap: 5px;
     }
@@ -988,7 +1016,9 @@ body {
     }
 
     .controls-row {
+        -webkit-flex-direction: row;
         flex-direction: row;
+        -webkit-justify-content: flex-start;
         justify-content: flex-start;
         gap: 5px;
     }
@@ -1075,4 +1105,29 @@ body {
 
 .close-readings:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+/* Fix pour Safari sur iOS */
+@supports (-webkit-touch-callout: none) {
+    .readings {
+        height: -webkit-fill-available;
+    }
+    
+    .container {
+        min-height: -webkit-fill-available;
+    }
+    
+    body {
+        height: -webkit-fill-available;
+    }
+
+    .controls-row {
+        -webkit-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+    }
+
+    .icon-selector {
+        -webkit-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+    }
 } 
