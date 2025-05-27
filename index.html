@@ -16,15 +16,43 @@
     <title>Prier en ligne</title>
     <link rel="stylesheet" href="styles.css">
     <meta name="description"
-        content="Prier en ligne">
+        content="Prier en ligne avec une bougie virtuelle">
 </head>
 
 <body>
     <div class="container">
-        <div class="jesus-icon">
-            <img src="ChristNEWSmall__84409.jpg" alt="Christ Pantocrator">
+        <div class="readings">
+            <h2>Lectures du jour</h2>
+            <div class="readings-navigation">
+                <button class="nav-btn" id="prevSunday">◀ Dimanche dernier</button>
+                <button class="nav-btn today-btn" id="today">Aujourd'hui</button>
+                <button class="nav-btn" id="nextSunday">Dimanche prochain ▶</button>
+            </div>
+            <div class="reading">
+                <h3>Première lecture</h3>
+                <p class="reference"></p>
+                <p class="text"></p>
+            </div>
+            <div class="reading">
+                <h3>Psaume</h3>
+                <p class="reference"></p>
+                <p class="text"></p>
+            </div>
+            <div class="reading">
+                <h3>Deuxième lecture</h3>
+                <p class="reference"></p>
+                <p class="text"></p>
+            </div>
+            <div class="reading">
+                <h3>Évangile</h3>
+                <p class="reference"></p>
+                <p class="text"></p>
+            </div>
         </div>
         <div class="prayer-section">
+            <div class="jesus-icon">
+                <img src="ChristNEWSmall__84409.jpg" alt="Christ Pantocrator">
+            </div>
             <div class="candle">
                 <div class="flame">
                     <div class="outer"></div>
@@ -38,14 +66,18 @@
                     <img src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f64f.png"
                         alt="Mains jointes" class="prayer-icon">
                 </button>
-                <div class="duration-selector">
-                    <button class="duration-btn" data-duration="10">10m</button>
-                    <button class="duration-btn" data-duration="30">30m</button>
-                    <button class="duration-btn" data-duration="60">1h</button>
+                <div class="controls-row">
+                    <button class="toggle-readings">📖 Lectio divina</button>
+                    <div class="duration-selector">
+                        <button class="duration-btn" data-duration="10">10m</button>
+                        <button class="duration-btn" data-duration="30">30m</button>
+                        <button class="duration-btn" data-duration="60">1h</button>
+                    </div>
                 </div>
                 <div class="icon-selector">
-                    <button class="icon-btn" data-icon="ChristNEWSmall__84409.jpg">Christ</button>
-                    <button class="icon-btn" data-icon="collection-icone-sainte-vierge-marie.jpg">Marie</button>
+                    <button class="icon-btn" data-icon="ChristNEWSmall__84409.jpg">Jésus Christ</button>
+                    <button class="icon-btn" data-icon="collection-icone-sainte-vierge-marie.jpg">Sainte Marie</button>
+                    <button class="icon-btn" data-icon="icone-saint-joseph-enfant-jesus.jpg">Saint Joseph</button>
                     <button class="icon-btn" data-icon="icone-de-la-sainte-famille.jpg">Sainte Famille</button>
                 </div>
             </div>
