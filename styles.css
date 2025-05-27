@@ -778,6 +778,24 @@ body {
     .prayer-section {
         width: 65%;
     }
+
+    .contact-link {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    .contact-popup {
+        max-width: 350px;
+        padding: 15px;
+    }
+
+    .contact-popup p {
+        font-size: 15px;
+    }
+
+    .contact-popup .email {
+        font-size: 17px;
+    }
 }
 
 /* Media Queries pour les smartphones */
@@ -891,6 +909,7 @@ body {
 
     .contact-link {
         font-size: 11px;
+        padding: 3px 6px;
         bottom: 5px;
         right: 5px;
     }
@@ -907,6 +926,11 @@ body {
 
     .contact-popup .email {
         font-size: 16px;
+    }
+
+    .contact-popup .close-popup {
+        padding: 6px 12px;
+        font-size: 14px;
     }
 }
 
@@ -1022,23 +1046,28 @@ body {
     }
 
     .contact-link {
-        font-size: 11px;
-        bottom: 5px;
-        right: 5px;
+        font-size: 10px;
+        padding: 2px 4px;
     }
 
     .contact-popup {
-        width: 90%;
-        max-width: 320px;
-        padding: 15px;
+        width: 95%;
+        max-width: 280px;
+        padding: 12px;
     }
 
     .contact-popup p {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .contact-popup .email {
-        font-size: 16px;
+        font-size: 15px;
+    }
+
+    .contact-popup .close-popup {
+        padding: 5px 10px;
+        font-size: 13px;
+        min-width: 80px;
     }
 }
 
@@ -1092,6 +1121,32 @@ body {
         -webkit-justify-content: flex-start;
         justify-content: flex-start;
         gap: 5px;
+    }
+
+    .contact-link {
+        font-size: 10px;
+        padding: 2px 4px;
+    }
+
+    .contact-popup {
+        max-width: 300px;
+        padding: 10px;
+    }
+
+    .contact-popup p {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    .contact-popup .email {
+        font-size: 15px;
+        margin: 5px 0;
+    }
+
+    .contact-popup .close-popup {
+        padding: 4px 8px;
+        font-size: 12px;
+        margin-top: 10px;
     }
 }
 
@@ -1212,10 +1267,14 @@ body {
     font-size: 12px;
     transition: color 0.3s ease;
     z-index: 1000;
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
 }
 
 .contact-link:hover {
     color: rgba(255, 255, 255, 0.6);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .contact-popup {
@@ -1231,6 +1290,8 @@ body {
     z-index: 2000;
     text-align: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
 }
 
 .contact-popup.visible {
@@ -1248,6 +1309,7 @@ body {
     font-size: 18px;
     margin: 10px 0;
     word-break: break-all;
+    padding: 0 10px;
 }
 
 .contact-popup .close-popup {
@@ -1259,6 +1321,7 @@ body {
     cursor: pointer;
     margin-top: 15px;
     transition: all 0.3s ease;
+    min-width: 100px;
 }
 
 .contact-popup .close-popup:hover {
