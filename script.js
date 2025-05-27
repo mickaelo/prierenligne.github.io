@@ -472,4 +472,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Gestion du popin de contact
+    const contactLink = document.querySelector('.contact-link');
+    const contactPopup = document.querySelector('.contact-popup');
+    const overlay = document.querySelector('.overlay');
+    const closePopupBtn = document.querySelector('.close-popup');
+
+    if (contactLink && contactPopup && overlay && closePopupBtn) {
+        contactLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            contactPopup.classList.add('visible');
+            overlay.classList.add('visible');
+        });
+
+        const closePopup = () => {
+            contactPopup.classList.remove('visible');
+            overlay.classList.remove('visible');
+        };
+
+        closePopupBtn.addEventListener('click', closePopup);
+        overlay.addEventListener('click', closePopup);
+    }
 }); 
