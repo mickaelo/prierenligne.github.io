@@ -31,7 +31,6 @@ body {
     margin: 0 auto;
     opacity: 0;
     transition: opacity 3s ease, transform 3s ease;
-    border-radius: 50%;
     overflow: hidden;
     transform: translateY(50px);
     pointer-events: none;
