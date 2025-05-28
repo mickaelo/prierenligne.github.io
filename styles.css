@@ -2067,3 +2067,40 @@ html, body {
         font-size: 11px;
     }
 }
+
+.main-title {
+    color: #8d7221;
+    font-size: 24px;
+    text-align: center;
+    margin: 0;
+    font-weight: normal;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 0;
+    padding: 10px 0;
+    width: 100%;
+    background-color: rgba(26, 26, 26, 0.9);
+}
+
+/* Media Queries pour les tablettes */
+@media screen and (max-width: 1024px) {
+    .main-title {
+        font-size: 20px;
+    }
+}
+
+/* Media Queries pour les smartphones */
+@media screen and (max-width: 768px) {
+    .main-title {
+        font-size: 18px;
+    }
+}
+
+/* Media Queries pour les petits smartphones */
+@media screen and (max-width: 480px) {
+    .main-title {
+        font-size: 16px;
+    }
+}
