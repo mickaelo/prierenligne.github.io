@@ -634,7 +634,6 @@ body {
     -webkit-flex-wrap: nowrap;
     flex-wrap: nowrap;
     gap: 10px;
-    margin-top: 15px;
     opacity: 0.7;
     -webkit-transition: opacity 0.3s ease;
     transition: opacity 0.3s ease;
@@ -1024,7 +1023,6 @@ body {
     .jesus-icon {
         width: 25vh;
         height: 40vh;
-        margin-top: 15px;
     }
 
     .candle {
