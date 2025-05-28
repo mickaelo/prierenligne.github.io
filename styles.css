@@ -1,8 +1,4 @@
 body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    width: 100vw;
     display: -webkit-flex;
     display: flex;
     -webkit-justify-content: center;
@@ -14,6 +10,12 @@ body {
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
 }
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
 .container {
     display: -webkit-flex;
