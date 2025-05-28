@@ -920,10 +920,9 @@ body {
     .contact-link {
         font-size: 11px;
         padding: 3px 6px;
-        bottom: 5px;
-        top: auto;
+        position: absolute;
+        top: 10px;
         right: 5px;
-        left: auto;
         white-space: nowrap;
     }
 
@@ -1061,10 +1060,9 @@ body {
     .contact-link {
         font-size: 10px;
         padding: 2px 4px;
-        bottom: 5px;
-        top: auto;
+        position: absolute;
+        top: 10px;
         right: 5px;
-        left: auto;
     }
 
     .contact-popup {
@@ -1144,7 +1142,8 @@ body {
     .contact-link {
         font-size: 10px;
         padding: 2px 4px;
-        bottom: 5px;
+        position: absolute;
+        bottom: 10px;
         top: auto;
         right: 5px;
         left: auto;
@@ -1282,7 +1281,7 @@ body {
 
 .contact-link {
     position: absolute;
-    bottom: 10px;
+    top: 10px;
     right: 10px;
     color: rgba(255, 255, 255, 0.3);
     text-decoration: none;
