@@ -855,10 +855,6 @@ body {
         min-width: 40px;
     }
 
-    .icon-selector {
-        gap: 5px;
-    }
-
     .icon-btn {
         padding: 4px 8px;
         font-size: 14px;
