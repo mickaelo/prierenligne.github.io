@@ -49,6 +49,81 @@
             <p class="text"></p>
         </div>
     </div>
+    <div class="rosary">
+        <button class="close-rosary">×</button>
+        <h2>Chapelet</h2>
+        <div class="mystery-section">
+            <h3>Mystère du jour</h3>
+            <p class="mystery-title"></p>
+            <p class="mystery-text"></p>
+            <div class="meditation-section">
+                <h4>Méditation</h4>
+                <p class="meditation-text"></p>
+            </div>
+        </div>
+        <div class="instructions-section">
+            <button class="accordion-header">
+                <h3>Déroulement du chapelet</h3>
+                <span class="accordion-icon">▼</span>
+            </button>
+            <div class="accordion-content">
+                <div class="instruction-step">
+                    <span class="step-number">1</span>
+                    <p>Commencez par le Signe de Croix</p>
+                </div>
+                <div class="instruction-step">
+                    <span class="step-number">2</span>
+                    <p>Récitez le "Je crois en Dieu"</p>
+                </div>
+                <div class="instruction-step">
+                    <span class="step-number">3</span>
+                    <p>Sur le premier grain, récitez le "Notre Père"</p>
+                </div>
+                <div class="instruction-step">
+                    <span class="step-number">4</span>
+                    <p>Sur les trois grains suivants, récitez trois "Je vous salue Marie"</p>
+                </div>
+                <div class="instruction-step">
+                    <span class="step-number">5</span>
+                    <p>Récitez le "Gloire au Père"</p>
+                </div>
+                <div class="instruction-step">
+                    <span class="step-number">6</span>
+                    <p>Annoncez le premier mystère et récitez le "Notre Père"</p>
+                </div>
+                <div class="instruction-step">
+                    <span class="step-number">7</span>
+                    <p>Récitez dix "Je vous salue Marie" en méditant le mystère</p>
+                </div>
+                <div class="instruction-step">
+                    <span class="step-number">8</span>
+                    <p>Récitez le "Gloire au Père"</p>
+                </div>
+                <div class="instruction-step">
+                    <span class="step-number">9</span>
+                    <p>Répétez les étapes 6 à 8 pour les quatre autres mystères</p>
+                </div>
+                <div class="instruction-step">
+                    <span class="step-number">10</span>
+                    <p>Terminez par le "Je vous salue Marie" et le Signe de Croix</p>
+                </div>
+            </div>
+        </div>
+        <div class="prayers-section">
+            <div class="prayer">
+                <h3>Notre Père</h3>
+                <p class="prayer-text">Notre Père qui es aux cieux, que ton nom soit sanctifié, que ton règne vienne, que ta volonté soit faite sur la terre comme au ciel. Donne-nous aujourd'hui notre pain de ce jour. Pardonne-nous nos offenses, comme nous pardonnons aussi à ceux qui nous ont offensés. Et ne nous soumets pas à la tentation, mais délivre-nous du mal. Amen.</p>
+            </div>
+            <div class="prayer">
+                <h3>Je vous salue Marie</h3>
+                <p class="prayer-text">Je vous salue Marie, pleine de grâce, le Seigneur est avec vous. Vous êtes bénie entre toutes les femmes et Jésus, le fruit de vos entrailles, est béni. Sainte Marie, Mère de Dieu, priez pour nous pauvres pécheurs, maintenant et à l'heure de notre mort. Amen.</p>
+            </div>
+            <div class="prayer">
+                <h3>Gloire au Père</h3>
+                <p class="prayer-text">Gloire au Père, au Fils et au Saint-Esprit, comme il était au commencement, maintenant et toujours, et dans les siècles des siècles. Amen.</p>
+            </div>
+        </div>
+    </div>
     <div class="container">
      
         <div class="prayer-section">
@@ -69,7 +144,8 @@
                         alt="Mains jointes" class="prayer-icon">
                 </button>
                 <div class="controls-row">
-                    <button class="toggle-readings">📖 Lectio divina</button>
+                    <button class="control-btn toggle-readings">📖 Lectio divina</button>
+                    <button class="control-btn toggle-rosary">✝️ Chapelet</button>
                     <div class="duration-selector">
                         <button class="duration-btn" data-duration="10">10m</button>
                         <button class="duration-btn" data-duration="30">30m</button>
@@ -87,8 +163,26 @@
     </div>
     <div class="overlay"></div>
     <div class="contact-popup">
-        <p>En union de prière</p>
-        <div class="email">prierenligne@gmail.com</div>
+        <h3>Informations</h3>
+        
+        <div class="section">
+            <div class="section-title">Présentation</div>
+            <p>Outil de prière numérique pour encourager à la prière. Comme le curé d'Ars le disait :</p>
+            <p class="quote">"Dans la prière, le plus difficile, ce sont les cinq dernières minutes."</p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Explications</div>
+            <p>Cette application vous permet de prier avec une bougie virtuelle et d'accéder aux lectures du jour ainsi qu'au chapelet.</p>
+            <p>• La bougie peut être allumée pour une durée définie ou indéfinie</p>
+            <p>• Les lectures du jour sont mises à jour automatiquement</p>
+            <p>• Le chapelet affiche les mystères correspondant au jour de la semaine</p>
+        </div>
+
+        <div class="section">
+            <div class="email">prierenligne@gmail.com</div>
+        </div>
+
         <button class="close-popup">Fermer</button>
     </div>
     <script src="script.js"></script>
