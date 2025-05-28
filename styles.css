@@ -1,7 +1,18 @@
+/* Styles de base pour Safari */
+html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+
 body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    min-height: 100vh;
+    /* Fix pour Safari sur iOS */
+    min-height: -webkit-fill-available;
     margin: 0;
     padding: 0;
-    height: 100vh;
     width: 100vw;
     display: -webkit-flex;
     display: flex;
@@ -16,8 +27,13 @@ body {
 }
 
 .container {
+    min-height: 100vh;
+    /* Fix pour Safari sur iOS */
+    min-height: -webkit-fill-available;
     display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
     -webkit-justify-content: center;
     justify-content: center;
     -webkit-align-items: center;
@@ -37,9 +53,11 @@ body {
     height: 45vh;
     margin: 0 auto;
     opacity: 0;
+    -webkit-transform: translateY(50px);
+    transform: translateY(50px);
+    -webkit-transition: opacity 3s ease, -webkit-transform 3s ease;
     transition: opacity 3s ease, transform 3s ease;
     overflow: hidden;
-    transform: translateY(50px);
     pointer-events: none;
     background: rgba(255, 255, 255, 0.05);
     max-width: 100%;
@@ -48,6 +66,7 @@ body {
 
 .jesus-icon.visible {
     opacity: 0.95;
+    -webkit-transform: translateY(0);
     transform: translateY(0);
 }
 
@@ -69,7 +88,9 @@ body {
     width: 40px;
     height: 80px;
     margin: 60px auto 0;
+    -webkit-transform-origin: bottom;
     transform-origin: bottom;
+    -webkit-transition: -webkit-transform 0.1s linear;
     transition: transform 0.1s linear;
     will-change: transform;
 }
@@ -79,10 +100,13 @@ body {
     position: absolute;
     top: -60px;
     left: 50%;
+    -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
     width: 20px;
     height: 80px;
+    -webkit-transform-origin: bottom;
     transform-origin: bottom;
+    -webkit-transition: all 0.1s linear;
     transition: all 0.1s linear;
     will-change: transform, opacity;
     opacity: 0;
@@ -98,6 +122,7 @@ body {
     position: absolute;
     top: -100px;
     left: 50%;
+    -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
     width: 60px;
     height: 60px;
@@ -121,6 +146,7 @@ body {
     border-radius: 50%;
     filter: blur(3px);
     animation: smoke 4s infinite;
+    -webkit-transform-origin: center bottom;
     transform-origin: center bottom;
     opacity: 0;
 }
@@ -161,6 +187,7 @@ body {
 
 @keyframes smoke {
     0% {
+        -webkit-transform: scale(0.3) translateY(0) rotate(0deg);
         transform: scale(0.3) translateY(0) rotate(0deg);
         opacity: 0;
         filter: blur(2px);
@@ -172,11 +199,13 @@ body {
     }
 
     50% {
+        -webkit-transform: scale(1.5) translateY(-80px) rotate(10deg);
         transform: scale(1.5) translateY(-80px) rotate(10deg);
         filter: blur(6px);
     }
 
     100% {
+        -webkit-transform: scale(3) translateY(-200px) rotate(20deg);
         transform: scale(3) translateY(-200px) rotate(20deg);
         opacity: 0.3;
         filter: blur(8px);
@@ -186,31 +215,37 @@ body {
 @keyframes fadeIn {
     0% {
         opacity: 0;
+        -webkit-transform: scale(0.3) translateY(0);
         transform: scale(0.3) translateY(0);
     }
 
     20% {
         opacity: 0.2;
+        -webkit-transform: scale(0.5) translateY(0);
         transform: scale(0.5) translateY(0);
     }
 
     40% {
         opacity: 0.4;
+        -webkit-transform: scale(0.7) translateY(0);
         transform: scale(0.7) translateY(0);
     }
 
     60% {
         opacity: 0.6;
+        -webkit-transform: scale(0.9) translateY(0);
         transform: scale(0.9) translateY(0);
     }
 
     80% {
         opacity: 0.8;
+        -webkit-transform: scale(1.1) translateY(0);
         transform: scale(1.1) translateY(0);
     }
 
     100% {
         opacity: 1;
+        -webkit-transform: scale(1) translateY(0);
         transform: scale(1) translateY(0);
     }
 }
@@ -218,31 +253,37 @@ body {
 @keyframes lightUp {
     0% {
         opacity: 0;
+        -webkit-transform: translateX(-50%) scale(0.3);
         transform: translateX(-50%) scale(0.3);
     }
 
     20% {
         opacity: 0.3;
+        -webkit-transform: translateX(-50%) scale(0.6);
         transform: translateX(-50%) scale(0.6);
     }
 
     40% {
         opacity: 0.5;
+        -webkit-transform: translateX(-50%) scale(0.8);
         transform: translateX(-50%) scale(0.8);
     }
 
     60% {
         opacity: 0.7;
+        -webkit-transform: translateX(-50%) scale(1.1);
         transform: translateX(-50%) scale(1.1);
     }
 
     80% {
         opacity: 0.9;
+        -webkit-transform: translateX(-50%) scale(1.05);
         transform: translateX(-50%) scale(1.05);
     }
 
     100% {
         opacity: 1;
+        -webkit-transform: translateX(-50%) scale(1);
         transform: translateX(-50%) scale(1);
     }
 }
@@ -274,11 +315,14 @@ body {
     position: absolute;
     top: -10px;
     left: 50%;
+    -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
     width: 4px;
     height: 16px;
     background: white;
+    -webkit-transform-origin: bottom;
     transform-origin: bottom;
+    -webkit-transition: -webkit-transform 0.1s linear;
     transition: transform 0.1s linear;
     will-change: transform;
     opacity: 1;
@@ -290,6 +334,7 @@ body {
     position: absolute;
     top: -2px;
     left: 50%;
+    -webkit-transform: translateX(-50%);
     transform: translateX(-50%);
     width: 6px;
     height: 2px;
@@ -306,7 +351,9 @@ body {
     background: linear-gradient(to bottom, #fff, #f5f5f5);
     border-radius: 20px 20px 0 0;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    -webkit-transform-origin: bottom;
     transform-origin: bottom;
+    -webkit-transition: -webkit-transform 0.1s linear;
     transition: transform 0.1s linear;
     will-change: transform;
     z-index: 0;
@@ -329,7 +376,9 @@ body {
             rgba(255, 255, 255, 0.8),
             rgba(255, 255, 255, 0.4));
     border-radius: 0 0 20px 20px;
+    -webkit-transform-origin: bottom;
     transform-origin: bottom;
+    -webkit-transition: -webkit-transform 0.1s linear;
     transition: transform 0.1s linear;
     will-change: transform;
 }
@@ -348,34 +397,41 @@ body {
 
 @keyframes flicker {
     0% {
+        -webkit-transform: scale(1);
         transform: scale(1);
         opacity: 1;
     }
 
     100% {
+        -webkit-transform: scale(0.95);
         transform: scale(0.95);
         opacity: 0.8;
     }
 }
 
 .candle.melting {
+    -webkit-transform: scaleY(0.3);
     transform: scaleY(0.3);
 }
 
 .candle.melting .flame {
+    -webkit-transform: translateX(-50%) scale(0.7);
     transform: translateX(-50%) scale(0.7);
     opacity: 0.5;
 }
 
 .candle.melting .wick {
+    -webkit-transform: translateX(-50%) scaleY(0.3);
     transform: translateX(-50%) scaleY(0.3);
 }
 
 .candle.melting .wax {
+    -webkit-transform: scaleY(0.3);
     transform: scaleY(0.3);
 }
 
 .candle.melting .wax::after {
+    -webkit-transform: scaleY(0.3);
     transform: scaleY(0.3);
 }
 
@@ -409,6 +465,7 @@ body {
 }
 
 .candle.extinguished {
+    -webkit-transform: scaleY(0.3);
     transform: scaleY(0.3);
 }
 
@@ -427,6 +484,7 @@ body {
 
 .candle.extinguished .wick {
     opacity: 1;
+    -webkit-transform: translateX(-50%) scaleY(1);
     transform: translateX(-50%) scaleY(1);
 }
 
@@ -446,12 +504,14 @@ body {
 }
 
 .prayer-button:hover {
+    -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
 
 .prayer-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    -webkit-transform: none;
     transform: none;
 }
 
@@ -469,10 +529,12 @@ body {
 .controls-row {
     display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
-    align-items: center;
     -webkit-justify-content: center;
     justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
     gap: 10px;
 }
 
@@ -498,6 +560,9 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     min-width: 60px;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .duration-btn:hover {
@@ -555,7 +620,6 @@ body {
     width: 75%;
     margin-top: 10px;
     margin-bottom: 10px;
-    min-height: 100vh;
     max-width: 800px;
     margin: 0 auto;
 }
@@ -563,13 +627,17 @@ body {
 .icon-selector {
     display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
     gap: 10px;
     margin-top: 15px;
     opacity: 0.7;
     -webkit-transition: opacity 0.3s ease;
     transition: opacity 0.3s ease;
-    -webkit-justify-content: center;
-    justify-content: center;
 }
 
 .icon-selector:hover {
@@ -586,6 +654,9 @@ body {
     transition: all 0.3s ease;
     font-size: 16px;
     min-width: 80px;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .icon-btn:hover {
@@ -614,7 +685,7 @@ body {
     color: #fff;
     overflow-y: auto;
     overflow-x: hidden;
-    height: 100vh;
+    height: -webkit-fill-available;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-direction: column;
@@ -624,6 +695,8 @@ body {
     margin: 0;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
     -webkit-transition: -webkit-transform 0.3s ease;
     transition: transform 0.3s ease;
     z-index: 1000;
