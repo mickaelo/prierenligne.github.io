@@ -94,6 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const formattedDate = formatDate(date);
             console.log('Fetching readings for date:', formattedDate);
 
+            // Mettre à jour l'affichage de la date
+            const readingsDate = document.querySelector('.readings-date');
+            if (readingsDate) {
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                readingsDate.textContent = date.toLocaleDateString('fr-FR', options);
+            }
+
             const response = await fetch(`https://api.aelf.org/v1/messes/${formattedDate}/france`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -161,12 +168,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Gestion des boutons de navigation
     if (prevSundayBtn && nextSundayBtn && todayBtn) {
         prevSundayBtn.addEventListener('click', () => {
-            currentDate = getPreviousSunday();
+            currentDate.setDate(currentDate.getDate() - 1);
             updateReadings(currentDate);
         });
 
         nextSundayBtn.addEventListener('click', () => {
-            currentDate = getNextSunday();
+            currentDate.setDate(currentDate.getDate() + 1);
             updateReadings(currentDate);
         });
 

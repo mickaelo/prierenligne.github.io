@@ -2038,3 +2038,32 @@ html, body {
         font-size: 11px;
     }
 }
+
+.readings-date {
+    color: #ff9800;
+    font-style: italic;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Media Queries pour les tablettes */
+@media screen and (max-width: 1024px) {
+    .readings-date {
+        font-size: 13px;
+    }
+}
+
+/* Media Queries pour les smartphones */
+@media screen and (max-width: 768px) {
+    .readings-date {
+        font-size: 12px;
+    }
+}
+
+/* Media Queries pour les petits smartphones */
+@media screen and (max-width: 480px) {
+    .readings-date {
+        font-size: 11px;
+    }
+}
