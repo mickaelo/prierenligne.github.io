@@ -1254,31 +1254,6 @@ body {
     background: rgba(255, 255, 255, 0.2);
 }
 
-/* Fix pour Safari sur iOS */
-@supports (-webkit-touch-callout: none) {
-    .readings {
-        height: -webkit-fill-available;
-    }
-
-    .container {
-        min-height: -webkit-fill-available;
-    }
-
-    body {
-        height: -webkit-fill-available;
-    }
-
-    .controls-row {
-        -webkit-flex-wrap: nowrap;
-        flex-wrap: nowrap;
-    }
-
-    .icon-selector {
-        -webkit-flex-wrap: nowrap;
-        flex-wrap: nowrap;
-    }
-}
-
 .contact-link {
     position: absolute;
     top: 10px;
