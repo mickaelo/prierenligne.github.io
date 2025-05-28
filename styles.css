@@ -1829,3 +1829,212 @@ html, body {
     margin: 10px auto;
     display: block;
 }
+
+.mystery-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    border-left: 3px solid #ffd700;
+}
+
+.mystery-item h4 {
+    color: #ffd700;
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+.mystery-instruction {
+    color: #ff9800;
+    font-style: italic;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+.mystery-item .mystery-text {
+    color: #fff;
+    margin: 10px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.mystery-item .meditation-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+    margin: 10px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Media Queries pour les tablettes */
+@media screen and (max-width: 1024px) {
+    .mystery-item {
+        padding: 12px;
+    }
+    
+    .mystery-item h4 {
+        font-size: 15px;
+    }
+    
+    .mystery-instruction {
+        font-size: 13px;
+    }
+    
+    .mystery-item .mystery-text,
+    .mystery-item .meditation-text {
+        font-size: 13px;
+    }
+}
+
+/* Media Queries pour les smartphones */
+@media screen and (max-width: 768px) {
+    .mystery-item {
+        padding: 10px;
+    }
+    
+    .mystery-item h4 {
+        font-size: 14px;
+    }
+    
+    .mystery-instruction {
+        font-size: 12px;
+    }
+    
+    .mystery-item .mystery-text,
+    .mystery-item .meditation-text {
+        font-size: 12px;
+    }
+}
+
+/* Media Queries pour les petits smartphones */
+@media screen and (max-width: 480px) {
+    .mystery-item {
+        padding: 8px;
+    }
+    
+    .mystery-item h4 {
+        font-size: 13px;
+    }
+    
+    .mystery-instruction {
+        font-size: 11px;
+    }
+    
+    .mystery-item .mystery-text,
+    .mystery-item .meditation-text {
+        font-size: 11px;
+    }
+}
+
+.rosary-navigation {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.rosary-navigation .nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #ffd700;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    flex: 1;
+    position: relative;
+}
+
+.rosary-navigation .nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.rosary-navigation .nav-btn:disabled {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.rosary-navigation .nav-btn.active {
+    background: rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.rosary-navigation .nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: #ffd700;
+    border-radius: 2px;
+}
+
+.rosary-navigation .today-btn {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.rosary-navigation .today-btn:hover {
+    background: rgba(255, 215, 0, 0.3);
+}
+
+/* Media Queries pour les tablettes */
+@media screen and (max-width: 1024px) {
+    .rosary-navigation .nav-btn {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+}
+
+/* Media Queries pour les smartphones */
+@media screen and (max-width: 768px) {
+    .rosary-navigation .nav-btn {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+}
+
+/* Media Queries pour les petits smartphones */
+@media screen and (max-width: 480px) {
+    .rosary-navigation .nav-btn {
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+}
+
+.mystery-date {
+    color: #ff9800;
+    font-style: italic;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Media Queries pour les tablettes */
+@media screen and (max-width: 1024px) {
+    .mystery-date {
+        font-size: 13px;
+    }
+}
+
+/* Media Queries pour les smartphones */
+@media screen and (max-width: 768px) {
+    .mystery-date {
+        font-size: 12px;
+    }
+}
+
+/* Media Queries pour les petits smartphones */
+@media screen and (max-width: 480px) {
+    .mystery-date {
+        font-size: 11px;
+    }
+}

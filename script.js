@@ -534,6 +534,62 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Gestion de la navigation des mystères
+    const prevDayBtn = document.getElementById('prevDay');
+    const nextDayBtn = document.getElementById('nextDay');
+    const todayRosaryBtn = document.getElementById('todayRosary');
+    let currentRosaryDate = new Date();
+
+    function updateRosaryButtonsState() {
+        const today = new Date();
+        const isToday = currentRosaryDate.getDate() === today.getDate() &&
+            currentRosaryDate.getMonth() === today.getMonth() &&
+            currentRosaryDate.getFullYear() === today.getFullYear();
+
+        if (todayRosaryBtn) {
+            todayRosaryBtn.disabled = isToday;
+        }
+
+        if (prevDayBtn && nextDayBtn) {
+            prevDayBtn.disabled = false;
+            nextDayBtn.disabled = false;
+
+            // Désactiver le bouton "Jour précédent" si on est au premier jour possible
+            const firstPossibleDate = new Date();
+            firstPossibleDate.setDate(firstPossibleDate.getDate() - 7);
+            if (currentRosaryDate <= firstPossibleDate) {
+                prevDayBtn.disabled = true;
+            }
+
+            // Désactiver le bouton "Jour suivant" si on est au dernier jour possible
+            const lastPossibleDate = new Date();
+            lastPossibleDate.setDate(lastPossibleDate.getDate() + 7);
+            if (currentRosaryDate >= lastPossibleDate) {
+                nextDayBtn.disabled = true;
+            }
+        }
+    }
+
+    if (prevDayBtn && nextDayBtn && todayRosaryBtn) {
+        prevDayBtn.addEventListener('click', () => {
+            currentRosaryDate.setDate(currentRosaryDate.getDate() - 1);
+            fetchMysteryOfTheDay(currentRosaryDate);
+            updateRosaryButtonsState();
+        });
+
+        nextDayBtn.addEventListener('click', () => {
+            currentRosaryDate.setDate(currentRosaryDate.getDate() + 1);
+            fetchMysteryOfTheDay(currentRosaryDate);
+            updateRosaryButtonsState();
+        });
+
+        todayRosaryBtn.addEventListener('click', () => {
+            currentRosaryDate = new Date();
+            fetchMysteryOfTheDay(currentRosaryDate);
+            updateRosaryButtonsState();
+        });
+    }
+
     // Fonction pour récupérer les méditations depuis le site de l'Église catholique
     async function fetchMeditations() {
         try {
@@ -798,8 +854,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Modifier la fonction fetchMysteryOfTheDay pour utiliser les méditations dynamiques
-    async function fetchMysteryOfTheDay() {
+    // Modifier la fonction fetchMysteryOfTheDay pour accepter une date en paramètre
+    async function fetchMysteryOfTheDay(date = new Date()) {
         try {
             // Afficher le loader
             const mysteryTitle = document.querySelector('.mystery-title');
@@ -818,8 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 meditationText.innerHTML = '<div class="loader"></div>';
             }
 
-            const today = new Date();
-            const dayOfWeek = today.getDay();
+            const dayOfWeek = date.getDay();
 
             let mysteryType;
             switch (dayOfWeek) {
@@ -846,21 +901,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
             }
 
-            // Récupérer les méditations depuis le site
+            // Récupérer les méditations
             const meditations = await fetchMeditations();
 
             if (!meditations) {
                 throw new Error('Impossible de récupérer les méditations');
             }
 
-            // Sélectionner un mystère aléatoire du type du jour
+            // Récupérer les 5 mystères du type du jour
             const mysteryList = meditations[mysteryType];
-            const randomIndex = Math.floor(Math.random() * mysteryList.length);
-            const mystery = mysteryList[randomIndex];
 
-            // Mettre à jour l'affichage
+            // Mettre à jour l'affichage avec les 5 mystères
             if (mysteryTitle && mysteryText && meditationText) {
-                // Ajouter l'indication du chapelet
+                // Ajouter l'indication du chapelet et la date
                 let chapeletInfo = '';
                 switch (mysteryType) {
                     case 'joyful':
@@ -872,15 +925,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 'sorrowful':
                         chapeletInfo = ' (Troisième chapelet - Mystères douloureux)';
                         break;
-                    case 'glorieux':
+                    case 'glorious':
                         chapeletInfo = ' (Quatrième chapelet - Mystères glorieux)';
                         break;
                 }
 
-                mysteryTitle.textContent = mystery.title + chapeletInfo;
-                mysteryText.textContent = mystery.text;
-                meditationText.textContent = mystery.meditation;
+                // Formater la date
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedDate = date.toLocaleDateString('fr-FR', options);
+
+                // Créer le contenu HTML pour les 5 mystères
+                let mysteriesHTML = '';
+                mysteryList.forEach((mystery, index) => {
+                    mysteriesHTML += `
+                        <div class="mystery-item">
+                            <h4>${index + 1}${getOrdinalSuffix(index + 1)} dizaine - ${mystery.title}</h4>
+                            <p class="mystery-text">${mystery.text}</p>
+                            <p class="meditation-text">${mystery.meditation}</p>
+                        </div>
+                    `;
+                });
+
+                // Mettre à jour le contenu
+                mysteryTitle.innerHTML = `<h3>${mysteryType === 'joyful' ? 'Joyeux' : 
+                    mysteryType === 'luminous' ? 'Lumineux' : 
+                    mysteryType === 'sorrowful' ? 'Douloureux' : 'Glorieux'}</h3>
+                    <p class="mystery-date">${formattedDate}</p>`;
+                mysteryText.innerHTML = mysteriesHTML;
+                meditationText.innerHTML = ''; // Le texte de méditation est maintenant inclus dans chaque mystère
             }
+
+            // Mettre à jour l'état des boutons
+            updateRosaryButtonsState();
 
         } catch (error) {
             console.error('Erreur lors de la récupération du mystère:', error);
@@ -891,6 +967,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 meditationText.innerHTML = originalMeditation;
             }
         }
+    }
+
+    // Fonction utilitaire pour obtenir le suffixe ordinal en français
+    function getOrdinalSuffix(num) {
+        if (num === 1) return 'ère';
+        return 'ème';
     }
 
     // Gestion de l'accordéon du chapelet
