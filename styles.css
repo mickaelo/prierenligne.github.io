@@ -22,7 +22,6 @@ body {
     justify-content: center;
     -webkit-align-items: center;
     align-items: center;
-    min-height: 100vh;
     width: 100vw;
     background-color: #1a1a1a;
     padding: 0;
@@ -60,7 +59,8 @@ body {
     transition: opacity 0.3s ease;
 }
 
-.jesus-icon img:not([src]), .jesus-icon img[src=""] {
+.jesus-icon img:not([src]),
+.jesus-icon img[src=""] {
     opacity: 0;
 }
 
@@ -113,12 +113,11 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, 
-        rgba(255, 255, 255, 0.95) 0%,
-        rgba(255, 255, 255, 0.7) 30%,
-        rgba(255, 255, 255, 0.4) 60%,
-        rgba(255, 255, 255, 0) 80%
-    );
+    background: radial-gradient(circle at center,
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(255, 255, 255, 0.7) 30%,
+            rgba(255, 255, 255, 0.4) 60%,
+            rgba(255, 255, 255, 0) 80%);
     border-radius: 50%;
     filter: blur(3px);
     animation: smoke 4s infinite;
@@ -166,14 +165,17 @@ body {
         opacity: 0;
         filter: blur(2px);
     }
+
     20% {
         opacity: 1;
         filter: blur(4px);
     }
+
     50% {
         transform: scale(1.5) translateY(-80px) rotate(10deg);
         filter: blur(6px);
     }
+
     100% {
         transform: scale(3) translateY(-200px) rotate(20deg);
         opacity: 0.3;
@@ -186,22 +188,27 @@ body {
         opacity: 0;
         transform: scale(0.3) translateY(0);
     }
+
     20% {
         opacity: 0.2;
         transform: scale(0.5) translateY(0);
     }
+
     40% {
         opacity: 0.4;
         transform: scale(0.7) translateY(0);
     }
+
     60% {
         opacity: 0.6;
         transform: scale(0.9) translateY(0);
     }
+
     80% {
         opacity: 0.8;
         transform: scale(1.1) translateY(0);
     }
+
     100% {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -213,22 +220,27 @@ body {
         opacity: 0;
         transform: translateX(-50%) scale(0.3);
     }
+
     20% {
         opacity: 0.3;
         transform: translateX(-50%) scale(0.6);
     }
+
     40% {
         opacity: 0.5;
         transform: translateX(-50%) scale(0.8);
     }
+
     60% {
         opacity: 0.7;
         transform: translateX(-50%) scale(1.1);
     }
+
     80% {
         opacity: 0.9;
         transform: translateX(-50%) scale(1.05);
     }
+
     100% {
         opacity: 1;
         transform: translateX(-50%) scale(1);
@@ -301,10 +313,9 @@ body {
 }
 
 .wax.melting {
-    background: linear-gradient(to bottom, 
-        rgba(255, 255, 255, 0.9),
-        rgba(245, 245, 245, 0.9)
-    );
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0.9),
+            rgba(245, 245, 245, 0.9));
 }
 
 .wax::after {
@@ -315,9 +326,8 @@ body {
     width: 100%;
     height: 30px;
     background: linear-gradient(to bottom,
-        rgba(255, 255, 255, 0.8),
-        rgba(255, 255, 255, 0.4)
-    );
+            rgba(255, 255, 255, 0.8),
+            rgba(255, 255, 255, 0.4));
     border-radius: 0 0 20px 20px;
     transform-origin: bottom;
     transition: transform 0.1s linear;
@@ -341,6 +351,7 @@ body {
         transform: scale(1);
         opacity: 1;
     }
+
     100% {
         transform: scale(0.95);
         opacity: 0.8;
@@ -542,6 +553,9 @@ body {
     justify-content: center;
     box-sizing: border-box;
     width: 75%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-height: 100vh;
     max-width: 800px;
     margin: 0 auto;
 }
@@ -752,7 +766,7 @@ body {
         width: 35%;
         background-color: #1a1a1a;
     }
-    
+
     .toggle-readings {
         position: static;
         transform: none;
@@ -860,7 +874,7 @@ body {
         width: 50%;
         background-color: #1a1a1a;
     }
-    
+
     .toggle-readings {
         position: static;
         transform: none;
@@ -870,15 +884,15 @@ body {
         font-size: 14px;
         min-width: 40px;
     }
-    
+
     .reading {
         padding: 8px;
     }
-    
+
     .reading h3 {
         font-size: 18px;
     }
-    
+
     .reading .text {
         font-size: 15px;
     }
@@ -910,9 +924,11 @@ body {
     .contact-link {
         font-size: 11px;
         padding: 3px 6px;
-        bottom: auto;
-        top: 5px;
+        bottom: 5px;
+        top: auto;
         right: 5px;
+        left: auto;
+        white-space: nowrap;
     }
 
     .contact-popup {
@@ -999,7 +1015,7 @@ body {
         width: 100%;
         background-color: #1a1a1a;
     }
-    
+
     .toggle-readings {
         position: static;
         transform: none;
@@ -1009,15 +1025,15 @@ body {
         font-size: 13px;
         min-width: 35px;
     }
-    
+
     .reading {
         padding: 6px;
     }
-    
+
     .reading h3 {
         font-size: 17px;
     }
-    
+
     .reading .text {
         font-size: 14px;
     }
@@ -1049,8 +1065,10 @@ body {
     .contact-link {
         font-size: 10px;
         padding: 2px 4px;
-        top: 5px;
+        bottom: 5px;
+        top: auto;
         right: 5px;
+        left: auto;
     }
 
     .contact-popup {
@@ -1097,7 +1115,8 @@ body {
         gap: 15px;
     }
 
-    .duration-selector, .icon-selector {
+    .duration-selector,
+    .icon-selector {
         flex-direction: row;
     }
 
@@ -1105,7 +1124,7 @@ body {
         width: 30%;
         background-color: #1a1a1a;
     }
-    
+
     .toggle-readings {
         position: static;
         transform: none;
@@ -1129,8 +1148,10 @@ body {
     .contact-link {
         font-size: 10px;
         padding: 2px 4px;
-        top: 5px;
+        bottom: 5px;
+        top: auto;
         right: 5px;
+        left: auto;
     }
 
     .contact-popup {
@@ -1243,11 +1264,11 @@ body {
     .readings {
         height: -webkit-fill-available;
     }
-    
+
     .container {
         min-height: -webkit-fill-available;
     }
-    
+
     body {
         height: -webkit-fill-available;
     }
@@ -1264,7 +1285,7 @@ body {
 }
 
 .contact-link {
-    position: fixed;
+    position: absolute;
     bottom: 10px;
     right: 10px;
     color: rgba(255, 255, 255, 0.3);
@@ -1345,4 +1366,4 @@ body {
 
 .overlay.visible {
     display: block;
-} 
+}
