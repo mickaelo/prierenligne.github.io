@@ -338,8 +338,28 @@ html, body {
 
 .message {
     color: #fff;
-    font-size: 24px;
     margin-top: 20px;
+}
+
+/* Animation des points de chargement */
+.loading-dove {
+    display: inline-block;
+    margin: 10px 0;
+    font-size: 24px;
+    color: #8d7221;
+    animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+    0%, 20% {
+        content: '.';
+    }
+    40% {
+        content: '..';
+    }
+    60%, 100% {
+        content: '...';
+    }
 }
 
 .timer {
@@ -2105,76 +2125,6 @@ html, body {
     }
 }
 
-.saint-of-the-day {
-    color: #ffd700;
-    font-style: italic;
-    text-align: center;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-/* Media Queries pour les tablettes */
-@media screen and (max-width: 1024px) {
-    .saint-of-the-day {
-        font-size: 15px;
-        padding: 8px;
-    }
-}
-
-/* Media Queries pour les smartphones */
-@media screen and (max-width: 768px) {
-    .saint-of-the-day {
-        font-size: 14px;
-        padding: 6px;
-    }
-}
-
-/* Media Queries pour les petits smartphones */
-@media screen and (max-width: 480px) {
-    .saint-of-the-day {
-        font-size: 13px;
-        padding: 5px;
-    }
-}
-
-.liturgy-of-the-day {
-    color: #ffd700;
-    font-style: italic;
-    text-align: center;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-/* Media Queries pour les tablettes */
-@media screen and (max-width: 1024px) {
-    .liturgy-of-the-day {
-        font-size: 15px;
-        padding: 8px;
-    }
-}
-
-/* Media Queries pour les smartphones */
-@media screen and (max-width: 768px) {
-    .liturgy-of-the-day {
-        font-size: 14px;
-        padding: 6px;
-    }
-}
-
-/* Media Queries pour les petits smartphones */
-@media screen and (max-width: 480px) {
-    .liturgy-of-the-day {
-        font-size: 13px;
-        padding: 5px;
-    }
-}
-
 /* Styles pour le chatbot */
 .chat-widget {
     position: fixed;
@@ -2323,4 +2273,43 @@ html, body {
         bottom: 60px;
         right: 10px;
     }
+}
+
+.chat-description {
+    background-color: rgba(141, 114, 33, 0.1);
+    color: #8d7221;
+    padding: 8px 15px;
+    font-size: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(141, 114, 33, 0.2);
+}
+
+.bot-message p {
+    margin: 0 0 10px 0;
+    line-height: 1.5;
+}
+
+.bot-message p:last-child {
+    margin-bottom: 0;
+}
+
+.liturgical-info {
+    font-size: 12px;
+    color: #8d7221;
+    padding: 5px 15px;
+    margin-bottom: 10px;
+    background-color: rgba(141, 114, 33, 0.1);
+    border-radius: 4px;
+    line-height: 1.4;
+}
+
+.liturgical-info p {
+    margin: 2px 0;
+}
+
+.liturgical-info p:last-child {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #8d7221;
+    margin-top: 8px;
 }

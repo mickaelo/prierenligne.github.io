@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Déclarations des constantes du chat
+    const chatToggle = document.querySelector('.chat-toggle');
+    const chatContainer = document.querySelector('.chat-container');
+    const chatClose = document.querySelector('.chat-close');
+    const chatInput = document.querySelector('.chat-input input');
+    const sendButton = document.querySelector('.send-btn');
+    const chatMessages = document.querySelector('.chat-messages');
+
+    // Variables pour le système anti-spam
+    let lastMessageTime = 0;
+    const MESSAGE_COOLDOWN = 3000; // 3 secondes entre chaque message
+    let isWaitingForResponse = false;
 
     // if ("geolocation" in navigator) {
     //     navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -138,6 +150,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             console.log('Received data:', data);
 
+            // Afficher les informations liturgiques
+            const liturgicalInfo = document.querySelector('.liturgical-info');
+            if (liturgicalInfo && data.informations) {
+                let infoContent = '';
+
+                if (data.informations.ligne1) {
+                    infoContent += `<p>${data.informations.ligne1}</p>`;
+                }
+                if (data.informations.fete) {
+                    infoContent += `<p>${data.informations.fete}</p>`;
+                }
+
+                // N'afficher le conteneur que s'il y a du contenu
+                if (infoContent) {
+                    liturgicalInfo.innerHTML = infoContent;
+                    liturgicalInfo.style.display = 'block';
+                } else {
+                    liturgicalInfo.style.display = 'none';
+                }
+            } else {
+                liturgicalInfo.style.display = 'none';
+            }
+
             if (data.messes && data.messes[0] && data.messes[0].lectures) {
                 const lectures = data.messes[0].lectures;
                 const readingElements = document.querySelectorAll('.reading');
@@ -189,54 +224,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 updateButtonsState();
-            }
-
-            // Affichage du saint du jour
-            const saintOfTheDay = document.querySelector('.saint-of-the-day');
-            if (data.informations.fete && data.informations.fete.length > 0) {
-                saintOfTheDay.textContent = data.informations.fete;
-            } else {
-                saintOfTheDay.textContent = '';
-            }
-
-            // Affichage des informations liturgiques
-            const liturgyOfTheDay = document.querySelector('.liturgy-of-the-day');
-            if (data.informations) {
-                let liturgyInfo = [];
-
-                // Ajouter la couleur liturgique si présente
-                if (data.informations.couleur) {
-                    liturgyInfo.push(`Couleur liturgique : ${data.informations.couleur}`);
-                }
-
-                // Ajouter le temps liturgique si présent
-                if (data.informations.temps) {
-                    liturgyInfo.push(`Temps liturgique : ${data.informations.temps}`);
-                }
-
-                // Ajouter le rang si présent
-                if (data.informations.rang) {
-                    liturgyInfo.push(`Rang : ${data.informations.rang}`);
-                }
-
-                // Ajouter le cycle si présent
-                if (data.informations.cycle) {
-                    liturgyInfo.push(`Cycle : ${data.informations.cycle}`);
-                }
-
-                // Ajouter l'année liturgique si présente
-                if (data.informations.annee) {
-                    liturgyInfo.push(`Année liturgique : ${data.informations.annee}`);
-                }
-
-                // Afficher toutes les informations
-                if (liturgyInfo.length > 0) {
-                    liturgyOfTheDay.innerHTML = liturgyInfo.join('<br>');
-                } else {
-                    liturgyOfTheDay.textContent = '';
-                }
-            } else {
-                liturgyOfTheDay.textContent = '';
             }
         } catch (error) {
             console.error('Erreur lors de la récupération des lectures:', error);
@@ -314,6 +301,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             console.log('Received data:', data);
 
+            // Afficher les informations liturgiques
+            const liturgicalInfo = document.querySelector('.liturgical-info');
+            if (liturgicalInfo && data.informations) {
+                let infoContent = '';
+
+                if (data.informations.ligne1) {
+                    infoContent += `<p>${data.informations.ligne1}</p>`;
+                }
+                if (data.informations.fete) {
+                    infoContent += `<p>${data.informations.fete}</p>`;
+                }
+
+                // N'afficher le conteneur que s'il y a du contenu
+                if (infoContent) {
+                    liturgicalInfo.innerHTML = infoContent;
+                    liturgicalInfo.style.display = 'block';
+                } else {
+                    liturgicalInfo.style.display = 'none';
+                }
+            } else {
+                liturgicalInfo.style.display = 'none';
+            }
+
             // Vérifier si nous avons des lectures
             if (data.messes && data.messes[0] && data.messes[0].lectures) {
                 const lectures = data.messes[0].lectures;
@@ -381,13 +391,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
                 }
-            }
-            // Affichage du saint du jour
-            const saintOfTheDay = document.querySelector('.saint-of-the-day');
-            if (data.informations.fete && data.informations.fete.length > 0) {
-                saintOfTheDay.textContent = data.informations.fete;
-            } else {
-                saintOfTheDay.textContent = '';
             }
         } catch (error) {
             console.error('Erreur lors de la récupération des lectures:', error);
@@ -946,6 +949,109 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Fonction pour vérifier si l'utilisateur peut envoyer un message
+    function canSendMessage() {
+        const now = Date.now();
+        if (now - lastMessageTime < MESSAGE_COOLDOWN) {
+            return false;
+        }
+        if (isWaitingForResponse) {
+            return false;
+        }
+        return true;
+    }
+
+    // Fonction pour mettre à jour l'état du bouton d'envoi
+    function updateSendButtonState() {
+        const canSend = canSendMessage();
+        sendButton.disabled = !canSend;
+        sendButton.style.opacity = canSend ? '1' : '0.5';
+        chatInput.disabled = !canSend;
+    }
+
+    // Fonction pour envoyer une question à l'API
+    async function sendQuestion(question) {
+        if (!canSendMessage()) return;
+
+        try {
+            lastMessageTime = Date.now();
+            isWaitingForResponse = true;
+            updateSendButtonState();
+
+            // Afficher les points de chargement
+            const loadingMessage = document.createElement('div');
+            loadingMessage.className = 'message bot-message';
+            loadingMessage.innerHTML = '<div class="loading-dove">...</div>';
+            chatMessages.appendChild(loadingMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            const corsProxy = 'https://proxy.cors.sh/';
+            const response = await fetch(corsProxy + 'https://categpt.chat/api/question', {
+                method: 'POST',
+                headers: {
+                    'Origin': window.location.origin,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'x-cors-api-key': 'temp_92957369b1b00d6853602cf2b344895f',
+                    'Content-Type': 'application/json',
+                    'Authorization': config.API_KEY
+                },
+                body: JSON.stringify({ question, all_tokens: 500 })
+            });
+
+            // Supprimer les points de chargement
+            loadingMessage.remove();
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la requête');
+            }
+
+            const data = await response.json();
+            if (data.stat === 'ok') {
+                addMessage(formatResponse(data));
+            } else {
+                addMessage('Désolé, je n\'ai pas pu traiter votre question. Veuillez réessayer.');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            addMessage('Désolé, une erreur est survenue. Veuillez réessayer plus tard.');
+        } finally {
+            isWaitingForResponse = false;
+            updateSendButtonState();
+        }
+    }
+
+    // Gestion des événements du chat
+    chatToggle.addEventListener('click', () => {
+        chatContainer.classList.toggle('visible');
+    });
+
+    chatClose.addEventListener('click', () => {
+        chatContainer.classList.remove('visible');
+    });
+
+    sendButton.addEventListener('click', () => {
+        const question = chatInput.value.trim();
+        if (question && canSendMessage()) {
+            addMessage(question, true);
+            chatInput.value = '';
+            sendQuestion(question);
+        }
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const question = chatInput.value.trim();
+            if (question && canSendMessage()) {
+                addMessage(question, true);
+                chatInput.value = '';
+                sendQuestion(question);
+            }
+        }
+    });
+
+    // Mettre à jour l'état du bouton toutes les secondes
+    setInterval(updateSendButtonState, 1000);
+
     // Modifier la fonction fetchMysteryOfTheDay pour accepter une date en paramètre
     async function fetchMysteryOfTheDay(date = new Date()) {
         try {
@@ -1078,14 +1184,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Gestion du chatbot
-    const chatToggle = document.querySelector('.chat-toggle');
-    const chatContainer = document.querySelector('.chat-container');
-    const chatClose = document.querySelector('.chat-close');
-    const chatInput = document.querySelector('.chat-input input');
-    const sendButton = document.querySelector('.send-btn');
-    const chatMessages = document.querySelector('.chat-messages');
-
     // Fonction pour afficher un message dans le chat
     function addMessage(text, isUser = false) {
         const messageDiv = document.createElement('div');
@@ -1098,24 +1196,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fonction pour formater la réponse de l'API
     function formatResponse(response) {
         let formattedText = '';
-        
+
         // Ajouter chaque partie de la réponse
         response.reponse.forEach(part => {
-            switch(part.type) {
+            switch (part.type) {
                 case 'intro':
-                    formattedText += `${part.text}\n\n`;
+                    formattedText += `[Introduction]\n${part.text}\n\n`;
                     break;
                 case 'bible':
-                    formattedText += `📖 ${part.text}\n\n`;
+                    formattedText += `[Bible]\n📖 ${part.text}\n\n`;
                     break;
                 case 'peres':
-                    formattedText += `👨‍🦳 ${part.text}\n\n`;
+                    formattedText += `[Pères de l'Église]\n👨‍🦳 ${part.text}\n\n`;
                     break;
                 case 'magistere':
-                    formattedText += `📚 ${part.text}\n\n`;
+                    formattedText += `[Magistère]\n📚 ${part.text}\n\n`;
                     break;
                 case 'papes':
-                    formattedText += `👑 ${part.text}\n\n`;
+                    formattedText += `[Papes]\n👑 ${part.text}\n\n`;
                     break;
                 default:
                     formattedText += `${part.text}\n\n`;
@@ -1124,7 +1222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Ajouter les références
         if (response.references && response.references.length > 0) {
-            formattedText += '📚 Références :\n';
+            formattedText += '[Références]\n📚\n';
             response.references.forEach(ref => {
                 formattedText += `- ${ref.description}\n`;
             });
@@ -1132,62 +1230,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return formattedText;
     }
-
-    // Fonction pour envoyer une question à l'API
-    async function sendQuestion(question) {
-        try {
-            const corsProxy = 'https://proxy.cors.sh/';
-            const response = await fetch(corsProxy + 'https://categpt.chat/api/question', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'U/CCvuuf2vERFB3NKzeUx03Y2dqMO2C9O1H9IgzYyymJvhL1AG5CNOocwaa/sTEnsuVEPq+0kLfDjiY68/Txi1FKoNfq1F3aPFtzSV1Qu0myisIgh0GzAqm9szqhH9kADqueD2tuEYszXrLtjZBIjQ=='
-                },
-                body: JSON.stringify({ question })
-            });
-
-            if (!response.ok) {
-                throw new Error('Erreur lors de la requête');
-            }
-
-            const data = await response.json();
-            if (data.stat === 'ok') {
-                addMessage(formatResponse(data));
-            } else {
-                addMessage('Désolé, je n\'ai pas pu traiter votre question. Veuillez réessayer.');
-            }
-        } catch (error) {
-            console.error('Erreur:', error);
-            addMessage('Désolé, une erreur est survenue. Veuillez réessayer plus tard.');
-        }
-    }
-
-    // Gestion des événements du chat
-    chatToggle.addEventListener('click', () => {
-        chatContainer.classList.toggle('visible');
-    });
-
-    chatClose.addEventListener('click', () => {
-        chatContainer.classList.remove('visible');
-    });
-
-    sendButton.addEventListener('click', () => {
-        const question = chatInput.value.trim();
-        if (question) {
-            addMessage(question, true);
-            chatInput.value = '';
-            sendQuestion(question);
-        }
-    });
-
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const question = chatInput.value.trim();
-            if (question) {
-                addMessage(question, true);
-                chatInput.value = '';
-                sendQuestion(question);
-            }
-        }
-    });
 }); 
