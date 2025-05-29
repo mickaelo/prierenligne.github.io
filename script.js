@@ -1,4 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // if ("geolocation" in navigator) {
+    //     navigator.geolocation.getCurrentPosition(async (pos) => {
+    //         const lat = pos.coords.latitude;
+    //         const lon = pos.coords.longitude;
+    //         console.log(`Position : lat=${lat}, lon=${lon}`);
+
+    //         // Appel API gov pour géocodage inverse
+    //         const url = `https://api-adresse.data.gouv.fr/reverse/?lat=${lat}&lon=${lon}`;
+
+    //         try {
+    //             const res = await fetch(url);
+    //             const data = await res.json();
+    //             if (data.features && data.features.length > 0) {
+    //                 const codePostal = data.features[0].properties.postcode;
+    //                 console.log("Code postal :", codePostal);
+    //             } else {
+    //                 console.log("Aucun code postal trouvé");
+    //             }
+    //         } catch (e) {
+    //             console.error("Erreur API :", e);
+    //         }
+    //     }, (err) => {
+    //         console.error("Erreur géoloc :", err);
+    //     }, { enableHighAccuracy: true });
+    // } else {
+    //     console.log("Géolocalisation non supportée");
+    // }
+
+
     const candle = document.querySelector('.candle');
     const startButton = document.getElementById('startPrayer');
     const durationButtons = document.querySelectorAll('.duration-btn');
@@ -160,6 +190,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 updateButtonsState();
             }
+
+            // Affichage du saint du jour
+            const saintOfTheDay = document.querySelector('.saint-of-the-day');
+            if (data.informations.fete && data.informations.fete.length > 0) {
+                saintOfTheDay.textContent = data.informations.fete;
+            } else {
+                saintOfTheDay.textContent = '';
+            }
+
+            // Affichage des informations liturgiques
+            const liturgyOfTheDay = document.querySelector('.liturgy-of-the-day');
+            if (data.informations) {
+                let liturgyInfo = [];
+
+                // Ajouter la couleur liturgique si présente
+                if (data.informations.couleur) {
+                    liturgyInfo.push(`Couleur liturgique : ${data.informations.couleur}`);
+                }
+
+                // Ajouter le temps liturgique si présent
+                if (data.informations.temps) {
+                    liturgyInfo.push(`Temps liturgique : ${data.informations.temps}`);
+                }
+
+                // Ajouter le rang si présent
+                if (data.informations.rang) {
+                    liturgyInfo.push(`Rang : ${data.informations.rang}`);
+                }
+
+                // Ajouter le cycle si présent
+                if (data.informations.cycle) {
+                    liturgyInfo.push(`Cycle : ${data.informations.cycle}`);
+                }
+
+                // Ajouter l'année liturgique si présente
+                if (data.informations.annee) {
+                    liturgyInfo.push(`Année liturgique : ${data.informations.annee}`);
+                }
+
+                // Afficher toutes les informations
+                if (liturgyInfo.length > 0) {
+                    liturgyOfTheDay.innerHTML = liturgyInfo.join('<br>');
+                } else {
+                    liturgyOfTheDay.textContent = '';
+                }
+            } else {
+                liturgyOfTheDay.textContent = '';
+            }
         } catch (error) {
             console.error('Erreur lors de la récupération des lectures:', error);
         }
@@ -304,6 +382,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
             }
+            // Affichage du saint du jour
+            const saintOfTheDay = document.querySelector('.saint-of-the-day');
+            if (data.informations.fete && data.informations.fete.length > 0) {
+                saintOfTheDay.textContent = data.informations.fete;
+            } else {
+                saintOfTheDay.textContent = '';
+            }
         } catch (error) {
             console.error('Erreur lors de la récupération des lectures:', error);
             const readings = document.querySelectorAll('.reading');
@@ -334,23 +419,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateTimer() {
         if (!isAnimating) return;
-        
+
         const now = new Date().getTime();
         const elapsed = now - startTime;
         const remaining = selectedDuration * 60000 - elapsed;
-        
+
         if (remaining <= 0) {
             endPrayer();
             return;
         }
-        
+
         // Calcul du progrès de la fonte (0 à 1)
         const progress = 1 - (remaining / (selectedDuration * 60000));
-        
+
         // Ne faire fondre la bougie que si la durée n'est pas illimitée
         if (!isUnlimited) {
-        // Calcul de la nouvelle hauteur (de 160px à 5px)
-        const newHeight = 160 - (progress * 155); // 155 = 160 - 5
+            // Calcul de la nouvelle hauteur (de 160px à 5px)
+            const newHeight = 160 - (progress * 155); // 155 = 160 - 5
 
             // Appliquer la transformation pour la fonte
             candle.style.transform = `scaleY(${newHeight / 160})`;
@@ -359,22 +444,22 @@ document.addEventListener('DOMContentLoaded', () => {
             // Ajouter l'effet de fonte
             wax.classList.add('melting');
         }
-        
+
         // Ajuster la flamme
         const flameScale = 1 - (progress * 0.3);
         flame.style.transform = `translateX(-50%) scale(${flameScale})`;
         flame.style.opacity = 1 - (progress * 0.5);
-        
+
         requestAnimationFrame(updateTimer);
     }
 
     function startPrayer() {
         if (isAnimating) return;
-        
+
         isAnimating = true;
         startTime = new Date().getTime();
         isUnlimited = selectedDuration === 0;
-        
+
         // Réinitialiser les transformations
         candle.classList.remove('extinguished');
         candle.style.transform = 'scaleY(1)';
@@ -382,15 +467,15 @@ document.addEventListener('DOMContentLoaded', () => {
         wax.classList.remove('melting');
         flame.style.transform = 'translateX(-50%) scale(1)';
         flame.style.opacity = '1';
-        
+
         // Allumer la bougie
         flame.classList.add('lit');
-        
+
         // On ne fait plus apparaître l'icône automatiquement
         // jesusIcon.classList.add('visible');
-        
+
         startButton.disabled = true;
-        
+
         animationFrameId = requestAnimationFrame(updateTimer);
 
         if (selectedDuration > 0) {
@@ -407,10 +492,10 @@ document.addEventListener('DOMContentLoaded', () => {
         candle.classList.remove('extinguished');
         flame.classList.remove('lit');
         wax.classList.remove('melting');
-        
+
         flame.style.transform = 'translateX(-50%) scale(1)';
         flame.style.opacity = '0';
-        
+
         isAnimating = false;
 
         if (animationFrameId) {
@@ -426,19 +511,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePrayerDuration(newDuration) {
         if (!isAnimating) return;
-        
+
         selectedDuration = newDuration;
         isUnlimited = newDuration === 0;
-        
+
         // Réinitialiser le timer
         if (timer) {
             clearTimeout(timer);
             timer = null;
         }
-        
+
         // Mettre à jour le temps de début pour le nouveau calcul
         startTime = new Date().getTime();
-        
+
         // Démarrer un nouveau timer si la durée n'est pas illimitée
         if (selectedDuration > 0) {
             timer = setTimeout(() => {
@@ -461,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const newDuration = parseFloat(btn.dataset.duration);
             durationButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             if (isAnimating) {
                 updatePrayerDuration(newDuration);
             } else {
@@ -474,7 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
     iconButtons.forEach(button => {
         button.addEventListener('click', () => {
             const isCurrentlyActive = button.classList.contains('active');
-            
+
             // Si l'icône est déjà active, on la désélectionne
             if (isCurrentlyActive) {
                 button.classList.remove('active');
@@ -486,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('active');
                 iconImage.src = button.dataset.icon;
                 // On affiche toujours l'icône, qu'il y ait une prière en cours ou non
-                    jesusIcon.classList.add('visible');
+                jesusIcon.classList.add('visible');
             }
         });
     });
@@ -500,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactLink && contactPopup && overlay && closePopupBtn) {
         // Changer le texte du bouton
         contactLink.textContent = '❓';
-        
+
         contactLink.addEventListener('click', (e) => {
             e.preventDefault();
             contactPopup.classList.add('visible');
@@ -633,17 +718,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Fonction pour extraire le texte entre les balises strong
             function extractMeditations(section) {
                 if (!section) return [];
-                
+
                 const meditations = [];
                 const strongElements = section.querySelectorAll('strong');
                 console.log('Nombre de mystères trouvés dans la section:', strongElements.length);
-                
+
                 strongElements.forEach((strong, index) => {
                     const title = strong.textContent.trim();
                     console.log(`Mystère ${index + 1} trouvé:`, title);
                     let text = '';
                     let node = strong.nextSibling;
-                    
+
                     // Parcourir tous les nœuds jusqu'au prochain strong
                     while (node && node.nodeName !== 'STRONG') {
                         if (node.nodeType === Node.TEXT_NODE) {
@@ -658,22 +743,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         node = node.nextSibling;
                     }
-                    
+
                     // Nettoyer le texte
                     text = text.trim()
                         .replace(/\n\s*\n/g, '\n') // Supprimer les lignes vides multiples
                         .replace(/\s+/g, ' '); // Normaliser les espaces
-                    
+
                     // Extraire la méditation
                     const meditation = {
                         title: title,
                         text: title, // Le titre du mystère
                         meditation: text // Le texte complet de la méditation
                     };
-                    
+
                     meditations.push(meditation);
                 });
-                
+
                 return meditations;
             }
 
@@ -688,7 +773,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     return isMatch;
                 });
-                
+
                 if (!found) {
                     console.log('Mystère non trouvé:', mysteryName);
                 }
@@ -788,19 +873,19 @@ document.addEventListener('DOMContentLoaded', () => {
             // Extraire les méditations pour chaque type
             const h3Elements = doc.querySelectorAll('h3');
             console.log('Nombre de sections h3 trouvées:', h3Elements.length);
-            
+
             // Chercher tous les mystères dans le document
             const allStrongElements = doc.querySelectorAll('strong');
             console.log('Nombre total de mystères trouvés:', allStrongElements.length);
-            
+
             // Extraire tous les mystères et leurs méditations
             const allMeditations = extractMeditations(doc.body);
             console.log('Tous les mystères extraits:', allMeditations);
-            
+
             h3Elements.forEach(h3 => {
                 const sectionTitle = h3.textContent.toLowerCase();
                 console.log('Section trouvée:', sectionTitle);
-                
+
                 if (sectionTitle.includes('joyeux')) {
                     console.log('Mystères joyeux trouvés');
                     meditations.joyful = ensureFiveUniqueMysteries(allMeditations, 'joyful');
@@ -954,9 +1039,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 // Mettre à jour le contenu
-                mysteryTitle.innerHTML = `<h3>${mysteryType === 'joyful' ? 'Joyeux' : 
-                    mysteryType === 'luminous' ? 'Lumineux' : 
-                    mysteryType === 'sorrowful' ? 'Douloureux' : 'Glorieux'}</h3>
+                mysteryTitle.innerHTML = `<h3>${mysteryType === 'joyful' ? 'Joyeux' :
+                    mysteryType === 'luminous' ? 'Lumineux' :
+                        mysteryType === 'sorrowful' ? 'Douloureux' : 'Glorieux'}</h3>
                     <p class="mystery-date">${formattedDate}</p>`;
                 mysteryText.innerHTML = mysteriesHTML;
                 meditationText.innerHTML = ''; // Le texte de méditation est maintenant inclus dans chaque mystère
@@ -992,4 +1077,117 @@ document.addEventListener('DOMContentLoaded', () => {
             accordionContent.classList.toggle('active');
         });
     }
+
+    // Gestion du chatbot
+    const chatToggle = document.querySelector('.chat-toggle');
+    const chatContainer = document.querySelector('.chat-container');
+    const chatClose = document.querySelector('.chat-close');
+    const chatInput = document.querySelector('.chat-input input');
+    const sendButton = document.querySelector('.send-btn');
+    const chatMessages = document.querySelector('.chat-messages');
+
+    // Fonction pour afficher un message dans le chat
+    function addMessage(text, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        messageDiv.textContent = text;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Fonction pour formater la réponse de l'API
+    function formatResponse(response) {
+        let formattedText = '';
+        
+        // Ajouter chaque partie de la réponse
+        response.reponse.forEach(part => {
+            switch(part.type) {
+                case 'intro':
+                    formattedText += `${part.text}\n\n`;
+                    break;
+                case 'bible':
+                    formattedText += `📖 ${part.text}\n\n`;
+                    break;
+                case 'peres':
+                    formattedText += `👨‍🦳 ${part.text}\n\n`;
+                    break;
+                case 'magistere':
+                    formattedText += `📚 ${part.text}\n\n`;
+                    break;
+                case 'papes':
+                    formattedText += `👑 ${part.text}\n\n`;
+                    break;
+                default:
+                    formattedText += `${part.text}\n\n`;
+            }
+        });
+
+        // Ajouter les références
+        if (response.references && response.references.length > 0) {
+            formattedText += '📚 Références :\n';
+            response.references.forEach(ref => {
+                formattedText += `- ${ref.description}\n`;
+            });
+        }
+
+        return formattedText;
+    }
+
+    // Fonction pour envoyer une question à l'API
+    async function sendQuestion(question) {
+        try {
+            const corsProxy = 'https://proxy.cors.sh/';
+            const response = await fetch(corsProxy + 'https://categpt.chat/api/question', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'U/CCvuuf2vERFB3NKzeUx03Y2dqMO2C9O1H9IgzYyymJvhL1AG5CNOocwaa/sTEnsuVEPq+0kLfDjiY68/Txi1FKoNfq1F3aPFtzSV1Qu0myisIgh0GzAqm9szqhH9kADqueD2tuEYszXrLtjZBIjQ=='
+                },
+                body: JSON.stringify({ question })
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la requête');
+            }
+
+            const data = await response.json();
+            if (data.stat === 'ok') {
+                addMessage(formatResponse(data));
+            } else {
+                addMessage('Désolé, je n\'ai pas pu traiter votre question. Veuillez réessayer.');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            addMessage('Désolé, une erreur est survenue. Veuillez réessayer plus tard.');
+        }
+    }
+
+    // Gestion des événements du chat
+    chatToggle.addEventListener('click', () => {
+        chatContainer.classList.toggle('visible');
+    });
+
+    chatClose.addEventListener('click', () => {
+        chatContainer.classList.remove('visible');
+    });
+
+    sendButton.addEventListener('click', () => {
+        const question = chatInput.value.trim();
+        if (question) {
+            addMessage(question, true);
+            chatInput.value = '';
+            sendQuestion(question);
+        }
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const question = chatInput.value.trim();
+            if (question) {
+                addMessage(question, true);
+                chatInput.value = '';
+                sendQuestion(question);
+            }
+        }
+    });
 }); 
