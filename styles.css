@@ -491,7 +491,6 @@ html, body {
 .controls-row {
     display: flex;
     gap: 10px;
-    margin-bottom: 10px;
     flex-wrap: wrap;
     justify-content: center;
 }
