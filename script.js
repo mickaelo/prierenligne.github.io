@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (contactLink && contactPopup && overlay && closePopupBtn) {
         // Changer le texte du bouton
-        contactLink.textContent = '❓';
+        contactLink.textContent = ' ? ';
 
         contactLink.addEventListener('click', (e) => {
             e.preventDefault();

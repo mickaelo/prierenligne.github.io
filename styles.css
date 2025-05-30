@@ -1261,21 +1261,29 @@ html, body {
 
 .contact-link {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1;
-    color: #ffd700;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #8d7221;
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
-    font-size: 16px;
-    transition: color 0.3s ease;
-    padding: 5px 10px;
-    border-radius: 4px;
-    filter: sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(100%) contrast(100%);
 }
 
 .contact-link:hover {
-    filter: sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(120%) contrast(100%);
-    background: rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+    filter: none;
+    background: #8d7221;
 }
 
 .contact-popup {
@@ -2274,11 +2282,41 @@ html, body {
         bottom: 0;
         right: 0;
         border-radius: 0;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-overflow-scrolling: touch;
     }
 
     .chat-input input {
         font-size: 16px;
         -webkit-text-size-adjust: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+        border-radius: 5px;
+    }
+
+    .chat-messages {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: scroll;
+    }
+
+    .chat-toggle, .contact-link {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+}
+
+/* Styles spécifiques pour Safari mobile */
+@supports (-webkit-touch-callout: none) {
+    .chat-container {
+        height: -webkit-fill-available;
+        height: fill-available;
+    }
+
+    .chat-input input {
+        font-size: 16px !important;
     }
 }
 
