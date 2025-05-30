@@ -693,6 +693,7 @@ body {
     top: 0;
     width: 25%;
     padding: 10px;
+    background-color: #1a1a1a;
     color: #fff;
     overflow-y: auto;
     overflow-x: hidden;
@@ -1268,7 +1269,7 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
-    z-index: 1000;
+    z-index: 999;
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -2144,7 +2145,7 @@ body {
     position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 1000;
+    z-index: 999;
 }
 
 .chat-toggle {
