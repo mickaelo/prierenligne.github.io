@@ -693,7 +693,7 @@ body {
     top: 0;
     width: 25%;
     padding: 10px;
-    background-color: #1a1a1a;
+    background-color: #1a1a1a   ;
     color: #fff;
     overflow-y: auto;
     overflow-x: hidden;
@@ -2408,9 +2408,9 @@ body {
         z-index: 2000;
         text-align: center;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        width: 100%;
+        width: 80%;
         max-width: 400px;
-        max-height: 100vh;
+        max-height: 80;
         overflow-y: auto;
     }
 }
