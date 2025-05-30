@@ -2170,6 +2170,7 @@ html, body {
     display: none;
     flex-direction: column;
     overflow: hidden;
+    z-index: 2000;
 }
 
 .chat-container.visible {
@@ -2270,8 +2271,8 @@ html, body {
     .chat-container {
         width: 300px;
         height: 400px;
-        bottom: 70px;
-        right: 10px;
+        top: 70px;
+        left: 10px;
     }
 }
 
@@ -2279,12 +2280,33 @@ html, body {
     .chat-container {
         width: 100%;
         height: 100%;
-        bottom: 0;
-        right: 0;
+        top: 0;
+        left: 0;
         border-radius: 0;
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
         -webkit-overflow-scrolling: touch;
+        z-index: 2000;
+    }
+
+    .chat-header {
+        padding: 20px;
+    }
+
+    .chat-header h3 {
+        font-size: 18px;
+    }
+
+    .chat-close {
+        font-size: 24px;
+    }
+
+    .chat-messages {
+        padding: 20px;
+    }
+
+    .chat-input {
+        padding: 20px;
     }
 
     .chat-input input {
@@ -2293,11 +2315,6 @@ html, body {
         -webkit-appearance: none;
         appearance: none;
         border-radius: 5px;
-    }
-
-    .chat-messages {
-        -webkit-overflow-scrolling: touch;
-        overflow-y: scroll;
     }
 
     .chat-toggle, .contact-link {
