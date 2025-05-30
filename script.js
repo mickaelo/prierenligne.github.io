@@ -685,268 +685,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Fonction pour récupérer les méditations depuis le site de l'Église catholique
+    // Fonction pour récupérer les méditations depuis le fichier JSON local
     async function fetchMeditations() {
-        try {
-            // Utiliser un proxy CORS pour accéder au site
-            const corsProxy = 'https://proxy.cors.sh/';
-            const targetUrl = 'https://eglise.catholique.fr/approfondir-sa-foi/prier/prieres/369694-meditation-des-mysteres-du-rosaire';
-
-            const response = await fetch(corsProxy + targetUrl, {
-                headers: {
-                    'Origin': window.location.origin,
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'x-cors-api-key': 'temp_92957369b1b00d6853602cf2b344895f'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const html = await response.text();
-
-            // Créer un parser DOM pour extraire le contenu
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
-            // Extraire les méditations
-            const meditations = {
-                joyful: [],
-                sorrowful: [],
-                glorious: [],
-                luminous: []
-            };
-
-            // Fonction pour extraire le texte entre les balises strong
-            function extractMeditations(section) {
-                if (!section) return [];
-
-                const meditations = [];
-                const strongElements = section.querySelectorAll('strong');
-                console.log('Nombre de mystères trouvés dans la section:', strongElements.length);
-
-                strongElements.forEach((strong, index) => {
-                    const title = strong.textContent.trim();
-                    console.log(`Mystère ${index + 1} trouvé:`, title);
-                    let text = '';
-                    let node = strong.nextSibling;
-
-                    // Parcourir tous les nœuds jusqu'au prochain strong
-                    while (node && node.nodeName !== 'STRONG') {
-                        if (node.nodeType === Node.TEXT_NODE) {
-                            text += node.textContent;
-                        } else if (node.nodeType === Node.ELEMENT_NODE) {
-                            // Si c'est un paragraphe ou un élément de texte
-                            if (node.tagName === 'P' || node.tagName === 'DIV') {
-                                text += node.textContent + '\n';
-                            } else {
-                                text += node.textContent;
-                            }
-                        }
-                        node = node.nextSibling;
-                    }
-
-                    // Nettoyer le texte
-                    text = text.trim()
-                        .replace(/\n\s*\n/g, '\n') // Supprimer les lignes vides multiples
-                        .replace(/\s+/g, ' '); // Normaliser les espaces
-
-                    // Extraire la méditation
-                    const meditation = {
-                        title: title,
-                        text: title, // Le titre du mystère
-                        meditation: text // Le texte complet de la méditation
-                    };
-
-                    meditations.push(meditation);
-                });
-
-                return meditations;
-            }
-
-            // Fonction pour trouver la méditation correspondante
-            function findMatchingMeditation(meditations, mysteryName) {
-                const found = meditations.find(m => {
-                    const title = m.title.toLowerCase();
-                    const mystery = mysteryName.toLowerCase();
-                    const isMatch = title.includes(mystery) || mystery.includes(title);
-                    if (isMatch) {
-                        console.log('Mystère correspondant trouvé:', title, 'pour', mysteryName);
-                    }
-                    return isMatch;
-                });
-
-                if (!found) {
-                    console.log('Mystère non trouvé:', mysteryName);
-                }
-                return found;
-            }
-
-            // Fonction pour s'assurer d'avoir exactement 5 mystères uniques
-            function ensureFiveUniqueMysteries(mysteries, type) {
-                const uniqueMysteries = [];
-                const seen = new Set();
-
-                // Liste des mystères attendus pour chaque type
-                const expectedMysteries = {
-                    joyful: [
-                        "L'Annonciation",
-                        "La Visitation",
-                        "La naissance de Jésus",
-                        "La Présentation de Jésus au Temple",
-                        "Le Recouvrement de Jésus au Temple"
-                    ],
-                    sorrowful: [
-                        "L'Agonie de Jésus au Jardin des Oliviers",
-                        "La Flagellation de Jésus",
-                        "Le Couronnement d'épines",
-                        "Le Portement de la Croix",
-                        "La Crucifixion et la mort de Jésus"
-                    ],
-                    glorious: [
-                        "La Résurrection de Jésus",
-                        "L'Ascension de Jésus",
-                        "La Pentecôte",
-                        "L'Assomption de la Vierge Marie",
-                        "Le Couronnement de la Vierge Marie"
-                    ],
-                    luminous: [
-                        "Le Baptême de Jésus",
-                        "Les Noces de Cana",
-                        "L'Annonce du Royaume de Dieu",
-                        "La Transfiguration",
-                        "L'Institution de l'Eucharistie"
-                    ]
-                };
-
-                // D'abord, essayer de trouver les mystères exacts
-                expectedMysteries[type].forEach(mysteryName => {
-                    const found = findMatchingMeditation(mysteries, mysteryName);
-                    if (found && !seen.has(found.title)) {
-                        uniqueMysteries.push(found);
-                        seen.add(found.title);
-                    }
-                });
-
-                // Si nous n'avons pas 5 mystères, utiliser les méditations par défaut
-                if (uniqueMysteries.length < 5) {
-                    console.log(`Pas assez de mystères ${type} trouvés (${uniqueMysteries.length}/5), utilisation des méditations par défaut`);
-                    return getDefaultMysteries(type);
-                }
-
-                return uniqueMysteries;
-            }
-
-            // Fonction pour obtenir les méditations par défaut
-            function getDefaultMysteries(type) {
-                const defaultMysteries = {
-                    joyful: [
-                        { title: "Premier mystère joyeux", text: "L'Annonciation", meditation: "L'ange Gabriel annonce à Marie : « Voici que tu concevras dans ton sein et enfanteras un fils, et tu l'appelleras du nom de Jésus » (Lc 1, 31)." },
-                        { title: "Deuxième mystère joyeux", text: "La Visitation", meditation: "Marie rend visite à sa cousine Élisabeth. « Le Seigneur a renversé les potentats de leurs trônes et élevé les humbles » (Lc 1, 52)." },
-                        { title: "Troisième mystère joyeux", text: "La naissance de Jésus", meditation: "À Bethléem, Jésus est né dans une crèche. Une étable n'est jamais un endroit propre et bien éclairé. Notre cœur non plus n'est pas limpide et pourtant Jésus vient y naître par la foi." },
-                        { title: "Quatrième mystère joyeux", text: "La Présentation de Jésus au Temple", meditation: "Par trois fois, saint Luc précise l'action du Saint-Esprit dans la démarche de Syméon qui accueille l'enfant Jésus dans ses bras." },
-                        { title: "Cinquième mystère joyeux", text: "Le Recouvrement de Jésus au Temple", meditation: "Jésus est retrouvé au Temple, assis au milieu des docteurs, les écoutant et les interrogeant." }
-                    ],
-                    sorrowful: [
-                        { title: "Premier mystère douloureux", text: "L'Agonie de Jésus au Jardin des Oliviers", meditation: "Jésus prie au Jardin des Oliviers, dans une angoisse mortelle." },
-                        { title: "Deuxième mystère douloureux", text: "La Flagellation de Jésus", meditation: "Jésus est flagellé par les soldats romains." },
-                        { title: "Troisième mystère douloureux", text: "Le Couronnement d'épines", meditation: "Jésus est couronné d'épines par les soldats qui se moquent de lui." },
-                        { title: "Quatrième mystère douloureux", text: "Le Portement de la Croix", meditation: "Jésus porte sa croix jusqu'au Calvaire." },
-                        { title: "Cinquième mystère douloureux", text: "La Crucifixion et la mort de Jésus", meditation: "Jésus meurt sur la croix pour le salut du monde." }
-                    ],
-                    glorious: [
-                        { title: "Premier mystère glorieux", text: "La Résurrection de Jésus", meditation: "Jésus ressuscite d'entre les morts le troisième jour." },
-                        { title: "Deuxième mystère glorieux", text: "L'Ascension de Jésus", meditation: "Jésus monte au Ciel quarante jours après sa Résurrection." },
-                        { title: "Troisième mystère glorieux", text: "La Pentecôte", meditation: "L'Esprit Saint descend sur les apôtres sous forme de langues de feu." },
-                        { title: "Quatrième mystère glorieux", text: "L'Assomption de la Vierge Marie", meditation: "La Vierge Marie est élevée au Ciel en corps et en âme." },
-                        { title: "Cinquième mystère glorieux", text: "Le Couronnement de la Vierge Marie", meditation: "La Vierge Marie est couronnée Reine du Ciel et de la terre." }
-                    ],
-                    luminous: [
-                        { title: "Premier mystère lumineux", text: "Le Baptême de Jésus", meditation: "Jésus est baptisé par Jean dans le Jourdain." },
-                        { title: "Deuxième mystère lumineux", text: "Les Noces de Cana", meditation: "Jésus change l'eau en vin aux noces de Cana." },
-                        { title: "Troisième mystère lumineux", text: "L'Annonce du Royaume de Dieu", meditation: "Jésus annonce le Royaume de Dieu et appelle à la conversion." },
-                        { title: "Quatrième mystère lumineux", text: "La Transfiguration", meditation: "Jésus se transfigure sur la montagne devant Pierre, Jacques et Jean." },
-                        { title: "Cinquième mystère lumineux", text: "L'Institution de l'Eucharistie", meditation: "Jésus institue l'Eucharistie lors de la Cène." }
-                    ]
-                };
-                return defaultMysteries[type];
-            }
-
-            // Extraire les méditations pour chaque type
-            const h3Elements = doc.querySelectorAll('h3');
-            console.log('Nombre de sections h3 trouvées:', h3Elements.length);
-
-            // Chercher tous les mystères dans le document
-            const allStrongElements = doc.querySelectorAll('strong');
-            console.log('Nombre total de mystères trouvés:', allStrongElements.length);
-
-            // Extraire tous les mystères et leurs méditations
-            const allMeditations = extractMeditations(doc.body);
-            console.log('Tous les mystères extraits:', allMeditations);
-
-            h3Elements.forEach(h3 => {
-                const sectionTitle = h3.textContent.toLowerCase();
-                console.log('Section trouvée:', sectionTitle);
-
-                if (sectionTitle.includes('joyeux')) {
-                    console.log('Mystères joyeux trouvés');
-                    meditations.joyful = ensureFiveUniqueMysteries(allMeditations, 'joyful');
-                } else if (sectionTitle.includes('douloureux')) {
-                    console.log('Mystères douloureux trouvés');
-                    meditations.sorrowful = ensureFiveUniqueMysteries(allMeditations, 'sorrowful');
-                } else if (sectionTitle.includes('glorieux')) {
-                    console.log('Mystères glorieux trouvés');
-                    meditations.glorious = ensureFiveUniqueMysteries(allMeditations, 'glorious');
-                } else if (sectionTitle.includes('lumineux')) {
-                    console.log('Mystères lumineux trouvés');
-                    meditations.luminous = ensureFiveUniqueMysteries(allMeditations, 'luminous');
-                }
-            });
-
-            // Vérifier si nous avons des méditations
-            const hasMeditations = Object.values(meditations).some(array => array.length > 0);
-            if (!hasMeditations) {
-                console.log('Aucune méditation trouvée, utilisation des méditations par défaut');
-                throw new Error('Aucune méditation trouvée');
-            }
-
-            console.log('Méditations extraites:', meditations);
-            return meditations;
-        } catch (error) {
-            console.error('Erreur lors de la récupération des méditations:', error);
-            // En cas d'erreur, retourner les méditations par défaut
-            return {
-                joyful: [
-                    { title: "Premier mystère joyeux", text: "L'Annonciation", meditation: "L'ange Gabriel annonce à Marie : « Voici que tu concevras dans ton sein et enfanteras un fils, et tu l'appelleras du nom de Jésus » (Lc 1, 31)." },
-                    { title: "Deuxième mystère joyeux", text: "La Visitation", meditation: "Marie rend visite à sa cousine Élisabeth. « Le Seigneur a renversé les potentats de leurs trônes et élevé les humbles » (Lc 1, 52)." },
-                    { title: "Troisième mystère joyeux", text: "La naissance de Jésus", meditation: "À Bethléem, Jésus est né dans une crèche. Une étable n'est jamais un endroit propre et bien éclairé. Notre cœur non plus n'est pas limpide et pourtant Jésus vient y naître par la foi." },
-                    { title: "Quatrième mystère joyeux", text: "La Présentation de Jésus au Temple", meditation: "Par trois fois, saint Luc précise l'action du Saint-Esprit dans la démarche de Syméon qui accueille l'enfant Jésus dans ses bras." },
-                    { title: "Cinquième mystère joyeux", text: "Le Recouvrement de Jésus au Temple", meditation: "Jésus est retrouvé au Temple, assis au milieu des docteurs, les écoutant et les interrogeant." }
-                ],
-                sorrowful: [
-                    { title: "Premier mystère douloureux", text: "L'Agonie de Jésus au Jardin des Oliviers", meditation: "Jésus prie au Jardin des Oliviers, dans une angoisse mortelle." },
-                    { title: "Deuxième mystère douloureux", text: "La Flagellation de Jésus", meditation: "Jésus est flagellé par les soldats romains." },
-                    { title: "Troisième mystère douloureux", text: "Le Couronnement d'épines", meditation: "Jésus est couronné d'épines par les soldats qui se moquent de lui." },
-                    { title: "Quatrième mystère douloureux", text: "Le Portement de la Croix", meditation: "Jésus porte sa croix jusqu'au Calvaire." },
-                    { title: "Cinquième mystère douloureux", text: "La Crucifixion et la mort de Jésus", meditation: "Jésus meurt sur la croix pour le salut du monde." }
-                ],
-                glorious: [
-                    { title: "Premier mystère glorieux", text: "La Résurrection de Jésus", meditation: "Jésus ressuscite d'entre les morts le troisième jour." },
-                    { title: "Deuxième mystère glorieux", text: "L'Ascension de Jésus", meditation: "Jésus monte au Ciel quarante jours après sa Résurrection." },
-                    { title: "Troisième mystère glorieux", text: "La Pentecôte", meditation: "L'Esprit Saint descend sur les apôtres sous forme de langues de feu." },
-                    { title: "Quatrième mystère glorieux", text: "L'Assomption de la Vierge Marie", meditation: "La Vierge Marie est élevée au Ciel en corps et en âme." },
-                    { title: "Cinquième mystère glorieux", text: "Le Couronnement de la Vierge Marie", meditation: "La Vierge Marie est couronnée Reine du Ciel et de la terre." }
-                ],
-                luminous: [
-                    { title: "Premier mystère lumineux", text: "Le Baptême de Jésus", meditation: "Jésus est baptisé par Jean dans le Jourdain." },
-                    { title: "Deuxième mystère lumineux", text: "Les Noces de Cana", meditation: "Jésus change l'eau en vin aux noces de Cana." },
-                    { title: "Troisième mystère lumineux", text: "L'Annonce du Royaume de Dieu", meditation: "Jésus annonce le Royaume de Dieu et appelle à la conversion." },
-                    { title: "Quatrième mystère lumineux", text: "La Transfiguration", meditation: "Jésus se transfigure sur la montagne devant Pierre, Jacques et Jean." },
-                    { title: "Cinquième mystère lumineux", text: "L'Institution de l'Eucharistie", meditation: "Jésus institue l'Eucharistie lors de la Cène." }
-                ]
-            };
-        }
+        const meditations = config.mysteres;
+        console.log(meditations)
+        return meditations;
     }
 
     // Fonction pour vérifier si l'utilisateur peut envoyer un message
@@ -1058,18 +801,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // Afficher le loader
             const mysteryTitle = document.querySelector('.mystery-title');
             const mysteryText = document.querySelector('.mystery-text');
-            const meditationText = document.querySelector('.meditation-text');
 
-            if (mysteryTitle && mysteryText && meditationText) {
+            if (mysteryTitle && mysteryText) {
                 // Sauvegarder le contenu original
                 const originalTitle = mysteryTitle.innerHTML;
                 const originalText = mysteryText.innerHTML;
-                const originalMeditation = meditationText.innerHTML;
 
                 // Afficher le loader
                 mysteryTitle.innerHTML = '<div class="loader"></div>';
                 mysteryText.innerHTML = '<div class="loader"></div>';
-                meditationText.innerHTML = '<div class="loader"></div>';
             }
 
             const dayOfWeek = date.getDay();
@@ -1077,53 +817,50 @@ document.addEventListener('DOMContentLoaded', () => {
             let mysteryType;
             switch (dayOfWeek) {
                 case 0: // Dimanche
-                    mysteryType = 'glorious'; // Quatrième chapelet
+                    mysteryType = 'glorieux'; // Quatrième chapelet
                     break;
                 case 1: // Lundi
-                    mysteryType = 'joyful'; // Premier chapelet
+                    mysteryType = 'joyeux'; // Premier chapelet
                     break;
                 case 2: // Mardi
-                    mysteryType = 'sorrowful'; // Troisième chapelet
+                    mysteryType = 'douloureux'; // Troisième chapelet
                     break;
                 case 3: // Mercredi
-                    mysteryType = 'glorious'; // Quatrième chapelet
+                    mysteryType = 'glorieux'; // Quatrième chapelet
                     break;
                 case 4: // Jeudi
-                    mysteryType = 'luminous'; // Deuxième chapelet
+                    mysteryType = 'lumineux'; // Deuxième chapelet
                     break;
                 case 5: // Vendredi
-                    mysteryType = 'sorrowful'; // Troisième chapelet
+                    mysteryType = 'douloureux'; // Troisième chapelet
                     break;
                 case 6: // Samedi
-                    mysteryType = 'joyful'; // Premier chapelet
+                    mysteryType = 'joyeux'; // Premier chapelet
                     break;
             }
 
-            // Récupérer les méditations
-            const meditations = await fetchMeditations();
+            // Récupérer les mystères depuis config
+            const mysteryList = config.mysteres.find(m => m.categorie === mysteryType)?.mysteres;
 
-            if (!meditations) {
-                throw new Error('Impossible de récupérer les méditations');
+            if (!mysteryList) {
+                throw new Error('Impossible de récupérer les mystères');
             }
 
-            // Récupérer les 5 mystères du type du jour
-            const mysteryList = meditations[mysteryType];
-
             // Mettre à jour l'affichage avec les 5 mystères
-            if (mysteryTitle && mysteryText && meditationText) {
+            if (mysteryTitle && mysteryText) {
                 // Ajouter l'indication du chapelet et la date
                 let chapeletInfo = '';
                 switch (mysteryType) {
-                    case 'joyful':
+                    case 'joyeux':
                         chapeletInfo = ' (Premier chapelet - Mystères joyeux)';
                         break;
-                    case 'luminous':
+                    case 'lumineux':
                         chapeletInfo = ' (Deuxième chapelet - Mystères lumineux)';
                         break;
-                    case 'sorrowful':
+                    case 'douloureux':
                         chapeletInfo = ' (Troisième chapelet - Mystères douloureux)';
                         break;
-                    case 'glorious':
+                    case 'glorieux':
                         chapeletInfo = ' (Quatrième chapelet - Mystères glorieux)';
                         break;
                 }
@@ -1137,20 +874,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 mysteryList.forEach((mystery, index) => {
                     mysteriesHTML += `
                         <div class="mystery-item">
-                            <h4>${index + 1}${getOrdinalSuffix(index + 1)} dizaine - ${mystery.title}</h4>
-                            <p class="mystery-text">${mystery.text}</p>
-                            <p class="meditation-text">${mystery.meditation}</p>
+                            <h4>${index + 1}${getOrdinalSuffix(index + 1)} dizaine - ${mystery.nom}</h4>
+                            <p class="mystery-text">${mystery.meditation}</p>
+                            <p class="meditation-text">Fruit : ${mystery.fruit}</p>
                         </div>
                     `;
                 });
 
                 // Mettre à jour le contenu
-                mysteryTitle.innerHTML = `<h3>${mysteryType === 'joyful' ? 'Joyeux' :
-                    mysteryType === 'luminous' ? 'Lumineux' :
-                        mysteryType === 'sorrowful' ? 'Douloureux' : 'Glorieux'}</h3>
+                mysteryTitle.innerHTML = `<h3>${mysteryType.charAt(0).toUpperCase() + mysteryType.slice(1)}</h3>
                     <p class="mystery-date">${formattedDate}</p>`;
                 mysteryText.innerHTML = mysteriesHTML;
-                meditationText.innerHTML = ''; // Le texte de méditation est maintenant inclus dans chaque mystère
             }
 
             // Mettre à jour l'état des boutons
@@ -1159,10 +893,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Erreur lors de la récupération du mystère:', error);
             // En cas d'erreur, restaurer le contenu original
-            if (mysteryTitle && mysteryText && meditationText) {
+            if (mysteryTitle && mysteryText) {
                 mysteryTitle.innerHTML = originalTitle;
                 mysteryText.innerHTML = originalText;
-                meditationText.innerHTML = originalMeditation;
             }
         }
     }
