@@ -1305,9 +1305,10 @@ body {
     z-index: 2000;
     text-align: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    width: 90%;
+    width: 80%;
+    height: 80%;
     max-width: 400px;
-    max-height: 90vh;
+    max-height: 80vh;
     overflow-y: auto;
 }
 
@@ -2395,6 +2396,15 @@ body {
     .chat-toggle {
         top: 20px;
         left: 20px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .contact-link {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
     }
 
     .contact-popup {
