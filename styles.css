@@ -1163,6 +1163,22 @@ html, body {
         padding: 12px;
         margin-top: 20px;
     }
+
+    .chat-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .contact-link {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .chat-container {
+        top: 60px;
+    }
 }
 
 .readings-navigation {
