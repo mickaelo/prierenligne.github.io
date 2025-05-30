@@ -422,23 +422,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateTimer() {
         if (!isAnimating) return;
-
+        
         const now = new Date().getTime();
         const elapsed = now - startTime;
         const remaining = selectedDuration * 60000 - elapsed;
-
+        
         if (remaining <= 0) {
             endPrayer();
             return;
         }
-
+        
         // Calcul du progrès de la fonte (0 à 1)
         const progress = 1 - (remaining / (selectedDuration * 60000));
-
+        
         // Ne faire fondre la bougie que si la durée n'est pas illimitée
         if (!isUnlimited) {
-            // Calcul de la nouvelle hauteur (de 160px à 5px)
-            const newHeight = 160 - (progress * 155); // 155 = 160 - 5
+        // Calcul de la nouvelle hauteur (de 160px à 5px)
+        const newHeight = 160 - (progress * 155); // 155 = 160 - 5
 
             // Appliquer la transformation pour la fonte
             candle.style.transform = `scaleY(${newHeight / 160})`;
@@ -447,22 +447,22 @@ document.addEventListener('DOMContentLoaded', () => {
             // Ajouter l'effet de fonte
             wax.classList.add('melting');
         }
-
+        
         // Ajuster la flamme
         const flameScale = 1 - (progress * 0.3);
         flame.style.transform = `translateX(-50%) scale(${flameScale})`;
         flame.style.opacity = 1 - (progress * 0.5);
-
+        
         requestAnimationFrame(updateTimer);
     }
 
     function startPrayer() {
         if (isAnimating) return;
-
+        
         isAnimating = true;
         startTime = new Date().getTime();
         isUnlimited = selectedDuration === 0;
-
+        
         // Réinitialiser les transformations
         candle.classList.remove('extinguished');
         candle.style.transform = 'scaleY(1)';
@@ -470,15 +470,15 @@ document.addEventListener('DOMContentLoaded', () => {
         wax.classList.remove('melting');
         flame.style.transform = 'translateX(-50%) scale(1)';
         flame.style.opacity = '1';
-
+        
         // Allumer la bougie
         flame.classList.add('lit');
-
+        
         // On ne fait plus apparaître l'icône automatiquement
         // jesusIcon.classList.add('visible');
-
+        
         startButton.disabled = true;
-
+        
         animationFrameId = requestAnimationFrame(updateTimer);
 
         if (selectedDuration > 0) {
@@ -495,10 +495,10 @@ document.addEventListener('DOMContentLoaded', () => {
         candle.classList.remove('extinguished');
         flame.classList.remove('lit');
         wax.classList.remove('melting');
-
+        
         flame.style.transform = 'translateX(-50%) scale(1)';
         flame.style.opacity = '0';
-
+        
         isAnimating = false;
 
         if (animationFrameId) {
@@ -514,19 +514,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePrayerDuration(newDuration) {
         if (!isAnimating) return;
-
+        
         selectedDuration = newDuration;
         isUnlimited = newDuration === 0;
-
+        
         // Réinitialiser le timer
         if (timer) {
             clearTimeout(timer);
             timer = null;
         }
-
+        
         // Mettre à jour le temps de début pour le nouveau calcul
         startTime = new Date().getTime();
-
+        
         // Démarrer un nouveau timer si la durée n'est pas illimitée
         if (selectedDuration > 0) {
             timer = setTimeout(() => {
@@ -549,7 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const newDuration = parseFloat(btn.dataset.duration);
             durationButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
+            
             if (isAnimating) {
                 updatePrayerDuration(newDuration);
             } else {
@@ -562,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
     iconButtons.forEach(button => {
         button.addEventListener('click', () => {
             const isCurrentlyActive = button.classList.contains('active');
-
+            
             // Si l'icône est déjà active, on la désélectionne
             if (isCurrentlyActive) {
                 button.classList.remove('active');
@@ -574,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('active');
                 iconImage.src = button.dataset.icon;
                 // On affiche toujours l'icône, qu'il y ait une prière en cours ou non
-                jesusIcon.classList.add('visible');
+                    jesusIcon.classList.add('visible');
             }
         });
     });

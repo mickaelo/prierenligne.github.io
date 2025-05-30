@@ -11,11 +11,12 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
-  }
+}
 
 .container {
     display: -webkit-flex;
@@ -351,13 +352,18 @@ html, body {
 }
 
 @keyframes dots {
-    0%, 20% {
+
+    0%,
+    20% {
         content: '.';
     }
+
     40% {
         content: '..';
     }
-    60%, 100% {
+
+    60%,
+    100% {
         content: '...';
     }
 }
@@ -539,7 +545,7 @@ html, body {
         justify-content: center;
         gap: 8px;
     }
-    
+
     .control-btn {
         padding: 6px 12px;
         font-size: 12px;
@@ -550,7 +556,7 @@ html, body {
     .controls-row {
         gap: 5px;
     }
-    
+
     .control-btn {
         padding: 5px 10px;
         font-size: 11px;
@@ -688,7 +694,6 @@ html, body {
     width: 25%;
     padding: 10px;
     color: #fff;
-    background-color: #1a1a1a;
     overflow-y: auto;
     overflow-x: hidden;
     height: 100vh;
@@ -1143,18 +1148,25 @@ html, body {
     }
 
     .contact-popup {
-        padding: 15px;
-        height: 100%;
-        max-height: 100%;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        justify-content: flex-start;
-        padding-top: 40px;
+        width: 100%;
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        padding: 20px;
+        margin: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: none;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
     }
 
     .contact-popup .section {
-        margin-bottom: 15px;
-        padding-bottom: 15px;
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 60px;
     }
 
     .contact-popup .close-popup {
@@ -1165,38 +1177,9 @@ html, body {
         width: 90%;
         max-width: 300px;
         padding: 12px;
-        margin-top: 20px;
-    }
-
-    .chat-toggle {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-
-    .contact-link {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-
-    .chat-container {
-        top: 60px;
-    }
-}
-
-@supports (-webkit-touch-callout: none) {
-    .contact-popup {
-        height: -webkit-fill-available;
-        height: 100vh;
-        max-height: 100vh;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding-top: 40px;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 }
 
@@ -1260,9 +1243,8 @@ html, body {
 }
 
 .close-readings {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    display: flex;
+    right: 20px;
     width: 30px;
     height: 30px;
     background: rgba(255, 255, 255, 0.1);
@@ -1286,7 +1268,7 @@ html, body {
     position: absolute;
     top: 20px;
     right: 20px;
-    z-index: 999;
+    z-index: 1000;
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -1312,21 +1294,20 @@ html, body {
 .contact-popup {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: rgba(26, 26, 26, 0.95);
     padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     z-index: 2000;
     text-align: center;
-    box-sizing: border-box;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
+    max-height: 90vh;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 .contact-popup.visible {
@@ -1340,9 +1321,9 @@ html, body {
 }
 
 .contact-popup .section {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .contact-popup .section:last-child {
@@ -1555,7 +1536,7 @@ html, body {
         transform: translateX(100%);
         visibility: hidden;
     }
-    
+
     .rosary.visible {
         transform: translateX(0);
         visibility: visible;
@@ -1569,7 +1550,7 @@ html, body {
         transform: translateX(100%);
         visibility: hidden;
     }
-    
+
     .rosary.visible {
         transform: translateX(0);
         visibility: visible;
@@ -1583,7 +1564,7 @@ html, body {
         transform: translateX(100%);
         visibility: hidden;
     }
-    
+
     .rosary.visible {
         transform: translateX(0);
         visibility: visible;
@@ -1653,13 +1634,13 @@ html, body {
     .instruction-step {
         padding: 6px;
     }
-    
+
     .step-number {
         width: 20px;
         height: 20px;
         font-size: 12px;
     }
-    
+
     .instruction-step p {
         font-size: 13px;
     }
@@ -1670,17 +1651,17 @@ html, body {
     .instructions-section {
         padding: 10px;
     }
-    
+
     .instruction-step {
         padding: 5px;
     }
-    
+
     .step-number {
         width: 18px;
         height: 18px;
         font-size: 11px;
     }
-    
+
     .instruction-step p {
         font-size: 12px;
     }
@@ -1691,17 +1672,17 @@ html, body {
     .instructions-section {
         padding: 8px;
     }
-    
+
     .instruction-step {
         padding: 4px;
     }
-    
+
     .step-number {
         width: 16px;
         height: 16px;
         font-size: 10px;
     }
-    
+
     .instruction-step p {
         font-size: 11px;
     }
@@ -1758,7 +1739,7 @@ html, body {
     .accordion-header {
         padding: 12px;
     }
-    
+
     .accordion-header h3 {
         font-size: 16px;
     }
@@ -1769,7 +1750,7 @@ html, body {
     .accordion-header {
         padding: 10px;
     }
-    
+
     .accordion-header h3 {
         font-size: 15px;
     }
@@ -1780,7 +1761,7 @@ html, body {
     .accordion-header {
         padding: 8px;
     }
-    
+
     .accordion-header h3 {
         font-size: 14px;
     }
@@ -1814,11 +1795,11 @@ html, body {
     .meditation-section {
         padding: 12px;
     }
-    
+
     .meditation-section h4 {
         font-size: 15px;
     }
-    
+
     .meditation-text {
         font-size: 13px;
     }
@@ -1829,11 +1810,11 @@ html, body {
     .meditation-section {
         padding: 10px;
     }
-    
+
     .meditation-section h4 {
         font-size: 14px;
     }
-    
+
     .meditation-text {
         font-size: 12px;
     }
@@ -1844,11 +1825,11 @@ html, body {
     .meditation-section {
         padding: 8px;
     }
-    
+
     .meditation-section h4 {
         font-size: 13px;
     }
-    
+
     .meditation-text {
         font-size: 11px;
     }
@@ -1870,6 +1851,7 @@ html, body {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -1924,15 +1906,15 @@ html, body {
     .mystery-item {
         padding: 12px;
     }
-    
+
     .mystery-item h4 {
         font-size: 15px;
     }
-    
+
     .mystery-instruction {
         font-size: 13px;
     }
-    
+
     .mystery-item .mystery-text,
     .mystery-item .meditation-text {
         font-size: 13px;
@@ -1944,15 +1926,15 @@ html, body {
     .mystery-item {
         padding: 10px;
     }
-    
+
     .mystery-item h4 {
         font-size: 14px;
     }
-    
+
     .mystery-instruction {
         font-size: 12px;
     }
-    
+
     .mystery-item .mystery-text,
     .mystery-item .meditation-text {
         font-size: 12px;
@@ -1964,15 +1946,15 @@ html, body {
     .mystery-item {
         padding: 8px;
     }
-    
+
     .mystery-item h4 {
         font-size: 13px;
     }
-    
+
     .mystery-instruction {
         font-size: 11px;
     }
-    
+
     .mystery-item .mystery-text,
     .mystery-item .meditation-text {
         font-size: 11px;
@@ -2121,7 +2103,7 @@ html, body {
 }
 
 .main-title {
-    color: #ffd700;
+    color: #8d7221;
     font-size: 24px;
     text-align: center;
     margin: 0;
@@ -2159,10 +2141,10 @@ html, body {
 
 /* Styles pour le chatbot */
 .chat-widget {
-    position: absolute;
+    position: fixed;
     top: 20px;
     left: 20px;
-    z-index: 999;
+    z-index: 1000;
 }
 
 .chat-toggle {
@@ -2341,7 +2323,8 @@ html, body {
         border-radius: 5px;
     }
 
-    .chat-toggle, .contact-link {
+    .chat-toggle,
+    .contact-link {
         -webkit-tap-highlight-color: transparent;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
@@ -2411,5 +2394,22 @@ html, body {
     .chat-toggle {
         top: 20px;
         left: 20px;
+    }
+
+    .contact-popup {
+        display: none;
+        position: fixed;
+        transform: translate(-50%, -50%);
+        background: rgba(26, 26, 26, 0.95);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        z-index: 2000;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 400px;
+        max-height: 100vh;
+        overflow-y: auto;
     }
 }
