@@ -2292,7 +2292,7 @@ body {
 @media screen and (max-width: 480px) {
     .chat-container {
         width: 100%;
-        height: 100%;
+        height: 100dvh;
         top: 0;
         left: 0;
         border-radius: 0;
@@ -2300,26 +2300,40 @@ body {
         transform: translateZ(0);
         -webkit-overflow-scrolling: touch;
         z-index: 2000;
+        position: fixed;
+        overflow: hidden;
     }
 
     .chat-header {
         padding: 20px;
-    }
-
-    .chat-header h3 {
-        font-size: 18px;
-    }
-
-    .chat-close {
-        font-size: 24px;
+        position: sticky;
+        top: 0;
+        z-index: 1;
     }
 
     .chat-messages {
         padding: 20px;
+        height: calc(100dvh - 140px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        bottom: 80px;
     }
 
     .chat-input {
         padding: 20px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #2a2a2a;
+        z-index: 1;
+        display: flex;
+        gap: 10px;
+        align-items: center;
     }
 
     .chat-input input {
@@ -2328,6 +2342,15 @@ body {
         -webkit-appearance: none;
         appearance: none;
         border-radius: 5px;
+        height: 40px;
+        width: 100%;
+        max-width: none;
+    }
+
+    .send-btn {
+        height: 40px;
+        width: 40px;
+        flex-shrink: 0;
     }
 
     .chat-toggle,
@@ -2343,10 +2366,52 @@ body {
 @supports (-webkit-touch-callout: none) {
     .chat-container {
         height: 100dvh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+    }
+
+    .chat-messages {
+        height: calc(100dvh - 140px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        bottom: 80px;
+    }
+
+    .chat-input {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #2a2a2a;
+        padding: 15px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
     }
 
     .chat-input input {
         font-size: 16px !important;
+        height: 40px;
+        flex: 1;
+        width: 100%;
+        max-width: none;
+        -webkit-text-size-adjust: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .send-btn {
+        height: 40px;
+        width: 40px;
+        flex-shrink: 0;
     }
 }
 
