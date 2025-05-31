@@ -888,6 +888,11 @@ body {
     .contact-popup .email {
         font-size: 17px;
     }
+
+    .contact-popup .close-popup {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
 }
 
 /* Media Queries pour les smartphones */
@@ -2337,8 +2342,7 @@ body {
 /* Styles spécifiques pour Safari mobile */
 @supports (-webkit-touch-callout: none) {
     .chat-container {
-        height: -webkit-fill-available;
-        height: fill-available;
+        height: 100dvh;
     }
 
     .chat-input input {
@@ -2423,5 +2427,164 @@ body {
         max-width: 400px;
         max-height: 80vh;
         overflow-y: auto;
+    }
+}
+
+/* Styles pour le widget des messes */
+.masses-widget {
+    position: fixed;
+    top: 20px;
+    left: 80px;
+    z-index: 999;
+}
+
+.masses-toggle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #8d7221;
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.masses-toggle:hover {
+    transform: scale(1.1);
+}
+
+.masses-container {
+    position: fixed;
+    top: 80px;
+    left: 80px;
+    width: 350px;
+    height: 500px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 2000;
+}
+
+.masses-container.visible {
+    display: flex;
+}
+
+.masses-header {
+    background-color: #8d7221;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.masses-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.masses-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.masses-content {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+/* Styles pour les scrollbars */
+.masses-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.masses-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.masses-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.masses-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.masses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mass-item {
+    background-color: #2a2a2a;
+    padding: 15px;
+    border-radius: 8px;
+    color: white;
+}
+
+.mass-item h4 {
+    margin: 0 0 10px 0;
+    color: #ffd700;
+}
+
+.mass-item p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.mass-item .time {
+    color: #8d7221;
+    font-weight: bold;
+}
+
+.mass-item .church {
+    color: #ff9800;
+}
+
+.mass-date-header {
+    color: #ffd700;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.mass-item .comment {
+    color: #ff9800;
+    font-style: italic;
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+/* Media queries pour le widget des messes */
+@media screen and (max-width: 768px) {
+    .mass-date-header {
+        font-size: 15px;
+    }
+    
+    .mass-item .comment {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .mass-date-header {
+        font-size: 14px;
+    }
+    
+    .mass-item .comment {
+        font-size: 11px;
     }
 }

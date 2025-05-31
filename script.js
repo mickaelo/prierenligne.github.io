@@ -1,42 +1,42 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Récupération des coordonnées GPS et appel API geo.api.gouv.fr
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-            console.log(`Position : lat=${lat}, lon=${lon}`);
+    // if ("geolocation" in navigator) {
+    //     navigator.geolocation.getCurrentPosition(async (pos) => {
+    //         const lat = pos.coords.latitude;
+    //         const lon = pos.coords.longitude;
+    //         console.log(`Position : lat=${lat}, lon=${lon}`);
 
-            // Appel API geo.api.gouv.fr
-            const corsProxy = 'https://proxy.cors.sh/';
-            const url = `https://geo.api.gouv.fr/communes?lat=${lat}&lon=${lon}&fields=nom,code,codesPostaux,codeDepartement,codeRegion,population&format=json&geometry=centre`;
+    //         // Appel API geo.api.gouv.fr
+    //         const corsProxy = 'https://proxy.cors.sh/';
+    //         const url = `https://geo.api.gouv.fr/communes?lat=${lat}&lon=${lon}&fields=nom,code,codesPostaux,codeDepartement,codeRegion,population&format=json&geometry=centre`;
 
-            try {
-                const res = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Origin': window.location.origin,
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'x-cors-api-key': 'temp_92957369b1b00d6853602cf2b344895a'
-                    }
-                });
-                const data = await res.json();
-                if (data && data.length > 0) {
-                    const commune = data[0];
-                    console.log("Informations de la commune :", commune);
-                    // Vous pouvez utiliser ces informations comme vous le souhaitez
-                    // Par exemple : commune.nom, commune.code, commune.codesPostaux, etc.
-                } else {
-                    console.log("Aucune commune trouvée");
-                }
-            } catch (e) {
-                console.error("Erreur API :", e);
-            }
-        }, (err) => {
-            console.error("Erreur géoloc :", err);
-        }, { enableHighAccuracy: true });
-    } else {
-        console.log("Géolocalisation non supportée");
-    }
+    //         try {
+    //             const res = await fetch(url, {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Origin': window.location.origin,
+    //                     'X-Requested-With': 'XMLHttpRequest',
+    //                     'x-cors-api-key': 'temp_92957369b1b00d6853602cf2b344895a'
+    //                 }
+    //             });
+    //             const data = await res.json();
+    //             if (data && data.length > 0) {
+    //                 const commune = data[0];
+    //                 console.log("Informations de la commune :", commune);
+    //                 // Vous pouvez utiliser ces informations comme vous le souhaitez
+    //                 // Par exemple : commune.nom, commune.code, commune.codesPostaux, etc.
+    //             } else {
+    //                 console.log("Aucune commune trouvée");
+    //             }
+    //         } catch (e) {
+    //             console.error("Erreur API :", e);
+    //         }
+    //     }, (err) => {
+    //         console.error("Erreur géoloc :", err);
+    //     }, { enableHighAccuracy: true });
+    // } else {
+    //     console.log("Géolocalisation non supportée");
+    // }
 
     // Déclarations des constantes du chat
     const chatToggle = document.querySelector('.chat-toggle');
@@ -99,14 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeRosaryBtn = document.querySelector('.close-rosary');
     const rosarySection = document.querySelector('.rosary');
 
-    // Désactiver les boutons par défaut
-    if (toggleReadingsBtn) {
-        toggleReadingsBtn.classList.add('disabled');
-    }
-    if (toggleRosaryBtn) {
-        toggleRosaryBtn.classList.add('disabled');
-    }
-
+ 
     let currentDate = new Date();
 
     // Fonction pour obtenir le dimanche précédent
@@ -292,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
         readingsSection.classList.add('hidden');
         if (toggleReadingsBtn) {
             toggleReadingsBtn.textContent = '📖 Lectio divina';
-            toggleReadingsBtn.classList.add('disabled');
         }
     }
 
@@ -302,7 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Toggle button clicked');
             readingsSection.classList.toggle('hidden');
             toggleReadingsBtn.textContent = '📖 Lectio divina';
-            toggleReadingsBtn.classList.toggle('disabled', readingsSection.classList.contains('hidden'));
         });
     } else {
         console.error('Toggle button or readings section not found');
@@ -314,7 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
             readingsSection.classList.add('hidden');
             if (toggleReadingsBtn) {
                 toggleReadingsBtn.textContent = '📖 Lectio divina';
-                toggleReadingsBtn.classList.add('disabled');
             }
         });
     }
@@ -649,7 +639,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Toggle rosary button clicked');
             rosarySection.classList.toggle('visible');
             toggleRosaryBtn.textContent = rosarySection.classList.contains('visible') ? '✝️ Chapelet' : '✝️ Chapelet';
-            toggleRosaryBtn.classList.toggle('disabled', !rosarySection.classList.contains('visible'));
 
             if (rosarySection.classList.contains('visible')) {
                 fetchMysteryOfTheDay();
@@ -663,7 +652,6 @@ document.addEventListener('DOMContentLoaded', () => {
             rosarySection.classList.remove('visible');
             if (toggleRosaryBtn) {
                 toggleRosaryBtn.textContent = '✝️ Chapelet';
-                toggleRosaryBtn.classList.add('disabled');
             }
         });
     }
@@ -1002,4 +990,151 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return formattedText;
     }
+
+    // Gestion du widget des messes
+    const massesToggle = document.querySelector('.masses-toggle');
+    const massesContainer = document.querySelector('.masses-container');
+    const massesClose = document.querySelector('.masses-close');
+    const massesList = document.querySelector('.masses-list');
+
+    // Fonction pour récupérer les messes du jour
+    async function fetchMasses() {
+        try {
+            const today = new Date();
+            console.log('Fetching masses for date:', today);
+
+            // Récupération des coordonnées GPS
+            let commune = null;
+            if ("geolocation" in navigator) {
+                try {
+                    const position = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true });
+                    });
+                    
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    console.log(`Position : lat=${lat}, lon=${lon}`);
+
+                    // Appel API geo.api.gouv.fr
+                    const corsProxy = 'https://proxy.cors.sh/';
+                    const url = `https://geo.api.gouv.fr/communes?lat=${lat}&lon=${lon}&fields=nom,code,codesPostaux,codeDepartement,codeRegion,population&format=json&geometry=centre`;
+
+                    const res = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Origin': window.location.origin,
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'x-cors-api-key': 'temp_92957369b1b00d6853602cf2b344895a'
+                        }
+                    });
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        commune = data[0];
+                        console.log("Informations de la commune :", commune);
+                    }
+                } catch (error) {
+                    console.error("Erreur de géolocalisation :", error);
+                }
+            }
+
+            // Appel à l'API des messes
+            const response = await fetch('http://messes.info/horaires/SEMAINE?format=json&userkey=7J9pDzdshVLW5WQwmSf67m79Q3TY4YwkcBpir87Z9L73dWxw93ZrH927kAZ5g9M2');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log('Received masses data:', data);
+
+            // Afficher les messes
+            if (massesList && data.listCelebrationTime) {
+                massesList.innerHTML = '';
+                
+                // Trier les messes par date et heure
+                const sortedMasses = data.listCelebrationTime.sort((a, b) => {
+                    const dateA = new Date(`${a.date}T${a.time.replace('h', ':')}`);
+                    const dateB = new Date(`${b.date}T${b.time.replace('h', ':')}`);
+                    return dateA - dateB;
+                });
+
+                // Grouper les messes par date
+                const massesByDate = {};
+                sortedMasses.forEach(mass => {
+                    if (!massesByDate[mass.date]) {
+                        massesByDate[mass.date] = [];
+                    }
+                    massesByDate[mass.date].push(mass);
+                });
+
+                // Afficher les messes groupées par date
+                Object.entries(massesByDate).forEach(([date, masses]) => {
+                    const dateHeader = document.createElement('div');
+                    dateHeader.className = 'mass-date-header';
+                    const formattedDate = new Date(date).toLocaleDateString('fr-FR', {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long'
+                    });
+                    dateHeader.textContent = formattedDate;
+                    massesList.appendChild(dateHeader);
+
+                    masses.forEach(mass => {
+                        const massItem = document.createElement('div');
+                        massItem.className = 'mass-item';
+                        
+                        let content = '';
+                        
+                        // Type de célébration
+                        if (mass.celebrationTimeType) {
+                            content += `<h4>${mass.celebrationTimeType === 'WEEKMASS' ? 'Messe' : mass.celebrationTimeType}</h4>`;
+                        }
+                        
+                        // Heure
+                        if (mass.time) {
+                            content += `<p class="time">${mass.time}</p>`;
+                        }
+                        
+                        // Église
+                        if (mass.locality && mass.locality.name) {
+                            content += `<p class="church">${mass.locality.name}</p>`;
+                        }
+                        
+                        // Adresse
+                        if (mass.locality && mass.locality.address) {
+                            content += `<p>${mass.locality.address}</p>`;
+                        }
+                        
+                        // Ville
+                        if (mass.locality && mass.locality.city) {
+                            content += `<p>${mass.locality.city}</p>`;
+                        }
+                        
+                        // Commentaire
+                        if (mass.comment) {
+                            content += `<p class="comment">${mass.comment}</p>`;
+                        }
+                        
+                        massItem.innerHTML = content;
+                        massesList.appendChild(massItem);
+                    });
+                });
+            }
+        } catch (error) {
+            console.error('Erreur lors de la récupération des messes:', error);
+            if (massesList) {
+                massesList.innerHTML = '<p>Impossible de charger les messes du jour. Veuillez réessayer plus tard.</p>';
+            }
+        }
+    }
+
+    // Gestion des événements du widget des messes
+    massesToggle.addEventListener('click', () => {
+        massesContainer.classList.toggle('visible');
+        if (massesContainer.classList.contains('visible')) {
+            fetchMasses();
+        }
+    });
+
+    massesClose.addEventListener('click', () => {
+        massesContainer.classList.remove('visible');
+    });
 }); 
