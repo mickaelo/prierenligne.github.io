@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeRosaryBtn = document.querySelector('.close-rosary');
     const rosarySection = document.querySelector('.rosary');
 
- 
+
     let currentDate = new Date();
 
     // Fonction pour obtenir le dimanche précédent
@@ -901,7 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 mysteryList.forEach((mystery, index) => {
                     mysteriesHTML += `
                         <div class="mystery-item">
-                            <h4>${index + 1}${getOrdinalSuffix(index + 1)} dizaine - ${mystery.nom}</h4>
+                            <h4>${index + 1}${getMysterySuffix(index + 1)} mystère - ${mystery.nom}</h4>
                             <p class="mystery-text">${mystery.meditation}</p>
                             <p class="meditation-text">Fruit : ${mystery.fruit}</p>
                         </div>
@@ -928,9 +928,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fonction utilitaire pour obtenir le suffixe ordinal en français
-    function getOrdinalSuffix(num) {
-        if (num === 1) return 'ère';
-        return 'ème';
+    function getMysterySuffix(num) {
+        if (num === 1) return 'er';
+        return 'e';
     }
 
     // Gestion de l'accordéon du chapelet
@@ -992,7 +992,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Gestion du widget des messes
-    const massesToggle = document.querySelector('.masses-toggle');
     const massesContainer = document.querySelector('.masses-container');
     const massesClose = document.querySelector('.masses-close');
     const massesList = document.querySelector('.masses-list');
@@ -1010,7 +1009,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const position = await new Promise((resolve, reject) => {
                         navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true });
                     });
-                    
+
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
                     console.log(`Position : lat=${lat}, lon=${lon}`);
@@ -1048,7 +1047,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Afficher les messes
             if (massesList && data.listCelebrationTime) {
                 massesList.innerHTML = '';
-                
+
                 // Trier les messes par date et heure
                 const sortedMasses = data.listCelebrationTime.sort((a, b) => {
                     const dateA = new Date(`${a.date}T${a.time.replace('h', ':')}`);
@@ -1080,39 +1079,39 @@ document.addEventListener('DOMContentLoaded', () => {
                     masses.forEach(mass => {
                         const massItem = document.createElement('div');
                         massItem.className = 'mass-item';
-                        
+
                         let content = '';
-                        
+
                         // Type de célébration
                         if (mass.celebrationTimeType) {
                             content += `<h4>${mass.celebrationTimeType === 'WEEKMASS' ? 'Messe' : mass.celebrationTimeType}</h4>`;
                         }
-                        
+
                         // Heure
                         if (mass.time) {
                             content += `<p class="time">${mass.time}</p>`;
                         }
-                        
+
                         // Église
                         if (mass.locality && mass.locality.name) {
                             content += `<p class="church">${mass.locality.name}</p>`;
                         }
-                        
+
                         // Adresse
                         if (mass.locality && mass.locality.address) {
                             content += `<p>${mass.locality.address}</p>`;
                         }
-                        
+
                         // Ville
                         if (mass.locality && mass.locality.city) {
                             content += `<p>${mass.locality.city}</p>`;
                         }
-                        
+
                         // Commentaire
                         if (mass.comment) {
                             content += `<p class="comment">${mass.comment}</p>`;
                         }
-                        
+
                         massItem.innerHTML = content;
                         massesList.appendChild(massItem);
                     });
@@ -1126,15 +1125,179 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Gestion des événements du widget des messes
-    massesToggle.addEventListener('click', () => {
-        massesContainer.classList.toggle('visible');
-        if (massesContainer.classList.contains('visible')) {
-            fetchMasses();
+    const toggleMassBtn = document.querySelector('.toggle-mass');
+    const closeMassLiturgieBtn = document.querySelector('.close-mass-liturgie');
+    const massLiturgieSection = document.querySelector('.mass-liturgie');
+
+    if (toggleMassBtn && massLiturgieSection) {
+        toggleMassBtn.addEventListener('click', () => {
+            // Toggle le volet Liturgie de la messe
+            const isVisible = massLiturgieSection.classList.contains('visible');
+            if (isVisible) {
+                massLiturgieSection.classList.remove('visible');
+            } else {
+                // Fermer les autres volets
+                if (readingsSection) readingsSection.classList.remove('visible');
+                if (rosarySection) rosarySection.classList.remove('visible');
+                massLiturgieSection.classList.add('visible');
+            }
+        });
+    }
+    if (closeMassLiturgieBtn && massLiturgieSection) {
+        closeMassLiturgieBtn.addEventListener('click', () => {
+            massLiturgieSection.classList.remove('visible');
+        });
+    }
+
+    const toggleMessesBtn = document.querySelector('.toggle-messes');
+    const closeMessesHorairesBtn = document.querySelector('.close-messes-horaires');
+    const messesHorairesSection = document.querySelector('.messes-horaires');
+    const messesHorairesContent = document.querySelector('.messes-horaires-content');
+    console.log("test")
+
+    if (toggleMessesBtn && messesHorairesSection) {
+
+        toggleMessesBtn.addEventListener('click', () => {
+            // Fermer les autres volets
+            if (readingsSection) readingsSection.classList.remove('visible');
+            if (rosarySection) rosarySection.classList.remove('visible');
+            if (massLiturgieSection) massLiturgieSection.classList.remove('visible');
+            messesHorairesSection.classList.add('visible');
+            loadHorairesMesses();
+        });
+    }
+    if (closeMessesHorairesBtn && messesHorairesSection) {
+        closeMessesHorairesBtn.addEventListener('click', () => {
+            messesHorairesSection.classList.remove('visible');
+        });
+    }
+
+    function parseHorairesMesses(html) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const articles = doc.querySelectorAll('article[itemtype="http://schema.org/Event"]');
+        let result = '';
+        articles.forEach(article => {
+            const dateHeure = article.querySelector('h3')?.textContent?.trim() || '';
+            const lieu = article.querySelector('h4')?.textContent?.trim() || '';
+            const type = article.querySelector('div')?.textContent?.trim() || '';
+            const adresse = article.querySelector('[itemprop="address"]')?.textContent?.trim() || '';
+            result += `<div class="messe-item">
+      <div class="messe-date">${dateHeure}</div>
+      <div class="messe-lieu">${lieu}</div>
+      <div class="messe-type">${type}</div>
+      <div class="messe-adresse">${adresse}</div>
+    </div>`;
+        });
+        if (!result) {
+            result = '<p>Aucune messe trouvée pour cette période.</p>';
         }
+        return result;
+    }
+
+    async function loadHorairesMesses() {
+        if (!messesHorairesContent) return;
+        messesHorairesContent.innerHTML = '<p>Chargement des horaires...</p>';
+
+        getVilleFromGeoloc().then(ville => {
+            console.log('Ville détectée dans loadHorairesMesses :', ville);
+            const corsProxy = 'https://proxy.cors.sh/';
+            fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(`https://messes.info/horaires/${ville}`))
+                .then(response => response.json())
+                .then(data => {
+                    const horairesHTML = parseHorairesMesses(data.contents);
+                    console.log(data)
+
+                    messesHorairesContent.innerHTML = horairesHTML;
+                })
+                .catch(() => {
+                    messesHorairesContent.innerHTML = '<p>Erreur lors du chargement des horaires.</p>';
+                });
+        });
+
+
+    }
+
+    // --- Scroll infini pour la liturgie de la messe ---
+    // Exemple de découpage en sections (à compléter avec tout le texte)
+    const liturgieSections = [
+      `<section id="rites-initiaux"><h3>Rites initiaux</h3><div class="prayer-text prayer-fr">Lorsque le peuple est rassemblé, le prêtre s’avance vers l’autel avec les ministres, pendant le chant d’entrée...<br><strong>Au nom du Père, et du Fils, et du Saint-Esprit.</strong><br>R/ Amen.<br><br><strong>Salutation :</strong><br>La grâce de Jésus, le Christ, notre Seigneur, l’amour de Dieu le Père, et la communion de l’Esprit Saint, soient toujours avec vous.<br>R/ Et avec votre esprit.<br>...</div></section>`,
+      `<section id="acte-penitentiel"><h3>Acte pénitentiel</h3><div class="prayer-text prayer-fr">Frères et sœurs, préparons-nous à célébrer le mystère de l’Eucharistie, en reconnaissant que nous avons péché...<br><strong>Je confesse à Dieu tout-puissant...</strong><br>...<br><strong>Que Dieu tout-puissant nous fasse miséricorde ; qu’il nous pardonne nos péchés et nous conduise à la vie éternelle.</strong><br>R/ Amen.<br>...</div></section>`,
+      `<section id="kyrie"><h3>Kyrie</h3><div class="prayer-text prayer-fr">Kyrie eléison. R/ Kyrie eléison.<br>Seigneur, prends pitié.<br>Christe eléison. R/ Christe eléison.<br>Ô Christ, prends pitié.<br>...</div></section>`,
+      `<section id="gloria"><h3>Gloria</h3><div class="prayer-text prayer-fr">Gloire à Dieu, au plus haut des cieux, et paix sur la terre aux hommes qu’il aime...<br>...<br><strong>Gloria in excelsis Deo...</strong><br>...</div></section>`,
+      `<section id="collecte"><h3>Prière d'ouverture (Collecte)</h3><div class="prayer-text prayer-fr">Prions le Seigneur.<br>...<br>Par Jésus Christ, ton Fils, notre Seigneur, qui vit et règne avec toi dans l’unité du Saint-Esprit, Dieu, pour les siècles des siècles.<br>R/ Amen.<br>...</div></section>`
+      // Ajoute ici toutes les autres sections du texte découpé !
+    ];
+
+    let loadedLiturgieSections = 0;
+    const SECTIONS_PER_BATCH = 2; // nombre de sections à charger à chaque fois
+
+    function loadNextLiturgieSections() {
+      const container = document.querySelector('.mass-liturgie-content');
+      if (!container) return;
+      for (let i = 0; i < SECTIONS_PER_BATCH && loadedLiturgieSections < liturgieSections.length; i++, loadedLiturgieSections++) {
+        container.insertAdjacentHTML('beforeend', liturgieSections[loadedLiturgieSections]);
+      }
+    }
+
+    // Initialisation au premier affichage du volet
+    if (massLiturgieSection) {
+      massLiturgieSection.addEventListener('scroll', function () {
+        const container = this.querySelector('.mass-liturgie-content');
+        if (!container) return;
+        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 100) {
+          loadNextLiturgieSections();
+        }
+      });
+      // Charger les premières sections au départ
+      loadNextLiturgieSections();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const frBtn = document.getElementById('lang-fr');
+    const latBtn = document.getElementById('lang-latin');
+    if (!frBtn || !latBtn) return;
+
+    frBtn.addEventListener('click', function () {
+        document.querySelectorAll('.prayer-fr').forEach(e => e.style.display = '');
+        document.querySelectorAll('.prayer-latin').forEach(e => e.style.display = 'none');
+        frBtn.classList.add('active');
+        latBtn.classList.remove('active');
     });
 
-    massesClose.addEventListener('click', () => {
-        massesContainer.classList.remove('visible');
+    latBtn.addEventListener('click', function () {
+        document.querySelectorAll('.prayer-fr').forEach(e => e.style.display = 'none');
+        document.querySelectorAll('.prayer-latin').forEach(e => e.style.display = '');
+        latBtn.classList.add('active');
+        frBtn.classList.remove('active');
     });
-}); 
+});
+
+function getVilleFromGeoloc() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=fr`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const ville = data.address.village || data.address.town || data.address.city || data.address.municipality || data.address.county || 'Inconnu';
+                            resolve(ville);
+                        })
+                        .catch(() => {
+                            resolve('Inconnu');
+                        });
+                },
+                err => {
+                    resolve('Inconnu');
+                },
+                { timeout: 5000 }
+            );
+        } else {
+            resolve('Inconnu');
+        }
+    });
+} 
