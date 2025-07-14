@@ -1517,7 +1517,6 @@ function showMessesHorairesPanel() {
       <button id="btn-geoloc-messes" class="nav-btn">📍 Utiliser ma position</button>
       <span>ou</span>
       <input id="input-ville-messes" type="text" placeholder="Ville ou village" style="padding:0.5em; border-radius:5px; border:1px solid #ccc; width: 160px;">
-      <button id="btn-valider-ville-messes" class="nav-btn">Valider</button>
     </div>
     <div class="messes-horaires-result"></div>
   `;
@@ -1596,7 +1595,7 @@ function showMessesHorairesPanel() {
                     suggestion.style.padding = '0.5em 1em';
                     suggestion.style.cursor = 'pointer';
 
-                    suggestion.onclick = () => {
+                    suggestion.onclick = async () => {
                         inputVille.value = place.display_name;
                         selectedVilleData = place; // On stocke l'objet suggestion
                         suggestionsDiv.innerHTML = '';
@@ -1612,6 +1611,34 @@ function showMessesHorairesPanel() {
                         selectedVilleData.villeNom = villeNom;
                         selectedVilleData.codePostal2 = codePostal2;
                         console.log('Ville extraite:', villeNom, 'Département:', codePostal2);
+
+                        // Déclenche la validation directement ici
+                        // Copie la logique de btnValider.onclick ici
+                        let queryString = '';
+                        function normalizeVille(str) {
+                            return str
+                                .toLowerCase()
+                                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                                .replace(/[^a-z0-9 ]/g, '')
+                                .replace(/\s+/g, ' ')
+                                .trim();
+                        }
+                        let villeNorm = normalizeVille(villeNom);
+                        if (codePostal2) {
+                            queryString = `.fr%20${codePostal2}%20${villeNorm.replace(/ /g, '%20')}`;
+                        } else {
+                            queryString = villeNorm.replace(/ /g, '%20');
+                        }
+                        console.log('Ville:', villeNom, 'Département:', codePostal2, 'Query:', queryString);
+                        if (!villeNorm) {
+                            resultDiv.innerHTML = '<p>Veuillez entrer un nom de ville ou village.</p>';
+                            return;
+                        }
+                        resultDiv.innerHTML = '<p>Recherche des horaires pour ' + villeNom + (codePostal2 ? ' (' + codePostal2 + ')' : '') + '...</p>';
+                        await afficherHorairesPourVille(queryString, resultDiv);
+                        if (typeof loadHorairesMesses === 'function') {
+                            loadHorairesMesses(queryString);
+                        }
                     };
 
                     suggestionsDiv.appendChild(suggestion);
@@ -1640,7 +1667,7 @@ function showMessesHorairesPanel() {
     });
     // Gestion des boutons
     const btnGeoloc = content.querySelector('#btn-geoloc-messes');
-    const btnValider = content.querySelector('#btn-valider-ville-messes');
+    // const btnValider = content.querySelector('#btn-valider-ville-messes'); // supprimé
     const inputVille = content.querySelector('#input-ville-messes');
     const resultDiv = content.querySelector('.messes-horaires-result');
 
@@ -1668,48 +1695,61 @@ function showMessesHorairesPanel() {
         }
     };
 
-    btnValider.onclick = async () => {
-        let ville = inputVille.value.trim();
-        let codePostal2 = '';
-        let villeNom = '';
-        let queryString = '';
-        // Si une suggestion a été choisie et correspond à l'input
-        if (selectedVilleData && inputVille.value === selectedVilleData.display_name) {
-            villeNom = selectedVilleData.villeNom || '';
-            codePostal2 = selectedVilleData.codePostal2 || '';
-        } else {
-            // Sinon, on tente d'extraire manuellement
-            const villeMatch = ville.match(/^([^,]+)/);
-            const codePostalMatch = ville.match(/(\d{5})/);
-            villeNom = villeMatch ? villeMatch[1].trim() : ville;
-            codePostal2 = codePostalMatch ? codePostalMatch[1].slice(0, 2) : '';
-        }
-        // Normalisation : minuscules, accents retirés, espaces -> %20
-        function normalizeVille(str) {
-            return str
-                .toLowerCase()
-                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9 ]/g, '')
-                .replace(/\s+/g, ' ')
-                .trim();
-        }
-        let villeNorm = normalizeVille(villeNom);
-        if (codePostal2) {
-            queryString = `.fr%20${codePostal2}%20${villeNorm.replace(/ /g, '%20')}`;
-        } else {
-            queryString = villeNorm.replace(/ /g, '%20');
-        }
-        console.log('Ville:', villeNom, 'Département:', codePostal2, 'Query:', queryString);
-        if (!villeNorm) {
-            resultDiv.innerHTML = '<p>Veuillez entrer un nom de ville ou village.</p>';
-            return;
-        }
-        resultDiv.innerHTML = '<p>Recherche des horaires pour ' + villeNom + (codePostal2 ? ' (' + codePostal2 + ')' : '') + '...</p>';
-        await afficherHorairesPourVille(queryString, resultDiv);
-        if (typeof loadHorairesMesses === 'function') {
-            loadHorairesMesses(queryString);
-        }
-    };
+    // Dans l'autocomplétion, déclenche la validation automatiquement
+    inputVille.addEventListener('input', async function() {
+        // ...
+        data.forEach(place => {
+            const suggestion = document.createElement('div');
+            suggestion.className = 'ville-suggestion-item';
+            suggestion.textContent = place.display_name;
+            suggestion.style.padding = '0.5em 1em';
+            suggestion.style.cursor = 'pointer';
+            suggestion.onclick = async () => {
+                inputVille.value = place.display_name;
+                selectedVilleData = place; // On stocke l'objet suggestion
+                suggestionsDiv.innerHTML = '';
+                suggestionsVisible = false;
+                // Extraction du nom de ville et du code postal (département)
+                const display = place.display_name;
+                const villeMatch = display.match(/^([^,]+)/);
+                const codePostalMatch = display.match(/(\d{5})/);
+                let villeNom = villeMatch ? villeMatch[1].trim() : '';
+                let codePostal2 = codePostalMatch ? codePostalMatch[1].slice(0, 2) : '';
+                selectedVilleData.villeNom = villeNom;
+                selectedVilleData.codePostal2 = codePostal2;
+                console.log('Ville extraite:', villeNom, 'Département:', codePostal2);
+                // Déclenche la validation directement ici
+                // Copie la logique de btnValider.onclick ici
+                let queryString = '';
+                function normalizeVille(str) {
+                    return str
+                        .toLowerCase()
+                        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                        .replace(/[^a-z0-9 ]/g, '')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                }
+                let villeNorm = normalizeVille(villeNom);
+                if (codePostal2) {
+                    queryString = `.fr%20${codePostal2}%20${villeNorm.replace(/ /g, '%20')}`;
+                } else {
+                    queryString = villeNorm.replace(/ /g, '%20');
+                }
+                console.log('Ville:', villeNom, 'Département:', codePostal2, 'Query:', queryString);
+                if (!villeNorm) {
+                    resultDiv.innerHTML = '<p>Veuillez entrer un nom de ville ou village.</p>';
+                    return;
+                }
+                resultDiv.innerHTML = '<p>Recherche des horaires pour ' + villeNom + (codePostal2 ? ' (' + codePostal2 + ')' : '') + '...</p>';
+                await afficherHorairesPourVille(queryString, resultDiv);
+                if (typeof loadHorairesMesses === 'function') {
+                    loadHorairesMesses(queryString);
+                }
+            };
+            suggestionsDiv.appendChild(suggestion);
+        });
+        // ...
+    });
 }
 
 async function getCityFromCoords(lat, lon) {
@@ -1730,7 +1770,7 @@ async function afficherHorairesPourVille(ville, resultDiv) {
         if (data.success) {
             console.log(data.html[0])
             resultDiv.innerHTML = generateHorairesHTML(parseHorairesEtLieux(data.html[0] || data.html));
-        } else {
+                } else {
             resultDiv.innerHTML = '<p>Erreur lors du chargement des horaires : ' + (data.error || 'inconnue') + '</p>';
         }
     } catch (e) {

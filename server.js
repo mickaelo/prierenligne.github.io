@@ -61,7 +61,7 @@ pingKeepAlive();
 
 app.get('/api/horaires-messes', async (req, res) => {
     const ville = req.query.ville || 'Haguenau';
-    const url = `https://messes.info/horaires/${encodeURIComponent(ville)}`;
+    const url = `https://messes.info/horaires/${encodeURIComponent(ville)}%20toutecelebration`;
     let browser;
     try {
         browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
