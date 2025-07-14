@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleReadingsBtn = document.querySelector('.toggle-readings');
     const closeReadingsBtn = document.querySelector('.close-readings');
     const readingsSection = document.querySelector('.readings');
+    const horairesSection = document.querySelector('.messes-horaires');
     const prevSundayBtn = document.getElementById('prevSunday');
     const nextSundayBtn = document.getElementById('nextSunday');
     const todayBtn = document.getElementById('today');
@@ -283,6 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Masquer les lectures par défaut
     if (readingsSection) {
         readingsSection.classList.add('hidden');
+        horairesSection.classList.add('hidden');
+
         if (toggleReadingsBtn) {
             toggleReadingsBtn.textContent = '📖 Lectio divina';
         }
@@ -298,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('Toggle button or readings section not found');
     }
+    
 
     // Gestion du bouton de fermeture
     if (closeReadingsBtn && readingsSection) {
@@ -1153,7 +1157,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeMessesHorairesBtn = document.querySelector('.close-messes-horaires');
     const messesHorairesSection = document.querySelector('.messes-horaires');
     const messesHorairesContent = document.querySelector('.messes-horaires-content');
-    console.log("test")
 
     if (toggleMessesBtn && messesHorairesSection) {
 
@@ -1162,7 +1165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (readingsSection) readingsSection.classList.remove('visible');
             if (rosarySection) rosarySection.classList.remove('visible');
             if (massLiturgieSection) massLiturgieSection.classList.remove('visible');
-            messesHorairesSection.classList.add('visible');
+            messesHorairesSection.classList.toggle('hidden');
         });
     }
     if (closeMessesHorairesBtn && messesHorairesSection) {
@@ -1532,9 +1535,14 @@ function showMessesHorairesPanel() {
     let suggestionsVisible = false;
     let selectedVilleData = null;
     let currentFetchController = null;
-    content.querySelector('#input-ville-messes').addEventListener('input', async function() {
+    let debounceTimeout = null; // ✅ Déclaration au début
+    content.querySelector('#input-ville-messes').addEventListener('input', async function () {
         const query = content.querySelector('#input-ville-messes').value.trim();
-        selectedVilleData = null; // reset à chaque nouvelle saisie
+        
+        // Reset sélection
+        selectedVilleData = null;
+
+        // Si trop court → reset suggestions
         if (query.length < 2) {
             suggestionsDiv.innerHTML = '';
             suggestionsVisible = false;
@@ -1544,50 +1552,76 @@ function showMessesHorairesPanel() {
             }
             return;
         }
+
+        // Si même requête déjà affichée
         if (query === lastQuery && suggestionsVisible) return;
+
+        // Stocker la requête courante
         lastQuery = query;
-        // Annule le fetch précédent si une nouvelle lettre est tapée
+
+        // Annuler le fetch précédent immédiatement
         if (currentFetchController) {
             currentFetchController.abort();
+            currentFetchController = null;
         }
-        currentFetchController = new AbortController();
-        // Appel API Nominatim
-        const url = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(query)}&countrycodes=fr&format=json&limit=5`;
-        let data = [];
-        try {
-            const resp = await fetch(url, { headers: { 'Accept-Language': 'fr' }, signal: currentFetchController.signal });
-            data = await resp.json();
-        } catch (e) {
-            if (e.name === 'AbortError') return;
-            suggestionsDiv.innerHTML = '';
-            suggestionsVisible = false;
-            return;
+
+        // Clear le debounce précédent
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
         }
-        suggestionsDiv.innerHTML = '';
-        data.forEach(place => {
-            const suggestion = document.createElement('div');
-            suggestion.className = 'ville-suggestion-item';
-            suggestion.textContent = place.display_name;
-            suggestion.style.padding = '0.5em 1em';
-            suggestion.style.cursor = 'pointer';
-            suggestion.onclick = () => {
-                inputVille.value = place.display_name;
-                selectedVilleData = place; // On stocke l'objet suggestion
+
+        // Lancer un nouveau debounce
+        debounceTimeout = setTimeout(() => {
+            currentFetchController = new AbortController();
+
+            (async () => {
+                // Appel API Nominatim
+                const url = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(query)}&countrycodes=fr&format=json&limit=5`;
+                let data = [];
+                try {
+                    const resp = await fetch(url, { headers: { 'Accept-Language': 'fr' }, signal: currentFetchController.signal });
+                    data = await resp.json();
+                } catch (e) {
+                    if (e.name === 'AbortError') return;
+                    suggestionsDiv.innerHTML = '';
+                    suggestionsVisible = false;
+                    return;
+                }
+
                 suggestionsDiv.innerHTML = '';
-                suggestionsVisible = false;
-                // Extraction du nom de ville et du code postal (département)
-                const display = place.display_name;
-                const villeMatch = display.match(/^([^,]+)/);
-                const codePostalMatch = display.match(/(\d{5})/);
-                let villeNom = villeMatch ? villeMatch[1].trim() : '';
-                let codePostal2 = codePostalMatch ? codePostalMatch[1].slice(0, 2) : '';
-                selectedVilleData.villeNom = villeNom;
-                selectedVilleData.codePostal2 = codePostal2;
-                console.log('Ville extraite:', villeNom, 'Département:', codePostal2);
-            };
-            suggestionsDiv.appendChild(suggestion);
-        });
-        suggestionsVisible = true;
+                data.forEach(place => {
+                    const suggestion = document.createElement('div');
+                    suggestion.className = 'ville-suggestion-item';
+                    suggestion.textContent = place.display_name;
+                    suggestion.style.padding = '0.5em 1em';
+                    suggestion.style.cursor = 'pointer';
+
+                    suggestion.onclick = () => {
+                        inputVille.value = place.display_name;
+                        selectedVilleData = place; // On stocke l'objet suggestion
+                        suggestionsDiv.innerHTML = '';
+                        suggestionsVisible = false;
+
+                        // Extraction du nom de ville et du code postal (département)
+                        const display = place.display_name;
+                        const villeMatch = display.match(/^([^,]+)/);
+                        const codePostalMatch = display.match(/(\d{5})/);
+                        let villeNom = villeMatch ? villeMatch[1].trim() : '';
+                        let codePostal2 = codePostalMatch ? codePostalMatch[1].slice(0, 2) : '';
+
+                        selectedVilleData.villeNom = villeNom;
+                        selectedVilleData.codePostal2 = codePostal2;
+                        console.log('Ville extraite:', villeNom, 'Département:', codePostal2);
+                    };
+
+                    suggestionsDiv.appendChild(suggestion);
+                });
+
+                suggestionsVisible = true;
+            })();
+
+        }, 300); // ← délai debounce en ms (ici 300 ms, à ajuster si tu veux)
+
     });
     // Fermer suggestions si clic ailleurs ou perte de focus
     document.addEventListener('click', function (e) {
@@ -1707,3 +1741,16 @@ async function afficherHorairesPourVille(ville, resultDiv) {
 // Appelle showMessesHorairesPanel() à l'ouverture du panneau horaires des messes
 // Par exemple, dans le gestionnaire d'événement du bouton "⛪ Horaires des messes"
 document.querySelector('.toggle-messes')?.addEventListener('click', showMessesHorairesPanel);
+
+// Gestion fermeture du panneau horaires des messes
+const closeMessesHorairesBtn = document.querySelector('.close-messes-horaires');
+if (closeMessesHorairesBtn) {
+  closeMessesHorairesBtn.addEventListener('click', () => {
+    const panel = document.querySelector('.messes-horaires');
+    if (panel) {
+      panel.classList.remove('visible');
+      panel.style.visibility = 'hidden';
+      panel.style.transform = 'translateX(-100%)';
+    }
+  });
+}

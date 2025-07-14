@@ -687,7 +687,7 @@ body {
     object-fit: contain;
 }
 
-.readings {
+.messes-horaires, .readings {
     position: absolute;
     left: 0;
     top: 0;
@@ -708,24 +708,29 @@ body {
     -webkit-overflow-scrolling: touch;
     white-space: normal;
     word-wrap: break-word;
+    scrollbar-width: thin;
+    scrollbar-color: #a67c00 #fffbe9;
 }
 
 /* Styles pour les scrollbars */
-.readings::-webkit-scrollbar {
-    width: 8px;
+.messes-horaires::-webkit-scrollbar, .readings::-webkit-scrollbar {
+    width: 10px;
+    background: #fffbe9;
+    border-radius: 8px;
 }
 
-.readings::-webkit-scrollbar-track {
+.messes-horaires::-webkit-scrollbar-track, .readings::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
 }
 
-.readings::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+.messes-horaires::-webkit-scrollbar-thumb, .readings::-webkit-scrollbar-thumb {
+    background: #e6c97a;
+    border-radius: 8px;
+    border: 2px solid #fffbe9;
 }
 
-.readings::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+.messes-horaires::-webkit-scrollbar-thumb:hover, .readings::-webkit-scrollbar-thumb:hover {
+    background: #a67c00;
 }
 
 /* Style pour le bouton de toggle */
@@ -758,7 +763,7 @@ body {
     background: rgba(255, 255, 255, 0.2);
 }
 
-.readings.hidden {
+.messes-horaires.hidden, .readings.hidden {
     transform: translateX(-100%);
 }
 
@@ -766,7 +771,7 @@ body {
     left: 0;
 }
 
-.readings h2 {
+.messes-horaires h2, .readings h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #ffd700;
@@ -840,7 +845,7 @@ body {
         min-width: 70px;
     }
 
-    .readings {
+    .messes-horaires, .readings {
         width: 35%;
         background-color: #1a1a1a;
     }
@@ -949,7 +954,7 @@ body {
         margin-bottom: 15px;
     }
 
-    .readings {
+    .messes-horaires, .readings {
         width: 50%;
         background-color: #1a1a1a;
     }
@@ -1094,7 +1099,7 @@ body {
         margin-bottom: 10px;
     }
 
-    .readings {
+    .messes-horaires, .readings {
         width: 100%;
         background-color: #1a1a1a;
     }
@@ -2090,14 +2095,14 @@ body {
 
 /* Media Queries pour les tablettes */
 @media screen and (max-width: 1024px) {
-    .readings-date {
+   .readings-date {
         font-size: 13px;
     }
 }
 
 /* Media Queries pour les smartphones */
 @media screen and (max-width: 768px) {
-    .readings-date {
+     .readings-date {
         font-size: 12px;
     }
 }
@@ -2809,52 +2814,6 @@ body {
     }
 }
 
-.messes-horaires {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 25%;
-  padding: 10px;
-  background-color: #1a1a1a;
-  color: #fff;
-  overflow-y: auto;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-  box-sizing: border-box;
-  transition: transform 0.3s ease;
-  z-index: 1002;
-  transform: translateX(-100%);
-  visibility: hidden;
-}
-.messes-horaires.visible {
-  transform: translateX(0);
-  visibility: visible;
-}
-.close-messes-horaires {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 30px;
-  height: 30px;
-  background: rgba(255,255,255,0.1);
-  border: none;
-  border-radius: 50%;
-  color: #ffd700;
-  font-size: 20px;
-  cursor: pointer;
-  z-index: 1003;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-.close-messes-horaires:hover {
-  background: rgba(255,255,255,0.2);
-}
-
 .mass-summary {
     display: flex;
     justify-content: center;
@@ -2996,7 +2955,7 @@ body {
 }
 
 /* Style harmonisé pour .messes-horaires et .readings */
-.messes-horaires, .readings {
+.messes-horaires .readings {
   background: #fffbe9;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.07);
@@ -3019,13 +2978,13 @@ body {
   color: #a67c00;
   text-align: center;
 }
-.messes-horaires .readings-navigation, .readings .readings-navigation {
+.readings-navigation, .readings .readings-navigation {
   display: flex;
   justify-content: center;
   gap: 0.7em;
   margin-bottom: 1em;
 }
-.messes-horaires .nav-btn, .readings .nav-btn {
+.nav-btn, .readings .nav-btn {
   background: #fff6d6;
   border: 1px solid #f3e2b7;
   border-radius: 6px;
@@ -3035,11 +2994,11 @@ body {
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
-.messes-horaires .nav-btn:hover, .readings .nav-btn:hover {
+.nav-btn:hover, .readings .nav-btn:hover {
   background: #f3e2b7;
   color: #3a2c13;
 }
-.messes-horaires .close-messes-horaires, .readings .close-readings {
+.close-messes-horaires, .readings .close-readings {
   position: absolute;
   top: 1em;
   right: 1em;
@@ -3050,18 +3009,20 @@ body {
   cursor: pointer;
   transition: color 0.2s;
 }
-.messes-horaires .close-messes-horaires:hover, .readings .close-readings:hover {
+.close-messes-horaires:hover, .readings .close-readings:hover {
   color: #d4a017;
 }
-.messes-horaires .messes-horaires-content, .readings .readings-content {
+.messes-horaires-content, .readings .readings-content {
   margin-top: 1.2em;
 }
 .messes-horaires-choix {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 1em;
-  margin-bottom: 1.5em;
-  justify-content: center;
+  margin: 2em auto 2em auto;
+  width: 100%;
+  max-width: 350px;
 }
 .messes-horaires-choix input[type="text"] {
   padding: 0.5em;
@@ -3132,4 +3093,40 @@ body {
 }
 .ville-suggestion-item:hover {
   background: #f3e2b7;
+}
+
+/* Polices adaptées pour smartphone */
+@media screen and (max-width: 768px) {
+  .messes-horaires, .readings {
+    font-size: 15px;
+    padding: 1.2em 0.7em 1em 0.7em;
+  }
+  .messes-horaires h2, .readings h2 {
+    font-size: 1.15em;
+  }
+  .messes-horaires .nav-btn, .readings .nav-btn {
+    font-size: 0.98em;
+    padding: 0.4em 0.7em;
+  }
+  .messes-horaires li, .readings li {
+    font-size: 0.98em;
+    padding: 0.8em 0.7em 0.7em 0.7em;
+  }
+}
+@media screen and (max-width: 480px) {
+  .messes-horaires, .readings {
+    font-size: 13px;
+    padding: 0.7em 0.3em 0.7em 0.3em;
+  }
+  .messes-horaires h2, .readings h2 {
+    font-size: 1em;
+  }
+  .messes-horaires .nav-btn, .readings .nav-btn {
+    font-size: 0.93em;
+    padding: 0.3em 0.5em;
+  }
+  .messes-horaires li, .readings li {
+    font-size: 0.93em;
+    padding: 0.6em 0.4em 0.6em 0.4em;
+  }
 }
