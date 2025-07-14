@@ -2891,3 +2891,245 @@ body {
     background: #ffd700;
     color: #1a1a1a;
 }
+
+/* Style pour le bouton de géolocalisation dans le panneau horaires */
+#geoloc-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1em;
+  margin-bottom: 1em;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+#activate-geoloc-btn {
+  background: #e0e7ef;
+  border: none;
+  border-radius: 5px;
+  color: #222;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#activate-geoloc-btn:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
+#geoloc-explain {
+  margin-top: 0.5em;
+}
+
+/* Style harmonisé pour horaires de messe et lectures du jour */
+.mass-times-panel, .lectio-divina-panel {
+  background: #fffbe9;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 2em 1.5em 1.5em 1.5em;
+  max-width: 420px;
+  margin: 2em auto;
+  font-family: 'Merriweather', serif;
+  color: #3a2c13;
+  position: relative;
+}
+.mass-times-panel h2, .lectio-divina-panel h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  color: #a67c00;
+  text-align: center;
+}
+.mass-times-panel ul, .lectio-divina-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.mass-times-panel li, .lectio-divina-panel li {
+  background: #fff6d6;
+  border-radius: 8px;
+  margin-bottom: 1.2em;
+  padding: 1.1em 1em 0.9em 1em;
+  box-shadow: 0 1px 4px rgba(166,124,0,0.07);
+  font-size: 1.08em;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.mass-times-panel li strong, .lectio-divina-panel li strong {
+  color: #a67c00;
+  font-size: 1.1em;
+}
+.mass-times-panel .messe-heure, .lectio-divina-panel .lecture-heure {
+  color: #a67c00;
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 0.2em;
+}
+.mass-times-panel .messe-lieu, .lectio-divina-panel .lecture-lieu {
+  color: #3a2c13;
+  font-style: italic;
+  font-size: 1em;
+  margin-top: 0.2em;
+}
+.mass-times-panel hr, .lectio-divina-panel hr {
+  border: none;
+  border-top: 1px solid #f3e2b7;
+  margin: 1.5em 0;
+}
+
+.mass-times-panel .close-mass-times, .lectio-divina-panel .close-lectio-divina {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: #a67c00;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.mass-times-panel .close-mass-times:hover, .lectio-divina-panel .close-lectio-divina:hover {
+  color: #d4a017;
+}
+  color: #d4a017;
+}
+
+/* Style harmonisé pour .messes-horaires et .readings */
+.messes-horaires, .readings {
+  background: #fffbe9;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 2em 1.5em 1.5em 1.5em;
+  max-width: 420px;
+  margin: 2em auto;
+  font-family: 'Merriweather', serif;
+  color: #3a2c13;
+  position: relative;
+  display: none;
+  z-index: 20;
+}
+.messes-horaires.active, .readings.active {
+  display: block;
+}
+.messes-horaires h2, .readings h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  color: #a67c00;
+  text-align: center;
+}
+.messes-horaires .readings-navigation, .readings .readings-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 0.7em;
+  margin-bottom: 1em;
+}
+.messes-horaires .nav-btn, .readings .nav-btn {
+  background: #fff6d6;
+  border: 1px solid #f3e2b7;
+  border-radius: 6px;
+  color: #a67c00;
+  font-size: 1em;
+  padding: 0.5em 1.1em;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.messes-horaires .nav-btn:hover, .readings .nav-btn:hover {
+  background: #f3e2b7;
+  color: #3a2c13;
+}
+.messes-horaires .close-messes-horaires, .readings .close-readings {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: #a67c00;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.messes-horaires .close-messes-horaires:hover, .readings .close-readings:hover {
+  color: #d4a017;
+}
+.messes-horaires .messes-horaires-content, .readings .readings-content {
+  margin-top: 1.2em;
+}
+.messes-horaires-choix {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1.5em;
+  justify-content: center;
+}
+.messes-horaires-choix input[type="text"] {
+  padding: 0.5em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 160px;
+  font-size: 1em;
+}
+.messes-horaires-choix button.nav-btn {
+  font-size: 1em;
+  padding: 0.5em 1.1em;
+}
+.messes-horaires ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.messes-horaires li {
+  background: #fff6d6;
+  border-radius: 8px;
+  margin-bottom: 1.2em;
+  padding: 1.1em 1em 0.9em 1em;
+  box-shadow: 0 1px 4px rgba(166,124,0,0.07);
+  font-size: 1.08em;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.messes-horaires li strong {
+  color: #a67c00;
+  font-size: 1.1em;
+}
+.messes-horaires .messe-heure {
+  color: #a67c00;
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 0.2em;
+}
+.messes-horaires .messe-lieu {
+  color: #3a2c13;
+  font-style: italic;
+  font-size: 1em;
+  margin-top: 0.2em;
+}
+
+/* Suggestions d'autocomplétion pour la ville/village */
+.ville-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #fffbe9;
+  color: black;
+  border: 1px solid #f3e2b7;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(166,124,0,0.07);
+  z-index: 100;
+  max-width: 320px;
+  width: 100%;
+  margin-top: 0.2em;
+  font-size: 1em;
+}
+.ville-suggestion-item {
+  padding: 0.5em 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.ville-suggestion-item:hover {
+  background: #f3e2b7;
+}

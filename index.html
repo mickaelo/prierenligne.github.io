@@ -35,10 +35,6 @@
           </div>
         </div>
       </div>
-      <div class="language-selector">
-        <button id="lang-fr" class="lang-btn active">Français</button>
-        <button id="lang-latin" class="lang-btn">Latin</button>
-      </div>
     </div>
     <a href="#" class="contact-link">Contact</a>
     <div class="readings">
@@ -79,6 +75,10 @@
             <button class="nav-btn" id="prevDay">◀ Jour précédent</button>
             <button class="nav-btn today-btn" id="todayRosary">Aujourd'hui</button>
             <button class="nav-btn" id="nextDay">Jour suivant ▶</button>
+        </div>
+        <div class="language-selector">
+          <button id="lang-fr" class="lang-btn active">Français</button>
+          <button id="lang-latin" class="lang-btn">Latin</button>
         </div>
         <div class="mystery-section">
             <h3>Mystères du jour</h3>
@@ -245,11 +245,26 @@
             <!-- Ajoute ici les autres sections principales de la liturgie, en suivant la structure du fichier -->
         </div>
     </div>
+    <!-- Ancien panneau horaires des messes -->
+    <!--
     <div class="messes-horaires">
       <button class="close-messes-horaires">×</button>
-      <h2>Horaires des messes à Haguenau</h2>
+      <h2>Horaires des messes</h2>
       <div class="messes-horaires-content">
         <div class="loader"></div>
+      </div>
+    </div>
+    -->
+    <!-- Nouveau panneau harmonisé -->
+    <div class="messes-horaires">
+      <button class="close-messes-horaires close-lectio-divina close-mass-times">×</button>
+      <h2>Horaires des messes</h2>
+      <div class="liturgical-info"></div>
+      <div class="readings-navigation">
+      </div>
+      <div class="messes-horaires-date"></div>
+      <div class="messes-horaires-content">
+        <!-- Les horaires seront injectés ici par JS -->
       </div>
     </div>
     <div class="container">
@@ -276,11 +291,11 @@
                     <button class="control-btn toggle-mass">🕊️ Liturgie de la messe</button>
                     <button class="control-btn toggle-rosary">✝️ Chapelet</button>
                     <button class="control-btn toggle-messes">⛪ Horaires des messes</button>
-                    <div class="duration-selector">
+                    <!-- <div class="duration-selector">
                         <button class="duration-btn" data-duration="10">10m</button>
                         <button class="duration-btn" data-duration="30">30m</button>
                         <button class="duration-btn" data-duration="60">1h</button>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="icon-selector">
                     <button class="icon-btn" data-icon="ChristNEWSmall__84409.jpg">Jésus Christ</button>

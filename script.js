@@ -1163,7 +1163,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (rosarySection) rosarySection.classList.remove('visible');
             if (massLiturgieSection) massLiturgieSection.classList.remove('visible');
             messesHorairesSection.classList.add('visible');
-            loadHorairesMesses();
         });
     }
     if (closeMessesHorairesBtn && messesHorairesSection) {
@@ -1173,84 +1172,100 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function parseHorairesMesses(html) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const articles = doc.querySelectorAll('article[itemtype="http://schema.org/Event"]');
+        // Crée un DOM temporaire à partir du HTML complet
+        const temp = document.createElement('div');
+        // Si le HTML commence par <!DOCTYPE ou <html>, on extrait le <body>
+        if (/<!DOCTYPE|<html/i.test(html)) {
+            // Utilise DOMParser si dispo (navigateurs modernes)
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                temp.innerHTML = doc.body ? doc.body.innerHTML : html;
+            } catch (e) {
+                temp.innerHTML = html;
+            }
+        } else {
+            temp.innerHTML = html;
+        }
+
+        // Cherche tous les articles horaires dans le DOM global
+        const articles = temp.querySelectorAll('article[itemtype="http://schema.org/Event"]');
+        if (!articles.length) return '<p>Aucune messe trouvée pour cette période.</p>';
+
         let result = '';
         articles.forEach(article => {
             const dateHeure = article.querySelector('h3')?.textContent?.trim() || '';
-            const lieu = article.querySelector('h4')?.textContent?.trim() || '';
-            const type = article.querySelector('div')?.textContent?.trim() || '';
+            const img = article.querySelector('img[itemprop="image"]');
+            const imgHtml = img ? `<img src="${img.src}" alt="${img.alt || ''}" style="max-width:60px;max-height:60px;float:right;margin-left:1em;">` : '';
+            const lieu = article.querySelector('h4 span[itemprop="name"]')?.textContent?.trim() || '';
+            const ville = article.querySelector('h4 span[itemprop="addressLocality"]')?.textContent?.trim() || '';
+            const type = article.querySelector('div[itemprop="description"]')?.textContent?.trim() || '';
             const adresse = article.querySelector('[itemprop="address"]')?.textContent?.trim() || '';
-            result += `<div class="messe-item">
-      <div class="messe-date">${dateHeure}</div>
-      <div class="messe-lieu">${lieu}</div>
-      <div class="messe-type">${type}</div>
-      <div class="messe-adresse">${adresse}</div>
-    </div>`;
+            result += `<div class="messe-horaire">
+                <div class="horaire-header">
+                    <strong>${dateHeure}</strong> ${imgHtml}
+                </div>
+                <div class="horaire-lieu">${lieu}${ville ? ' à ' + ville : ''}</div>
+                <div class="horaire-type">${type}</div>
+                <div class="horaire-adresse">${adresse}</div>
+            </div>`;
         });
-        if (!result) {
-            result = '<p>Aucune messe trouvée pour cette période.</p>';
-        }
         return result;
     }
 
-    async function loadHorairesMesses() {
+    async function loadHorairesMesses(ville = Null) {
         if (!messesHorairesContent) return;
         messesHorairesContent.innerHTML = '<p>Chargement des horaires...</p>';
 
-        getVilleFromGeoloc().then(ville => {
+        try {
+            const ville = ville ? ville : await getVilleFromGeoloc();
             console.log('Ville détectée dans loadHorairesMesses :', ville);
-            const corsProxy = 'https://proxy.cors.sh/';
-            fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(`https://messes.info/horaires/${ville}`))
-                .then(response => response.json())
-                .then(data => {
-                    const horairesHTML = parseHorairesMesses(data.contents);
-                    console.log(data)
-
-                    messesHorairesContent.innerHTML = horairesHTML;
-                })
-                .catch(() => {
-                    messesHorairesContent.innerHTML = '<p>Erreur lors du chargement des horaires.</p>';
-                });
-        });
-
-
+            const response = await fetch(`/api/horaires-messes?ville=${encodeURIComponent(ville)}`);
+            const data = await response.json();
+            if (data.success) {
+                const horairesHTML = data.html;
+                messesHorairesContent.innerHTML = generateHorairesHTML(parseHorairesEtLieux(data.html[0] || data.html));
+            } else {
+                messesHorairesContent.innerHTML = '<p>Erreur lors du chargement des horaires : ' + (data.error || 'inconnue') + '</p>';
+            }
+        } catch (e) {
+            messesHorairesContent.innerHTML = '<p>Erreur lors du chargement des horaires.</p>';
+        }
     }
 
     // --- Scroll infini pour la liturgie de la messe ---
     // Exemple de découpage en sections (à compléter avec tout le texte)
     const liturgieSections = [
-      `<section id="rites-initiaux"><h3>Rites initiaux</h3><div class="prayer-text prayer-fr">Lorsque le peuple est rassemblé, le prêtre s’avance vers l’autel avec les ministres, pendant le chant d’entrée...<br><strong>Au nom du Père, et du Fils, et du Saint-Esprit.</strong><br>R/ Amen.<br><br><strong>Salutation :</strong><br>La grâce de Jésus, le Christ, notre Seigneur, l’amour de Dieu le Père, et la communion de l’Esprit Saint, soient toujours avec vous.<br>R/ Et avec votre esprit.<br>...</div></section>`,
-      `<section id="acte-penitentiel"><h3>Acte pénitentiel</h3><div class="prayer-text prayer-fr">Frères et sœurs, préparons-nous à célébrer le mystère de l’Eucharistie, en reconnaissant que nous avons péché...<br><strong>Je confesse à Dieu tout-puissant...</strong><br>...<br><strong>Que Dieu tout-puissant nous fasse miséricorde ; qu’il nous pardonne nos péchés et nous conduise à la vie éternelle.</strong><br>R/ Amen.<br>...</div></section>`,
-      `<section id="kyrie"><h3>Kyrie</h3><div class="prayer-text prayer-fr">Kyrie eléison. R/ Kyrie eléison.<br>Seigneur, prends pitié.<br>Christe eléison. R/ Christe eléison.<br>Ô Christ, prends pitié.<br>...</div></section>`,
-      `<section id="gloria"><h3>Gloria</h3><div class="prayer-text prayer-fr">Gloire à Dieu, au plus haut des cieux, et paix sur la terre aux hommes qu’il aime...<br>...<br><strong>Gloria in excelsis Deo...</strong><br>...</div></section>`,
-      `<section id="collecte"><h3>Prière d'ouverture (Collecte)</h3><div class="prayer-text prayer-fr">Prions le Seigneur.<br>...<br>Par Jésus Christ, ton Fils, notre Seigneur, qui vit et règne avec toi dans l’unité du Saint-Esprit, Dieu, pour les siècles des siècles.<br>R/ Amen.<br>...</div></section>`
-      // Ajoute ici toutes les autres sections du texte découpé !
+        `<section id="rites-initiaux"><h3>Rites initiaux</h3><div class="prayer-text prayer-fr">Lorsque le peuple est rassemblé, le prêtre s’avance vers l’autel avec les ministres, pendant le chant d’entrée...<br><strong>Au nom du Père, et du Fils, et du Saint-Esprit.</strong><br>R/ Amen.<br><br><strong>Salutation :</strong><br>La grâce de Jésus, le Christ, notre Seigneur, l’amour de Dieu le Père, et la communion de l’Esprit Saint, soient toujours avec vous.<br>R/ Et avec votre esprit.<br>...</div></section>`,
+        `<section id="acte-penitentiel"><h3>Acte pénitentiel</h3><div class="prayer-text prayer-fr">Frères et sœurs, préparons-nous à célébrer le mystère de l’Eucharistie, en reconnaissant que nous avons péché...<br><strong>Je confesse à Dieu tout-puissant...</strong><br>...<br><strong>Que Dieu tout-puissant nous fasse miséricorde ; qu’il nous pardonne nos péchés et nous conduise à la vie éternelle.</strong><br>R/ Amen.<br>...</div></section>`,
+        `<section id="kyrie"><h3>Kyrie</h3><div class="prayer-text prayer-fr">Kyrie eléison. R/ Kyrie eléison.<br>Seigneur, prends pitié.<br>Christe eléison. R/ Christe eléison.<br>Ô Christ, prends pitié.<br>...</div></section>`,
+        `<section id="gloria"><h3>Gloria</h3><div class="prayer-text prayer-fr">Gloire à Dieu, au plus haut des cieux, et paix sur la terre aux hommes qu’il aime...<br>...<br><strong>Gloria in excelsis Deo...</strong><br>...</div></section>`,
+        `<section id="collecte"><h3>Prière d'ouverture (Collecte)</h3><div class="prayer-text prayer-fr">Prions le Seigneur.<br>...<br>Par Jésus Christ, ton Fils, notre Seigneur, qui vit et règne avec toi dans l’unité du Saint-Esprit, Dieu, pour les siècles des siècles.<br>R/ Amen.<br>...</div></section>`
+        // Ajoute ici toutes les autres sections du texte découpé !
     ];
 
     let loadedLiturgieSections = 0;
     const SECTIONS_PER_BATCH = 2; // nombre de sections à charger à chaque fois
 
     function loadNextLiturgieSections() {
-      const container = document.querySelector('.mass-liturgie-content');
-      if (!container) return;
-      for (let i = 0; i < SECTIONS_PER_BATCH && loadedLiturgieSections < liturgieSections.length; i++, loadedLiturgieSections++) {
-        container.insertAdjacentHTML('beforeend', liturgieSections[loadedLiturgieSections]);
-      }
+        const container = document.querySelector('.mass-liturgie-content');
+        if (!container) return;
+        for (let i = 0; i < SECTIONS_PER_BATCH && loadedLiturgieSections < liturgieSections.length; i++, loadedLiturgieSections++) {
+            container.insertAdjacentHTML('beforeend', liturgieSections[loadedLiturgieSections]);
+        }
     }
 
     // Initialisation au premier affichage du volet
     if (massLiturgieSection) {
-      massLiturgieSection.addEventListener('scroll', function () {
-        const container = this.querySelector('.mass-liturgie-content');
-        if (!container) return;
-        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 100) {
-          loadNextLiturgieSections();
-        }
-      });
-      // Charger les premières sections au départ
-      loadNextLiturgieSections();
+        massLiturgieSection.addEventListener('scroll', function () {
+            const container = this.querySelector('.mass-liturgie-content');
+            if (!container) return;
+            if (container.scrollTop + container.clientHeight >= container.scrollHeight - 100) {
+                loadNextLiturgieSections();
+            }
+        });
+        // Charger les premières sections au départ
+        loadNextLiturgieSections();
     }
 });
 
@@ -1300,4 +1315,395 @@ function getVilleFromGeoloc() {
             resolve('Inconnu');
         }
     });
-} 
+}
+
+// Détection mobile
+function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Fonction pour afficher le bouton de géoloc dans le panneau horaires
+function showGeolocButton() {
+    const horairesPanel = document.querySelector('.mass-times-panel');
+    if (!horairesPanel) return;
+    let geolocDiv = document.getElementById('geoloc-btn-container');
+    if (!geolocDiv) {
+        geolocDiv = document.createElement('div');
+        geolocDiv.id = 'geoloc-btn-container';
+        geolocDiv.style.margin = '1em 0';
+        geolocDiv.innerHTML = `
+      <button id="activate-geoloc-btn" style="padding:0.5em 1em;font-size:1em;">📍 Activer la géolocalisation</button>
+      <div id="geoloc-explain" style="font-size:0.9em;color:#555;margin-top:0.5em;">Pour trouver les horaires de messe les plus proches de votre position, activez la géolocalisation.</div>
+    `;
+        horairesPanel.prepend(geolocDiv);
+        document.getElementById('activate-geoloc-btn').onclick = function () {
+            askForGeoloc();
+        };
+    }
+}
+
+function askForGeoloc() {
+    if (!navigator.geolocation) {
+        alert("La géolocalisation n'est pas supportée par votre navigateur.");
+        return;
+    }
+    document.getElementById('activate-geoloc-btn').disabled = true;
+    document.getElementById('activate-geoloc-btn').innerText = 'Recherche en cours...';
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            // Appelle la fonction existante pour trouver la ville la plus proche et afficher les horaires
+            fetchAndDisplayMassTimesByCoords(position.coords.latitude, position.coords.longitude);
+            document.getElementById('geoloc-btn-container').remove();
+        },
+        function (error) {
+            alert("Impossible d'obtenir la position : " + error.message);
+            document.getElementById('activate-geoloc-btn').disabled = false;
+            document.getElementById('activate-geoloc-btn').innerText = '📍 Activer la géolocalisation';
+        }
+    );
+}
+
+// À l'ouverture du panneau horaires, proposer la géoloc sur mobile
+function onOpenMassTimesPanel() {
+    // ... code existant pour afficher le panneau ...
+    if (isMobileDevice()) {
+        showGeolocButton();
+    }
+}
+
+// Sélecteur de langue pour le chapelet uniquement
+function setupRosaryLanguageSelector() {
+    const rosary = document.querySelector('.rosary');
+    if (!rosary) return;
+    const langSelector = rosary.querySelector('.language-selector');
+    if (!langSelector) return;
+    const btnFr = langSelector.querySelector('#lang-fr');
+    const btnLatin = langSelector.querySelector('#lang-latin');
+    if (!btnFr || !btnLatin) return;
+    btnFr.onclick = () => {
+        btnFr.classList.add('active');
+        btnLatin.classList.remove('active');
+        rosary.querySelectorAll('.prayer-fr').forEach(e => e.style.display = 'block');
+        rosary.querySelectorAll('.prayer-latin').forEach(e => e.style.display = 'none');
+    };
+    btnLatin.onclick = () => {
+        btnLatin.classList.add('active');
+        btnFr.classList.remove('active');
+        rosary.querySelectorAll('.prayer-fr').forEach(e => e.style.display = 'none');
+        rosary.querySelectorAll('.prayer-latin').forEach(e => e.style.display = 'block');
+    };
+}
+
+// Appeler ce setup au chargement
+setupRosaryLanguageSelector();
+
+function formatHorairesText(rawText) {
+    // Découpe par jour (ex: sam. 19 juil. 2025)
+    const lines = rawText.split(/(?=\b(?:lun|mar|mer|jeu|ven|sam|dim)\.\s\d{1,2}\s\w+\.?\s\d{4})/g);
+    let html = '';
+    lines.forEach(block => {
+        if (!block.trim()) return;
+        // Date du jour
+        const dateMatch = block.match(/^(?<date>\w+\.\s\d{1,2}\s\w+\.?\s\d{4})/);
+        let date = dateMatch ? dateMatch.groups.date : '';
+        let rest = block.replace(date, '').trim();
+        if (date) {
+            html += `<div class="horaire-jour"><strong>${date}</strong></div>`;
+        }
+        // Découpe chaque horaire (ex: 18h00 - Messe dominicale...)
+        const horaires = rest.split(/(?=\d{1,2}h\d{2}\s*-\s*)/g);
+        horaires.forEach(horaire => {
+            if (!horaire.trim()) return;
+            // On sépare l'heure, le type, le lieu, etc.
+            const heureMatch = horaire.match(/^(?<heure>\d{1,2}h\d{2})\s*-\s*(?<type>[^\n]+?)(?=\d{5}|$)/);
+            let heure = heureMatch ? heureMatch.groups.heure : '';
+            let type = heureMatch ? heureMatch.groups.type.trim() : '';
+            // Lieu (code postal + ville)
+            const lieuMatch = horaire.match(/(\d{5})\s([A-ZÉÈÊÎÔÛÄÖÜ\- ]+)/);
+            let lieu = lieuMatch ? `${lieuMatch[2].trim()} (${lieuMatch[1]})` : '';
+            // Paroisse
+            const paroisseMatch = horaire.match(/Communauté de paroisses\s*:\s*([\w\s\-']+)/);
+            let paroisse = paroisseMatch ? paroisseMatch[1].trim() : '';
+            // Intentions
+            const intentionsMatch = horaire.match(/(?:Communauté de paroisses[\s\S]+?)([A-Z][^\n]+)(?=Horaires de la paroisse|Signalez une erreur|$)/);
+            let intentions = intentionsMatch ? intentionsMatch[1].trim() : '';
+            // Affichage
+            html += `<div class="horaire-block">
+        <div class="horaire-heure">${heure ? `<span class='heure'>${heure}</span>` : ''}</div>
+        <div class="horaire-type">${type}</div>
+        <div class="horaire-lieu">${lieu}</div>
+        <div class="horaire-paroisse">${paroisse}</div>
+        <div class="horaire-intentions">${intentions}</div>
+      </div>`;
+        });
+        // Cas "Pas d'horaire disponible" ou "Afficher plus de lignes"
+        if (/Pas d'horaire disponible|Afficher plus de lignes/.test(rest)) {
+            html += `<div class="horaire-info">${rest.match(/Pas d'horaire disponible|Afficher plus de lignes/g).join('<br>')}</div>`;
+        }
+    });
+    return html;
+}
+
+function parseHorairesEtLieux(bigString) {
+    let cleanedText = bigString
+        .replace(/Horaires de la paroisse\s*Signalez une erreur/g, '')
+        .replace(/Pas d'horaire disponible/g, '')
+        .replace(/Afficher plus de lignes/g, '');
+
+    const dayAbbr = ['lun', 'mar', 'mer', 'jeu', 'ven', 'sam', 'dim'];
+    const dayPattern = `(?:${dayAbbr.join('|')})\\. \\d{1,2} [a-zéû]{3,4}\\.?(?: \\d{4})?`;
+    cleanedText = cleanedText.replace(new RegExp(`(${dayPattern})`, 'gi'), '\n$1');
+
+    const dateBlocks = cleanedText.split(/\n(?=(?:lun|mar|mer|jeu|ven|sam|dim)\. \d{1,2} [a-zéû]{3,4}\.? ?\d{0,4})/i);
+
+    const result = [];
+
+    const regexHoraireLieu = /(\d{1,2}h\d{2}\s+-\s+Messe [^0-9\n]+?)\s+(.+?\d{5}\s+[A-ZÉÈÊÎÔÛÄÖÜ\- ]+)/g;
+
+    for (const block of dateBlocks) {
+        if (!block.trim()) continue;
+
+        const dateMatch = block.match(/^((?:lun|mar|mer|jeu|ven|sam|dim)\. \d{1,2} [a-zéû]{3,4}\.? ?\d{0,4})/i);
+        const date = dateMatch ? dateMatch[1].trim() : null;
+        if (!date) continue;
+
+        const horairesBlock = block.replace(date, '').trim();
+
+        let match;
+        while ((match = regexHoraireLieu.exec(horairesBlock)) !== null) {
+            const horaire = match[1].trim();
+            const lieu = match[2].trim();
+            result.push({ date, horaire, lieu });
+        }
+    }
+
+    return result;
+}
+
+function generateHorairesHTML(horairesList) {
+    // Regrouper par date
+    const groupedByDate = horairesList.reduce((acc, item) => {
+        if (!acc[item.date]) acc[item.date] = [];
+        acc[item.date].push(item);
+        return acc;
+    }, {});
+
+    let html = '';
+
+    // Pour chaque date, afficher la date en titre et la liste des horaires
+    for (const date of Object.keys(groupedByDate)) {
+        html += `<h3>${date}</h3><ul>`;
+        groupedByDate[date].forEach(item => {
+            html += `<li><span class="messe-heure"><strong>${item.horaire}</strong></span><br><span class="messe-lieu">${item.lieu}</span></li>`;
+        });
+        html += '</ul>';
+    }
+
+    return html;
+}
+
+function showMessesHorairesPanel() {
+    const panel = document.querySelector('.messes-horaires');
+    if (!panel) return;
+    panel.style.display = 'block';
+    const content = panel.querySelector('.messes-horaires-content');
+    if (!content) return;
+    // Affiche le choix géoloc ou ville
+    content.innerHTML = `
+    <div class="messes-horaires-choix" style="display:flex;align-items:center;gap:1em;margin-bottom:1.5em;justify-content:center;">
+      <button id="btn-geoloc-messes" class="nav-btn">📍 Utiliser ma position</button>
+      <span>ou</span>
+      <input id="input-ville-messes" type="text" placeholder="Ville ou village" style="padding:0.5em; border-radius:5px; border:1px solid #ccc; width: 160px;">
+      <button id="btn-valider-ville-messes" class="nav-btn">Valider</button>
+    </div>
+    <div class="messes-horaires-result"></div>
+  `;
+    // Ajout suggestions sous l'input
+    const suggestionsDiv = document.createElement('div');
+    suggestionsDiv.className = 'ville-suggestions';
+    suggestionsDiv.style.position = 'absolute';
+    suggestionsDiv.style.left = '0';
+    suggestionsDiv.style.right = '0';
+    suggestionsDiv.style.zIndex = '100';
+    content.querySelector('#input-ville-messes').parentNode.style.position = 'relative';
+    content.querySelector('#input-ville-messes').parentNode.appendChild(suggestionsDiv);
+
+    let lastQuery = '';
+    let suggestionsVisible = false;
+    let selectedVilleData = null;
+    let currentFetchController = null;
+    content.querySelector('#input-ville-messes').addEventListener('input', async function() {
+        const query = content.querySelector('#input-ville-messes').value.trim();
+        selectedVilleData = null; // reset à chaque nouvelle saisie
+        if (query.length < 2) {
+            suggestionsDiv.innerHTML = '';
+            suggestionsVisible = false;
+            if (currentFetchController) {
+                currentFetchController.abort();
+                currentFetchController = null;
+            }
+            return;
+        }
+        if (query === lastQuery && suggestionsVisible) return;
+        lastQuery = query;
+        // Annule le fetch précédent si une nouvelle lettre est tapée
+        if (currentFetchController) {
+            currentFetchController.abort();
+        }
+        currentFetchController = new AbortController();
+        // Appel API Nominatim
+        const url = `https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(query)}&countrycodes=fr&format=json&limit=5`;
+        let data = [];
+        try {
+            const resp = await fetch(url, { headers: { 'Accept-Language': 'fr' }, signal: currentFetchController.signal });
+            data = await resp.json();
+        } catch (e) {
+            if (e.name === 'AbortError') return;
+            suggestionsDiv.innerHTML = '';
+            suggestionsVisible = false;
+            return;
+        }
+        suggestionsDiv.innerHTML = '';
+        data.forEach(place => {
+            const suggestion = document.createElement('div');
+            suggestion.className = 'ville-suggestion-item';
+            suggestion.textContent = place.display_name;
+            suggestion.style.padding = '0.5em 1em';
+            suggestion.style.cursor = 'pointer';
+            suggestion.onclick = () => {
+                inputVille.value = place.display_name;
+                selectedVilleData = place; // On stocke l'objet suggestion
+                suggestionsDiv.innerHTML = '';
+                suggestionsVisible = false;
+                // Extraction du nom de ville et du code postal (département)
+                const display = place.display_name;
+                const villeMatch = display.match(/^([^,]+)/);
+                const codePostalMatch = display.match(/(\d{5})/);
+                let villeNom = villeMatch ? villeMatch[1].trim() : '';
+                let codePostal2 = codePostalMatch ? codePostalMatch[1].slice(0, 2) : '';
+                selectedVilleData.villeNom = villeNom;
+                selectedVilleData.codePostal2 = codePostal2;
+                console.log('Ville extraite:', villeNom, 'Département:', codePostal2);
+            };
+            suggestionsDiv.appendChild(suggestion);
+        });
+        suggestionsVisible = true;
+    });
+    // Fermer suggestions si clic ailleurs ou perte de focus
+    document.addEventListener('click', function (e) {
+        if (!suggestionsDiv.contains(e.target) && e.target !== content.querySelector('#input-ville-messes')) {
+            suggestionsDiv.innerHTML = '';
+            suggestionsVisible = false;
+        }
+    });
+    content.querySelector('#input-ville-messes').addEventListener('blur', function () {
+        setTimeout(() => {
+            if (!document.activeElement.classList.contains('ville-suggestion-item')) {
+                suggestionsDiv.innerHTML = '';
+                suggestionsVisible = false;
+            }
+        }, 200);
+    });
+    // Gestion des boutons
+    const btnGeoloc = content.querySelector('#btn-geoloc-messes');
+    const btnValider = content.querySelector('#btn-valider-ville-messes');
+    const inputVille = content.querySelector('#input-ville-messes');
+    const resultDiv = content.querySelector('.messes-horaires-result');
+
+    btnGeoloc.onclick = async () => {
+        resultDiv.innerHTML = '<p>Recherche de votre position...</p>';
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async pos => {
+                const { latitude, longitude } = pos.coords;
+                // Reverse geocode pour trouver la ville
+                const ville = await getCityFromCoords(latitude, longitude);
+                if (ville) {
+                    resultDiv.innerHTML = '<p>Recherche des horaires pour ' + ville + '...</p>';
+                    await afficherHorairesPourVille(ville, resultDiv);
+                    if (typeof loadHorairesMesses === 'function') {
+                        loadHorairesMesses(ville);
+                    }
+                } else {
+                    resultDiv.innerHTML = '<p>Ville non trouvée à partir de votre position.</p>';
+                }
+            }, err => {
+                resultDiv.innerHTML = '<p>Erreur de géolocalisation.</p>';
+            });
+        } else {
+            resultDiv.innerHTML = '<p>Géolocalisation non supportée.</p>';
+        }
+    };
+
+    btnValider.onclick = async () => {
+        let ville = inputVille.value.trim();
+        let codePostal2 = '';
+        let villeNom = '';
+        let queryString = '';
+        // Si une suggestion a été choisie et correspond à l'input
+        if (selectedVilleData && inputVille.value === selectedVilleData.display_name) {
+            villeNom = selectedVilleData.villeNom || '';
+            codePostal2 = selectedVilleData.codePostal2 || '';
+        } else {
+            // Sinon, on tente d'extraire manuellement
+            const villeMatch = ville.match(/^([^,]+)/);
+            const codePostalMatch = ville.match(/(\d{5})/);
+            villeNom = villeMatch ? villeMatch[1].trim() : ville;
+            codePostal2 = codePostalMatch ? codePostalMatch[1].slice(0, 2) : '';
+        }
+        // Normalisation : minuscules, accents retirés, espaces -> %20
+        function normalizeVille(str) {
+            return str
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9 ]/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+        let villeNorm = normalizeVille(villeNom);
+        if (codePostal2) {
+            queryString = `.fr%20${codePostal2}%20${villeNorm.replace(/ /g, '%20')}`;
+        } else {
+            queryString = villeNorm.replace(/ /g, '%20');
+        }
+        console.log('Ville:', villeNom, 'Département:', codePostal2, 'Query:', queryString);
+        if (!villeNorm) {
+            resultDiv.innerHTML = '<p>Veuillez entrer un nom de ville ou village.</p>';
+            return;
+        }
+        resultDiv.innerHTML = '<p>Recherche des horaires pour ' + villeNom + (codePostal2 ? ' (' + codePostal2 + ')' : '') + '...</p>';
+        await afficherHorairesPourVille(queryString, resultDiv);
+        if (typeof loadHorairesMesses === 'function') {
+            loadHorairesMesses(queryString);
+        }
+    };
+}
+
+async function getCityFromCoords(lat, lon) {
+    try {
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
+        const resp = await fetch(url);
+        const data = await resp.json();
+        return data.address?.city || data.address?.town || data.address?.village || data.address?.municipality || '';
+    } catch {
+        return '';
+    }
+}
+
+async function afficherHorairesPourVille(ville, resultDiv) {
+    try {
+        const response = await fetch(`/api/horaires-messes?ville=${encodeURIComponent(ville)}`);
+        const data = await response.json();
+        if (data.success) {
+            console.log(data.html[0])
+            resultDiv.innerHTML = generateHorairesHTML(parseHorairesEtLieux(data.html[0] || data.html));
+        } else {
+            resultDiv.innerHTML = '<p>Erreur lors du chargement des horaires : ' + (data.error || 'inconnue') + '</p>';
+        }
+    } catch (e) {
+        resultDiv.innerHTML = '<p>Erreur lors de la récupération des horaires.</p>';
+    }
+}
+
+// Appelle showMessesHorairesPanel() à l'ouverture du panneau horaires des messes
+// Par exemple, dans le gestionnaire d'événement du bouton "⛪ Horaires des messes"
+document.querySelector('.toggle-messes')?.addEventListener('click', showMessesHorairesPanel);
