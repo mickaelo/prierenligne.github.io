@@ -40,5 +40,3 @@ fi
 
 echo "📂 Variable PUPPETEER_CACHE_DIR définie : $PUPPETEER_CACHE_DIR"
 
-echo "▶️ Démarrage de l'application Node.js..."
-npm start
