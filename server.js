@@ -5,6 +5,7 @@ const fs = require('fs');
 const { JSDOM } = require('jsdom');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const https = require('https');
 
 // Servir les fichiers statiques (HTML, CSS, JS, images, etc.)
 app.use(express.static(path.join(__dirname)));
@@ -44,13 +45,26 @@ function parseHorairesMesses(htmlString) {
     }
 }
 
+// Fonction de ping keep-alive
+function pingKeepAlive() {
+  https.get('https://prierenligne-github-io.onrender.com/', res => {
+    console.log('Pinged prierenligne-github-io.onrender.com:', res.statusCode);
+  }).on('error', err => {
+    console.log('Ping error:', err.message);
+  });
+}
+
+// Ping toutes les 5 minutes
+setInterval(pingKeepAlive, 5 * 60 * 1000);
+// Ping au démarrage
+pingKeepAlive();
 
 app.get('/api/horaires-messes', async (req, res) => {
     const ville = req.query.ville || 'Haguenau';
     const url = `https://messes.info/horaires/${encodeURIComponent(ville)}`;
     let browser;
     try {
-        browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+        browser = await puppeteer.launch({ headless: 'true', args: ['--no-sandbox', '--disable-setuid-sandbox'] });
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
         // Sauvegarde le HTML juste après le goto
