@@ -8,8 +8,9 @@
     "postinstall": "npx puppeteer browsers install chrome"
   },
   "dependencies": {
+    "@sparticuz/chromium-min": "^138.0.1",
     "express": "^4.18.2",
     "jsdom": "^26.1.0",
-    "puppeteer": "^24.12.1"
+    "puppeteer": "^23.11.1"
   }
 }
