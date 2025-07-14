@@ -13,7 +13,6 @@ PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer
 mkdir -p $PUPPETEER_CACHE_DIR
 
 npx puppeteer browsers install chrome
-ls -R /opt/render/project/src
 
 if [[ ! -d $PUPPETEER_CACHE_DIR ]]; then
     echo "no peputer cache
