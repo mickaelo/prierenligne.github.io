@@ -13,7 +13,7 @@ PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer
 mkdir -p $PUPPETEER_CACHE_DIR
 
 npx puppeteer browsers install chrome
-ls -R /opt/render
+ls -R /opt/render/project/src/.cache
 
 if [[ ! -d $PUPPETEER_CACHE_DIR ]]; then
     cp -r /opt/render/project/src/.cache/puppeteer/chrome/ $PUPPETEER_CACHE_DIR
