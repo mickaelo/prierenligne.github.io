@@ -14,8 +14,9 @@ mkdir -p $PUPPETEER_CACHE_DIR
 
 npx puppeteer browsers install chrome
 
+
 if [[ ! -d $PUPPETEER_CACHE_DIR ]]; then
-    echo "no peputer cache
+    echo "no peputer cache"
     cp -r /opt/render/project/src/.cache/puppeteer/chrome/ $PUPPETEER_CACHE_DIR
 else
     cp -r $PUPPETEER_CACHE_DIR /opt/render/project/src/.cache/puppeteer/chrome/
