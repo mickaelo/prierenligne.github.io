@@ -4,8 +4,7 @@
   "description": "Serveur Node.js pour le site Prier en ligne",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "postinstall": "npx puppeteer browsers install chrome"
+    "start": "npx puppeteer browsers install chrome && node server.js"
   },
   "dependencies": {
     "@sparticuz/chromium-min": "^138.0.1",
