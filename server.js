@@ -50,10 +50,7 @@ app.get('/api/horaires-messes', async (req, res) => {
     const url = `https://messes.info/horaires/${encodeURIComponent(ville)}`;
     let browser;
     try {
-        browser = await puppeteer.launch({
-            executablePath: puppeteer.executablePath(),
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-          });
+        browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox'] });
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
         // Sauvegarde le HTML juste après le goto
