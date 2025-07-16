@@ -342,6 +342,11 @@ export default function Home() {
     }
   ];
   const [prayerLang, setPrayerLang] = useState('fr');
+  // État pour l'ouverture/fermeture des prières du chapelet
+  const [openPrayers, setOpenPrayers] = useState(() => prayers.map(() => false));
+  function togglePrayer(idx) {
+    setOpenPrayers(op => op.map((v, i) => i === idx ? !v : v));
+  }
 
   // --- Horaires des messes ---
   const [horairesLeftOpen, setHorairesLeftOpen] = useState(false);
@@ -827,17 +832,20 @@ export default function Home() {
             <div className="flex gap-2 mt-1 sm:mt-0">
               <button
                 className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                style={{ cursor: 'pointer' }}
                 onClick={() => setLectioDate(new Date(lectioDate.getTime() - 86400000))}
                 aria-label="Jour précédent"
               >◀</button>
               <button
                 className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                style={{ cursor: 'pointer' }}
                 onClick={() => setLectioDate(new Date())}
                 aria-label="Aujourd'hui"
                 disabled={lectioDate.toDateString() === new Date().toDateString()}
               >Aujourd'hui</button>
               <button
                 className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                style={{ cursor: 'pointer' }}
                 onClick={() => setLectioDate(new Date(lectioDate.getTime() + 86400000))}
                 aria-label="Jour suivant"
               >▶</button>
@@ -1068,17 +1076,20 @@ export default function Home() {
             <div className="flex gap-2 mt-1 sm:mt-0">
               <button
                 className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                style={{ cursor: 'pointer' }}
                 onClick={() => setChapeletDate(new Date(chapeletDate.getTime() - 86400000))}
                 aria-label="Jour précédent"
               >◀</button>
               <button
                 className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                style={{ cursor: 'pointer' }}
                 onClick={() => setChapeletDate(new Date())}
                 aria-label="Aujourd'hui"
                 disabled={chapeletDate.toDateString() === new Date().toDateString()}
               >Aujourd'hui</button>
               <button
                 className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                style={{ cursor: 'pointer' }}
                 onClick={() => setChapeletDate(new Date(chapeletDate.getTime() + 86400000))}
                 aria-label="Jour suivant"
               >▶</button>
@@ -1100,9 +1111,22 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col gap-6">
                   {prayers.map((p, i) => (
-                    <div key={i} className="bg-[#181818] rounded-lg p-3 shadow border border-neutral-800" style={{ width: '100%' }}>
-                      <div className="font-bold text-yellow-200 mb-2">{p.title}</div>
-                      <div className="text-base" style={{ lineHeight: 1.2, whiteSpace: 'pre-line' }}>{prayerLang === 'fr' ? p.fr : p.la}</div>
+                    <div key={i} className="bg-[#181818] rounded-lg shadow border border-neutral-800" style={{ width: '100%' }}>
+                      <div
+                        className="font-bold text-yellow-200 mb-2 cursor-pointer flex items-center gap-2 select-none"
+                        style={{ userSelect: 'none' }}
+                        onClick={() => togglePrayer(i)}
+                        tabIndex={0}
+                        aria-expanded={openPrayers[i]}
+                        aria-controls={`prayer-content-${i}`}
+                        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') togglePrayer(i); }}
+                      >
+                        <span style={{ fontSize: 18 }}>{openPrayers[i] ? '▼' : '▶'}</span>
+                        {p.title}
+                      </div>
+                      {openPrayers[i] && (
+                        <div id={`prayer-content-${i}`} className="text-base" style={{ lineHeight: 1.2, whiteSpace: 'pre-line' }}>{prayerLang === 'fr' ? p.fr : p.la}</div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1236,7 +1260,13 @@ export default function Home() {
             {horairesLoading && <div className="text-center text-neutral-400">Chargement<AnimatedEllipsis /></div>}
             {horairesError && <div className="text-center text-red-400">{horairesError}</div>}
             {horairesResult && (
-              <div className="mt-4 text-base" style={{ width: '100%' }} dangerouslySetInnerHTML={{ __html: (horairesResult && typeof horairesResult === 'string' && horairesResult.includes('Messe')) ? generateHorairesHTML(parseHorairesEtLieux(horairesResult)) : horairesResult }} />
+              <div
+                className="mt-4 text-base"
+                style={{ width: '100%', maxHeight: 340, overflowY: 'auto', borderRadius: 8 }}
+                tabIndex={0}
+                aria-label="Résultats horaires des messes (scrollable)"
+                dangerouslySetInnerHTML={{ __html: (horairesResult && typeof horairesResult === 'string' && horairesResult.includes('Messe')) ? generateHorairesHTML(parseHorairesEtLieux(horairesResult)) : horairesResult }}
+              />
             )}
           </div>
         </div>
@@ -1574,10 +1604,25 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="p-6 flex-1 overflow-y-auto">
+        <div className="p-6 flex-1 overflow-y-auto" style={{ position: 'relative' }}>
+          {/* Overlay de chargement Bible */}
+          {bibleLoading && (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(0,0,0,0.4)',
+              zIndex: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pointerEvents: 'auto',
+            }}>
+              <div className="animate-spin" style={{ width: 48, height: 48, border: '5px solid #ffe066', borderTop: '5px solid transparent', borderRadius: '50%' }} />
+            </div>
+          )}
           {/* Affichage navigation ou texte biblique */}
           {bibleContent == null ? (
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6" style={bibleLoading ? { filter: 'blur(1px)', pointerEvents: 'none', userSelect: 'none' } : {}}>
               {/* Ancien Testament */}
               <div>
                 <div className="text-lg font-bold text-yellow-300 mb-2">Ancien Testament</div>
@@ -1614,7 +1659,7 @@ export default function Home() {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4" style={bibleLoading ? { filter: 'blur(1px)', pointerEvents: 'none', userSelect: 'none' } : {}}>
               {/* Sélecteur de chapitre si livre courant connu */}
               {bibleCurrentBook && (
                 <div className="flex items-center gap-2 mb-2">
@@ -1649,7 +1694,6 @@ export default function Home() {
               >
                 ← Retour
               </button>
-              {bibleLoading && <div className="text-center text-neutral-400">Chargement…</div>}
               {bibleError && <div className="text-center text-red-400">{bibleError}</div>}
               {bibleContent && (
                 <div className="bg-[#181818] rounded-lg p-4 shadow border border-neutral-800 prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: bibleContent }} />
