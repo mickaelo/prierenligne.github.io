@@ -680,8 +680,17 @@ export default function Home() {
         style={{ minWidth: 320, background: panelBg, color: text, width: chatExtended ? '100vw' : undefined, maxWidth: chatExtended ? '100vw' : undefined }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
-          <h2 className="text-xl font-bold" style={{ color: text }}>Posez vos questions sur l'Eglise, la foi, le catéchisme</h2>
+          <h2 className="text-xl font-bold" style={{ color: text, fontSize: 14 }}>Posez vos questions sur l'Eglise, la foi, le catéchisme</h2>
           <div className="flex gap-2">
+            <button
+              className="text-xl transition cursor-pointer"
+              style={{ color: text, background: "none", border: "none", cursor: 'pointer' }}
+              onClick={() => setChatMessages([])}
+              aria-label="Effacer l'historique du chat"
+              title="Effacer l'historique du chat"
+            >
+              🗑️
+            </button>
             <button
               className="text-xl transition cursor-pointer"
               style={{ color: text, background: "none", border: "none", cursor: 'pointer' }}
@@ -721,7 +730,7 @@ export default function Home() {
               {msg.from === "user"
                 ? msg.text
                 : (msg.text === '...'
-                  ? <span style={{ color: '#ffe066', fontWeight: 600, fontSize: 18 }}><AnimatedEllipsis /></span>
+                  ? <span style={{ color: '#ffe066', fontWeight: 600, fontSize: 18, background: 'none' }}><AnimatedEllipsis /></span>
                   : <>
                       <span style={{ display: 'block', fontSize: 17, lineHeight: 1.7 }}
                         dangerouslySetInnerHTML={{ __html: msg.citations && msg.citations.length > 0 ? linkifyCitations(msg.text, msg.citations) : marked.parse(msg.text || "") }}
@@ -788,7 +797,7 @@ export default function Home() {
         style={{ minWidth: 320, background: panelBg, color: text, width: lectioExtended ? '100vw' : undefined, maxWidth: lectioExtended ? '100vw' : undefined }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
-          <h2 className="text-2xl font-bold" style={{ color: text }}>Lectio divina</h2>
+          <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Lectio divina</h2>
           <div className="flex gap-2">
             <button
               className="text-xl transition cursor-pointer"
@@ -889,7 +898,7 @@ export default function Home() {
         style={{ minWidth: 320, background: panelBg, color: text, width: messeExtended ? '100vw' : '100vw', maxWidth: messeExtended ? '100vw' : '100vw' }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
-          <h2 className="text-2xl font-bold" style={{ color: text }}>Liturgie de la messe</h2>
+          <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Liturgie de la messe</h2>
           <div className="flex gap-2">
             <button
               className={`text-base transition cursor-pointer px-3 py-1 rounded ${showMisselHtml ? 'bg-yellow-400 text-[#222]' : 'bg-[#222] text-yellow-300 border border-yellow-300'}`}
@@ -1019,7 +1028,7 @@ export default function Home() {
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold" style={{ color: text }}>Chapelet</h2>
+            <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Chapelet</h2>
             <button
               className="text-xl ml-1 transition cursor-pointer"
               style={{ color: '#ffe066', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
@@ -1163,7 +1172,7 @@ export default function Home() {
         style={{ minWidth: 320, background: panelBg, color: text, width: horairesExtended ? '100vw' : undefined, maxWidth: horairesExtended ? '100vw' : undefined }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
-          <h2 className="text-2xl font-bold" style={{ color: text }}>Horaires des messes</h2>
+          <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Horaires des messes</h2>
           <div className="flex gap-2">
             <button
               className="text-xl transition cursor-pointer"
@@ -1384,7 +1393,7 @@ export default function Home() {
           style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           onClick={() => { closeAllRightPanels(); setMesseOpen((open) => !open); }}
         >
-          <span>📜</span>
+          <span>⛪</span>
           <span className="emoji-tooltip">Liturgie</span>
         </button>
         <button
@@ -1392,7 +1401,7 @@ export default function Home() {
           style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           onClick={() => { closeAllRightPanels(); setChapeletOpen((open) => !open); }}
         >
-          <span>✝️</span>
+          <span>📿</span>
           <span className="emoji-tooltip">Chapelet</span>
         </button>
         <button
@@ -1400,7 +1409,7 @@ export default function Home() {
           style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           onClick={() => { closeAllLeftPanels(); setHorairesLeftOpen((open) => !open); }}
         >
-          <span>⛪</span>
+          <span>🕐</span>
           <span className="emoji-tooltip">Horaires des messes</span>
         </button>
         <button
@@ -1408,7 +1417,7 @@ export default function Home() {
           style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           onClick={() => { closeAllRightPanels(); setBibleOpen((open) => !open); }}
         >
-          <span>📚</span>
+          <span>✝️</span>
           <span className="emoji-tooltip">Bible</span>
         </button>
       </div>
@@ -1419,7 +1428,7 @@ export default function Home() {
         </div>
       )}
       {/* Sélecteur d'icônes au-dessus de l'icône de prière */}
-      <div className="fixed left-1/2 -translate-x-1/2 bottom-32 sm:bottom-40 z-50 flex gap-2 bg-transparent justify-center items-end">
+      <div className="fixed left-1/2 bottom-32 sm:bottom-40 z-50 flex gap-2 bg-transparent justify-center items-end" style={{ transform: 'translateX(-50%)', width: 'auto', minWidth: 0 }}>
         {icons.map((icon, idx) => (
           <button
             key={icon.label}
@@ -1432,17 +1441,42 @@ export default function Home() {
           </button>
         ))}
       </div>
-      {/* Icône de prière centrée en bas */}
-      <div className="fixed left-1/2 -translate-x-1/2 bottom-8 sm:bottom-24 z-50 flex gap-3 items-end justify-center">
-        <Image src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f64f.png" alt="Prière" width={64} height={64} style={{ filter: showCandle ? 'brightness(0.7)' : 'none', transition: 'filter 0.2s', cursor: 'pointer' }} onClick={() => setShowCandle((v) => !v)} unoptimized />
-        <button
-          className="rounded-full shadow flex items-center justify-center cursor-pointer"
-          style={{ width: 44, height: 44, background: 'rgba(255,255,255,0.08)', color: text, border: btnBorder, fontSize: 28, padding: 0, borderWidth: 1, borderStyle: 'solid', marginBottom: 8 }}
-          aria-label="Choisir le temps de prière"
-          onClick={() => setShowDurationSelector(v => !v)}
-        >
-          🕒
-        </button>
+      {/* Icône de prière centrée en bas, timer à droite */}
+      <div className="fixed left-1/2 bottom-4 sm:bottom-12 z-50" style={{ transform: 'translateX(-50%)' }}>
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <Image
+            src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f64f.png"
+            alt="Prière"
+            width={64}
+            height={64}
+            style={{ filter: showCandle ? 'brightness(0.7)' : 'none', transition: 'filter 0.2s', cursor: 'pointer' }}
+            onClick={() => setShowCandle((v) => !v)}
+            unoptimized
+          />
+          <button
+            className="rounded-full shadow flex items-center justify-center cursor-pointer"
+            style={{
+              width: 44,
+              height: 44,
+              background: 'rgba(255,255,255,0.08)',
+              color: text,
+              border: btnBorder,
+              fontSize: 28,
+              padding: 0,
+              borderWidth: 1,
+              borderStyle: 'solid',
+              marginBottom: 8,
+              position: 'absolute',
+              right: -52,
+              top: '50%',
+              transform: 'translateY(-50%)'
+            }}
+            aria-label="Choisir le temps de prière"
+            onClick={() => setShowDurationSelector(v => !v)}
+          >
+            🕒
+          </button>
+        </div>
       </div>
       {showCandle && <Candle />}
       {/* Popin sélecteur de temps de prière */}
@@ -1519,7 +1553,7 @@ export default function Home() {
         style={{ minWidth: 320, background: panelBg, color: text, width: bibleExtended ? '100vw' : undefined, maxWidth: bibleExtended ? '100vw' : undefined }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
-          <h2 className="text-2xl font-bold" style={{ color: text }}>Bible</h2>
+          <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Bible</h2>
           <div className="flex gap-2">
             <button
               className="text-xl transition cursor-pointer"
