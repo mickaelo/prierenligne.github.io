@@ -1221,10 +1221,10 @@ export default function Home() {
           <div className="flex flex-col gap-4 mx-auto" style={{ maxWidth: horairesExtended ? '100%' : 600, width: horairesExtended ? '100%' : undefined }}>
             <div className="flex items-center gap-2 mb-2 justify-center">
               <button
-                className="px-3 py-2 rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition text-sm"
+                className="px-3 py-2 cursor-pointer rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition text-sm"
                 onClick={handleGeoLoc}
                 disabled={horairesGeoLoading}
-              >📍 Utiliser ma position</button>
+              >📍 Avec ma position</button>
               <span>ou</span>
               <div className="relative w-full max-w-[180px]">
                 <input
