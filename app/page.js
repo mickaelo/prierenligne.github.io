@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import config from "../config.js";
 import { marked } from "marked";
+import Image from "next/image";
 
 // Fonction utilitaire pour lier les références [^n] aux citations
 function linkifyCitations(markdown, citations) {
@@ -1414,7 +1415,7 @@ export default function Home() {
       {/* Affichage de l'icône sélectionnée au centre de la page */}
       {selectedIcon && (
         <div className="fixed left-1/2 z-40 flex flex-col items-center" style={{ top: '35%', transform: 'translate(-50%, -50%)' }}>
-          <img src={selectedIcon} alt="Icône sélectionnée" width={200} height={200} style={{ borderRadius: '16px', boxShadow: '0 4px 32px #000a', background: '#222' }} />
+          <Image src={selectedIcon} alt="Icône sélectionnée" width={200} height={200} style={{ borderRadius: '16px', boxShadow: '0 4px 32px #000a', background: '#222' }} unoptimized />
         </div>
       )}
       {/* Sélecteur d'icônes au-dessus de l'icône de prière */}
@@ -1427,13 +1428,13 @@ export default function Home() {
             onClick={() => setSelectedIcon(selectedIcon === icon.src ? null : icon.src)}
             aria-label={icon.label}
           >
-            <img src={icon.src} alt={icon.label} width={36} height={36} style={{ borderRadius: '50%' }} />
+            <Image src={icon.src} alt={icon.label} width={36} height={36} style={{ borderRadius: '50%' }} unoptimized />
           </button>
         ))}
       </div>
       {/* Icône de prière centrée en bas */}
       <div className="fixed left-1/2 -translate-x-1/2 bottom-8 sm:bottom-24 z-50 flex gap-3 items-end justify-center">
-        <img src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f64f.png" alt="Prière" width={64} height={64} style={{ filter: showCandle ? 'brightness(0.7)' : 'none', transition: 'filter 0.2s', cursor: 'pointer' }} onClick={() => setShowCandle((v) => !v)} />
+        <Image src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f64f.png" alt="Prière" width={64} height={64} style={{ filter: showCandle ? 'brightness(0.7)' : 'none', transition: 'filter 0.2s', cursor: 'pointer' }} onClick={() => setShowCandle((v) => !v)} unoptimized />
         <button
           className="rounded-full shadow flex items-center justify-center cursor-pointer"
           style={{ width: 44, height: 44, background: 'rgba(255,255,255,0.08)', color: text, border: btnBorder, fontSize: 28, padding: 0, borderWidth: 1, borderStyle: 'solid', marginBottom: 8 }}
