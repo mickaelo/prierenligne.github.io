@@ -4,8 +4,20 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 const https = require('https');
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
+let pdfParse;
+try { pdfParse = require('pdf-parse'); } catch (e) { pdfParse = null; }
+
+const cors = require('cors');
+app.use(cors({
+  origin: 'http://localhost:3000', // autorise seulement ton front local
+  credentials: true
+}));
+
+app.use(express.json());
 
 // Servir les fichiers statiques (HTML, CSS, JS, images, etc.)
 app.use(express.static(path.join(__dirname)));
@@ -92,6 +104,96 @@ app.get('/api/horaires-messes', async (req, res) => {
     } finally {
         if (browser) await browser.close();
     }
+});
+
+// Proxy Magisterium API
+app.post('/api/magisterium', async (req, res) => {
+  try {
+    const apiKey = "sk_mickae_d5257c104008450aaf7fdf265062b73b";
+    if (!apiKey) {
+      return res.status(500).json({ error: 'MAGISTERIUM_API_KEY not set in environment' });
+    }
+    const response = await fetch('https://www.magisterium.com/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(req.body),
+    });
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Endpoint proxy pour la Bible AELF
+app.get('/api/bible', async (req, res) => {
+  try {
+    const livre = req.query.livre;
+    const chapitre = req.query.chapitre || 1;
+    if (!livre) return res.status(400).json({ error: 'Paramètre livre manquant' });
+    const url = `https://www.aelf.org/bible/${livre}/${chapitre}`;
+    const response = await fetch(url);
+    if (!response.ok) return res.status(500).json({ error: 'Erreur lors de la récupération du texte biblique' });
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    const rightCol = $('#right-col');
+    // Supprimer la navigation des chapitres (div/ul/ol avec classes connues)
+    rightCol.find('.chapters, .nav-chapitres, .chapitres, .pagination, .pagination-chapitres, .pagination__list').remove();
+    // Supprimer aussi les liens de navigation "chapitre suivant", "précédent", etc.
+    rightCol.find('a:contains("chapitre suivant"), a:contains("chapitre précédent")').remove();
+    // Supprimer les éventuels <nav> ou <ul> contenant beaucoup de liens de chapitres
+    rightCol.find('nav, ul, ol').each(function() {
+      if ($(this).find('a').length > 10) $(this).remove();
+    });
+    // Supprimer le titre du chapitre (h1, h2, div ou p en haut qui contient le nom du livre ou 'chapitre')
+    const firstH1 = rightCol.find('h1').first();
+    if (firstH1.length) firstH1.remove();
+    const firstH2 = rightCol.find('h2').first();
+    if (firstH2.length) firstH2.remove();
+    // Supprimer tout div ou p en haut qui ne contient que le numéro du chapitre ou le mot 'chapitre'
+    rightCol.children('div, p').each(function(i, el) {
+      const txt = $(el).text().trim().toLowerCase();
+      if (/^chapitre(\s+\d+)?$/.test(txt) || /^\d+$/.test(txt)) {
+        $(el).remove();
+      }
+    });
+    const cleanedHtml = rightCol.html();
+    if (!cleanedHtml) return res.status(404).json({ error: 'Texte biblique non trouvé' });
+    res.json({ html: cleanedHtml });
+  } catch (e) {
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Endpoint pour extraire le PDF du missel en HTML lisible
+app.get('/api/missel-html', async (req, res) => {
+  if (!pdfParse) return res.status(500).json({ error: 'pdf-parse n\'est pas installé' });
+  try {
+    const pdfPath = path.join(__dirname, 'missel-liturgie.pdf');
+    if (!fs.existsSync(pdfPath)) return res.status(404).json({ error: 'Fichier PDF non trouvé' });
+    const dataBuffer = fs.readFileSync(pdfPath);
+    const data = await pdfParse(dataBuffer);
+    let text = data.text;
+    // Conversion simple en HTML : titres, paragraphes
+    // Titres : lignes en MAJUSCULES isolées
+    let html = '';
+    text.split(/\n{2,}/).forEach(block => {
+      const trimmed = block.trim();
+      if (!trimmed) return;
+      if (/^[A-ZÉÈÊÎÔÛÄÖÜÇ\-\s]{6,}$/.test(trimmed) && trimmed.length < 80) {
+        html += `<h2>${trimmed}</h2>`;
+      } else {
+        html += `<p>${trimmed.replace(/\n/g, ' ')}</p>`;
+      }
+    });
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  } catch (e) {
+    res.status(500).json({ error: 'Erreur lors de la lecture du PDF' });
+  }
 });
 
 app.listen(PORT, () => {
