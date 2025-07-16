@@ -653,6 +653,48 @@ export default function Home() {
     }
   }
 
+  // Radio Maria
+  const [showRadio, setShowRadio] = useState(false);
+  const [radioPlaying, setRadioPlaying] = useState(false);
+  const radioRef = useRef(null);
+  function toggleRadio() {
+    setShowRadio(v => !v);
+    setRadioPlaying(false);
+    if (radioRef.current) radioRef.current.pause();
+  }
+  function handleRadioPlayPause() {
+    if (!radioRef.current) return;
+    if (radioPlaying) {
+      radioRef.current.pause();
+      setRadioPlaying(false);
+    } else {
+      radioRef.current.play();
+      setRadioPlaying(true);
+    }
+  }
+
+  // Radios disponibles
+  const radios = [
+    {
+      name: 'Radio Maria France',
+      url: 'https://dreamsiteradiocp6.com/proxy/rmfrance1?mp=/stream',
+    },
+    {
+      name: 'Radio Notre Dame',
+      url: 'https://rcf.streamakaci.com/rcfdigital.mp3?_ic2=1752677672433',
+    },
+  ];
+  const [selectedRadio, setSelectedRadio] = useState(radios[0]);
+  useEffect(() => {
+    if (showRadio && radioRef.current) {
+      radioRef.current.load();
+      if (radioPlaying) {
+        radioRef.current.play();
+      }
+    }
+    // eslint-disable-next-line
+  }, [selectedRadio]);
+
   return (
     <div className="min-h-screen flex flex-col font-sans relative overflow-x-hidden" style={{ background: bg, color: text }}>
       {/* Header */}
@@ -1429,7 +1471,7 @@ export default function Home() {
         <button
           className="cursor-pointer emoji-btn"
           style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          onClick={() => { closeAllRightPanels(); setChapeletOpen((open) => !open); }}
+          onClick={() => { closeAllRightPanels(); setChapeletOpen(!chapeletOpen); }}
         >
           <span>📿</span>
           <span className="emoji-tooltip">Chapelet</span>
@@ -1437,7 +1479,7 @@ export default function Home() {
         <button
           className="cursor-pointer emoji-btn"
           style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          onClick={() => { closeAllLeftPanels(); setHorairesLeftOpen((open) => !open); }}
+          onClick={() => { closeAllLeftPanels(); setHorairesLeftOpen(!horairesLeftOpen); }}
         >
           <span>🕐</span>
           <span className="emoji-tooltip">Horaires des messes</span>
@@ -1445,7 +1487,7 @@ export default function Home() {
         <button
           className="cursor-pointer emoji-btn"
           style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          onClick={() => { closeAllRightPanels(); setBibleOpen((open) => !open); }}
+          onClick={() => { closeAllRightPanels(); setBibleOpen(!bibleOpen); }}
         >
           <span>✝️</span>
           <span className="emoji-tooltip">Bible</span>
@@ -1701,6 +1743,49 @@ export default function Home() {
             </div>
           )}
         </div>
+      </div>
+      {/* Bouton Radio Maria */}
+      <style>{`
+        @keyframes shake-radio {
+          0% { transform: rotate(0deg) scale(1); }
+          20% { transform: rotate(-12deg) scale(1.08); }
+          40% { transform: rotate(10deg) scale(1.12); }
+          60% { transform: rotate(-8deg) scale(1.08); }
+          80% { transform: rotate(8deg) scale(1.04); }
+          100% { transform: rotate(0deg) scale(1); }
+        }
+        .radio-shake:hover, .radio-shake:focus {
+          animation: shake-radio 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+      `}</style>
+      <div className="fixed bottom-4 right-4 z-[120] flex flex-col items-end">
+        <button
+          className="rounded-full shadow flex items-center justify-center cursor-pointer bg-yellow-400 hover:bg-yellow-300 transition radio-shake"
+          style={{ width: 56, height: 56, fontSize: 30, color: '#222', border: 'none', boxShadow: '0 2px 12px #0004', marginBottom: showRadio ? 12 : 0 }}
+          aria-label={showRadio ? "Fermer la radio" : "Écouter la radio"}
+          title={showRadio ? "Fermer la radio" : "Écouter la radio"}
+          onClick={toggleRadio}
+        >
+          <span role="img" aria-label="Radio">📻</span>
+        </button>
+        {showRadio && (
+          <div className="bg-[#222] text-white rounded-xl shadow-2xl p-4 flex flex-col items-center animate-fadein" style={{ minWidth: 220, maxWidth: 320, marginBottom: 8 }}>
+            <div className="flex gap-2 mb-2">
+              {radios.map(radio => (
+                <button
+                  key={radio.name}
+                  className={`px-3 py-1 rounded font-bold text-sm transition ${selectedRadio.name === radio.name ? 'bg-yellow-400 text-[#222]' : 'bg-[#181818] text-yellow-200 border border-yellow-400'}`}
+                  style={{ outline: 'none', borderWidth: 1, borderStyle: 'solid' }}
+                  onClick={() => setSelectedRadio(radio)}
+                  aria-label={`Écouter ${radio.name}`}
+                >
+                  {radio.name}
+                </button>
+              ))}
+            </div>
+            <audio ref={radioRef} src={selectedRadio.url} controls style={{ width: '100%' }} onPlay={() => setRadioPlaying(true)} onPause={() => setRadioPlaying(false)} />
+          </div>
+        )}
       </div>
     </div>
   );
