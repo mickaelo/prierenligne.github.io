@@ -265,7 +265,7 @@ export default function Home() {
     setChatMessages((msgs) => [...msgs, { from: "bot", text: "..." }]); // loading
     try {
       const apiKey = (typeof config !== 'undefined' && config.MAGISTERIUM_API_KEY) ? config.MAGISTERIUM_API_KEY : (process.env.MAGISTERIUM_API_KEY || '');
-      const response = await fetch('http://localhost:8000/api/magisterium', {
+      const response = await fetch('/api/magisterium', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
@@ -388,7 +388,7 @@ export default function Home() {
     setHorairesError(null);
     setHorairesResult(null);
     try {
-      const resp = await fetch(`http://localhost:8000/api/horaires-messes?ville=${encodeURIComponent(ville)}`);
+      const resp = await fetch(`/api/horaires-messes?ville=${encodeURIComponent(ville)}`);
       const data = await resp.json();
       if (data.success) {
         // data.html[0] ou data.html
@@ -600,7 +600,7 @@ export default function Home() {
     setBibleError(null);
     setBibleContent(null);
     try {
-      const resp = await fetch(`http://localhost:8000/api/bible?livre=${code}&chapitre=${chapitre}`);
+      const resp = await fetch(`/api/bible?livre=${code}&chapitre=${chapitre}`);
       const data = await resp.json();
       if (data.html) {
         setBibleContent(data.html);
