@@ -664,6 +664,16 @@ export default function Home() {
   const [showIconCarousel, setShowIconCarousel] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
+  useEffect(() => {
+    function handleEscCloseTab(e) {
+      if (e.key === 'Escape') {
+        window.close();
+      }
+    }
+    window.addEventListener('keydown', handleEscCloseTab);
+    return () => window.removeEventListener('keydown', handleEscCloseTab);
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col font-sans relative overflow-x-hidden" style={{ background: bg, color: text }}>
       {/* Header */}
@@ -690,7 +700,7 @@ export default function Home() {
 
       {/* Volet Chatbot (gauche) */}
       <div
-        className={`fixed top-0 left-0 h-screen w-full sm:w-[400px] max-w-full shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col max-h-[100vh] overflow-y-auto
+        className={`fixed top-0 left-0 h-full w-full sm:w-[400px] max-w-full shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col max-h-[100vh] overflow-y-auto
         ${chatOpen ? "translate-x-0" : "-translate-x-full"}
         ${chatExtended ? "w-full max-w-full" : "sm:w-[400px] max-w-full"}`}
         style={{ minWidth: 320, background: panelBg, color: text, width: chatExtended ? '100vw' : undefined, maxWidth: chatExtended ? '100vw' : undefined }}
@@ -726,7 +736,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3" style={{ maxHeight: 'calc(100vh - 120px)' }}>
           {chatMessages.map((msg, i) => (
             <div key={i} style={{
               alignSelf: msg.from === "user" ? "flex-end" : "flex-start",
@@ -916,126 +926,21 @@ export default function Home() {
         ${messeExtended ? "w-full max-w-full" : ""}`}
         style={{ minWidth: 320, background: panelBg, color: text, width: messeExtended ? '100vw' : '100vw', maxWidth: messeExtended ? '100vw' : '100vw' }}
       >
-        <div className="flex items-center justify-between p-4 border-b border-neutral-700">
-          <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Liturgie de la messe</h2>
-          <div className="flex gap-2">
-            <button
-              className={`text-base transition cursor-pointer px-3 py-1 rounded ${showMisselHtml ? 'bg-yellow-400 text-[#222]' : 'bg-[#222] text-yellow-300 border border-yellow-300'}`}
-              style={{ fontWeight: 600 }}
-              onClick={handleShowMisselHtml}
-              aria-label="Afficher le missel en HTML"
-              title="Afficher le missel en HTML"
-            >
-              Missel (HTML)
-            </button>
-            <button
-              className="text-xl transition cursor-pointer"
-              style={{ color: text, background: "none", border: "none", cursor: 'pointer' }}
-              onClick={() => setMesseExtended(e => !e)}
-              aria-label={messeExtended ? "Réduire" : "Étendre"}
-              title={messeExtended ? "Réduire" : "Étendre"}
-            >
-              {messeExtended ? "🗗" : "🗖"}
-            </button>
-            <button
-              className="text-2xl transition cursor-pointer"
-              style={{ color: text, background: "none", border: "none", cursor: 'pointer' }}
-              onClick={() => setMesseOpen(false)}
-              aria-label="Fermer"
-            >
-              ×
-            </button>
-          </div>
+        <div className="flex items-center justify-end p-2">
+          <button
+            className="text-2xl transition cursor-pointer"
+            style={{ color: text, background: "none", border: "none", cursor: 'pointer' }}
+            onClick={() => setMesseOpen(false)}
+            aria-label="Fermer"
+          >
+            ×
+          </button>
         </div>
-        <div className="p-6 flex-1 overflow-y-auto">
-          {showMisselHtml ? (
-            <div style={{ width: '100%', minHeight: 300 }}>
-              <button
-                className="mb-4 px-3 py-1 rounded bg-yellow-400 text-[#222] font-semibold shadow hover:bg-yellow-300 transition text-sm"
-                onClick={() => setShowMisselHtml(false)}
-              >
-                ← Retour
-              </button>
-              {misselHtmlLoading && <div className="text-center text-neutral-400">Chargement…</div>}
-              {misselHtmlError && <div className="text-center text-red-400">{misselHtmlError}</div>}
-              {misselHtml && (
-                <div className="bg-[#181818] rounded-lg p-4 shadow border border-neutral-800 prose prose-invert max-w-none" style={{ fontSize: 17, lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: misselHtml }} />
-              )}
-            </div>
-          ) : showMisselPdf ? (
-            <>
-              {messeLoading && <div className="text-center text-neutral-400">Chargement<AnimatedEllipsis /></div>}
-              {messeError && <div className="text-center text-red-400">{messeError}</div>}
-              {messeTexte && (() => {
-                const sections = parseMesseSections(messeTexte);
-                return (
-                  <div style={{ maxWidth: messeExtended ? '100%' : 700, width: messeExtended ? '100%' : undefined, margin: '0 auto' }}>
-                    {/* Navigation */}
-                    <div className="mb-6 flex flex-wrap gap-2 justify-center">
-                      {sections.map((s, i) => s.title && (
-                        <a
-                          key={i}
-                          href={`#messe-section-${i}`}
-                          className="px-3 py-1 rounded bg-yellow-400 text-[#222] font-semibold text-sm shadow hover:bg-yellow-300 transition"
-                          style={{ marginBottom: 4 }}
-                        >
-                          {s.title}
-                        </a>
-                      ))}
-                    </div>
-                    {/* Sections */}
-                    <div>
-                      {sections.map((s, i) => (
-                        <section key={i} id={`messe-section-${i}`} className="mb-8" style={{ width: '100%' }}>
-                          {s.title && <div className="text-xl font-bold text-yellow-300 mb-2 uppercase tracking-wide">{s.title}</div>}
-                          <div style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', color: text, background: 'none', fontSize: 16, lineHeight: 1.5 }}>
-                            {s.content.join('\n').replace(/\f/g, '')}
-                          </div>
-                        </section>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })()}
-            </>
-          ) : (
-            <>
-              {messeLoading && <div className="text-center text-neutral-400">Chargement<AnimatedEllipsis /></div>}
-              {messeError && <div className="text-center text-red-400">{messeError}</div>}
-              {messeTexte && (() => {
-                const sections = parseMesseSections(messeTexte);
-                return (
-                  <div style={{ maxWidth: messeExtended ? '100%' : 700, width: messeExtended ? '100%' : undefined, margin: '0 auto' }}>
-                    {/* Navigation */}
-                    <div className="mb-6 flex flex-wrap gap-2 justify-center">
-                      {sections.map((s, i) => s.title && (
-                        <a
-                          key={i}
-                          href={`#messe-section-${i}`}
-                          className="px-3 py-1 rounded bg-yellow-400 text-[#222] font-semibold text-sm shadow hover:bg-yellow-300 transition"
-                          style={{ marginBottom: 4 }}
-                        >
-                          {s.title}
-                        </a>
-                      ))}
-                    </div>
-                    {/* Sections */}
-                    <div>
-                      {sections.map((s, i) => (
-                        <section key={i} id={`messe-section-${i}`} className="mb-8" style={{ width: '100%' }}>
-                          {s.title && <div className="text-xl font-bold text-yellow-300 mb-2 uppercase tracking-wide">{s.title}</div>}
-                          <div style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', color: text, background: 'none', fontSize: 16, lineHeight: 1.5 }}>
-                            {s.content.join('\n').replace(/\f/g, '')}
-                          </div>
-                        </section>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })()}
-            </>
-          )}
-        </div>
+        <iframe
+          src="/missel-liturgie.pdf"
+          style={{ width: '100%', height: '90vh', border: 'none', borderRadius: 8, background: '#fff' }}
+          title="Missel PDF"
+        />
       </div>
 
       {/* Volet Chapelet (droite) */}
