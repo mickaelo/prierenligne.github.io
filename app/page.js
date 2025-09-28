@@ -62,6 +62,7 @@ export default function Home() {
   const [customDuration, setCustomDuration] = useState('');
   const [showChapeletHelp, setShowChapeletHelp] = useState(false);
   const [showDurationSelector, setShowDurationSelector] = useState(false);
+  const [candleLit, setCandleLit] = useState(false); // Nouvel état : la bougie est-elle allumée ?
 
   // --- Lectures du jour (états et logique) ---
   const [lectioDate, setLectioDate] = useState(() => {
@@ -135,7 +136,7 @@ export default function Home() {
 
   // Animation de fonte de la bougie
   useEffect(() => {
-    if (showCandle) {
+    if (candleLit) {
       setCandleProgress(1);
       setCandleExtinguished(false);
       let start = Date.now();
@@ -153,7 +154,7 @@ export default function Home() {
         } else if (selectedDuration !== null) {
           setCandleExtinguished(true);
           setTimeout(() => {
-            setShowCandle(false);
+            setCandleLit(false); // Éteindre la bougie
             setCandleExtinguished(false);
           }, 1200); // laisse la fumée 1.2s
         }
@@ -165,61 +166,25 @@ export default function Home() {
       setCandleExtinguished(false);
       cancelAnimationFrame(candleTimer.current);
     }
-  }, [showCandle, selectedDuration]);
+  }, [candleLit, selectedDuration]);
 
-  // Composant Bougie
+  // Nouveau composant Candle simple
   function Candle() {
-    // Hauteur dynamique de la bougie (min 40px)
-    const candleHeight = 40 + 80 * Math.max(candleProgress, 0.05); // de 120px à 40px
-    const waxHeight = 100 * Math.max(candleProgress, 0.05); // cire
+    // Flamme visible seulement si candleLit
     return (
-      <div style={{ position: 'fixed', left: '50%', top: '50%', zIndex: 100, transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}>
-        <div style={{ width: 40, height: candleHeight, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', transition: 'height 0.2s linear' }}>
+      <div style={{ position: 'fixed', left: '50%', top: '50%', zIndex: 50, transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}>
+        <div style={{ width: 40, height: 120, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Flamme */}
-          <div style={{ width: 20, height: 40 * (candleHeight / 120), position: 'absolute', top: -30 * (candleHeight / 120), left: '50%', transform: 'translateX(-50%)', zIndex: 2, opacity: candleProgress > 0 && !candleExtinguished ? 1 : 0, transition: 'opacity 0.3s, height 0.2s linear, top 0.2s linear' }}>
-            <div style={{ width: 20 * (candleHeight / 120), height: 40 * (candleHeight / 120), background: 'radial-gradient(ellipse at center, #fffbe6 60%, #ffd700 100%)', borderRadius: '50% 50% 40% 40%', filter: 'blur(1px)', opacity: 0.85, animation: 'flicker 1s infinite alternate' }} />
-          </div>
-          {/* Fumée lors de l'extinction */}
-          {candleExtinguished && (
-            <div style={{
-              position: 'absolute',
-              top: -38 * (candleHeight / 120),
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: 24 * (candleHeight / 120),
-              height: 40 * (candleHeight / 120),
-              pointerEvents: 'none',
-              zIndex: 3,
-              opacity: 0.7,
-              animation: 'smokeUp 1.2s linear forwards',
-            }}>
-              <div style={{
-                width: '100%',
-                height: '100%',
-                background: 'radial-gradient(circle at 50% 30%, #fff 60%, #ccc0 100%)',
-                borderRadius: '50%',
-                filter: 'blur(2px)',
-              }} />
+          {candleLit && (
+            <div style={{ width: 20, height: 32, position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}>
+              <div style={{ width: 20, height: 32, background: 'radial-gradient(ellipse at center, #fffbe6 60%, #ffd700 100%)', borderRadius: '50% 50% 40% 40%', filter: 'blur(1px)', opacity: 0.85 }} />
             </div>
           )}
-          {/* Cire */}
-          <div style={{ width: 24 * (candleHeight / 120), height: 100 * (candleHeight / 120), background: 'linear-gradient(to bottom, #fffbe6 0%, #ffe4b5 100%)', borderRadius: 12 * (candleHeight / 120), position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', boxShadow: '0 0 16px 2px #fffbe6', overflow: 'hidden', border: '1px solid #eee', transition: 'height 0.2s linear, width 0.2s linear, border-radius 0.2s linear' }}>
-            <div style={{ width: '100%', height: `${waxHeight}%`, background: 'linear-gradient(to bottom, #fffbe6 0%, #ffe4b5 100%)', transition: 'height 0.2s linear' }} />
-          </div>
-          {/* Mèche */}
-          <div style={{ width: 3 * (candleHeight / 120), height: 16 * (candleHeight / 120), background: '#222', borderRadius: 2 * (candleHeight / 120), position: 'absolute', top: 6 * (candleHeight / 120), left: '50%', transform: 'translateX(-50%)', zIndex: 3, transition: 'height 0.2s linear, width 0.2s linear, top 0.2s linear, border-radius 0.2s linear' }} />
+          {/* Mèche blanche à bord noir, dépassant de la cire */}
+          <div style={{ width: 2, height: 16, background: '#fff', border: '1px solid #222', position: 'absolute', top: 32, left: '50%', transform: 'translateX(-50%)', zIndex: 2, borderRadius: 1 }} />
+          {/* Corps de la bougie (cire) */}
+          <div style={{ width: 24, height: 80, background: '#fffbe6', borderRadius: 12, marginTop: 48, boxShadow: '0 2px 8px #0006', border: '1px solid #ffe066' }} />
         </div>
-        <style>{`
-          @keyframes flicker {
-            0% { filter: blur(1px) brightness(1); }
-            100% { filter: blur(2px) brightness(1.2); }
-          }
-          @keyframes smokeUp {
-            0% { opacity: 0.7; transform: translateX(-50%) translateY(0) scale(1); }
-            80% { opacity: 0.5; }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-40px) scale(1.3); }
-          }
-        `}</style>
       </div>
     );
   }
@@ -695,6 +660,20 @@ export default function Home() {
     // eslint-disable-next-line
   }, [selectedRadio]);
 
+  // Ajoute un nouvel état pour le carousel
+  const [showIconCarousel, setShowIconCarousel] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
+  useEffect(() => {
+    function handleEscCloseTab(e) {
+      if (e.key === 'Escape') {
+        window.close();
+      }
+    }
+    window.addEventListener('keydown', handleEscCloseTab);
+    return () => window.removeEventListener('keydown', handleEscCloseTab);
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col font-sans relative overflow-x-hidden" style={{ background: bg, color: text }}>
       {/* Header */}
@@ -721,7 +700,7 @@ export default function Home() {
 
       {/* Volet Chatbot (gauche) */}
       <div
-        className={`fixed top-0 left-0 h-screen w-full sm:w-[400px] max-w-full shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
+        className={`fixed top-0 left-0 h-full w-full sm:w-[400px] max-w-full shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col max-h-[100vh] overflow-y-auto
         ${chatOpen ? "translate-x-0" : "-translate-x-full"}
         ${chatExtended ? "w-full max-w-full" : "sm:w-[400px] max-w-full"}`}
         style={{ minWidth: 320, background: panelBg, color: text, width: chatExtended ? '100vw' : undefined, maxWidth: chatExtended ? '100vw' : undefined }}
@@ -757,7 +736,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3" style={{ maxHeight: 'calc(100vh - 120px)' }}>
           {chatMessages.map((msg, i) => (
             <div key={i} style={{
               alignSelf: msg.from === "user" ? "flex-end" : "flex-start",
@@ -779,37 +758,37 @@ export default function Home() {
                 : (msg.text === '...'
                   ? <span style={{ color: '#ffe066', fontWeight: 600, fontSize: 18, background: 'none' }}><AnimatedEllipsis /></span>
                   : <>
-                      <span style={{ display: 'block', fontSize: 17, lineHeight: 1.7 }}
-                        dangerouslySetInnerHTML={{ __html: msg.citations && msg.citations.length > 0 ? linkifyCitations(msg.text, msg.citations) : marked.parse(msg.text || "") }}
-                      />
-                      {/* Citations Magisterium intégrées à la suite du texte */}
-                      {msg.citations && msg.citations.length > 0 && msg.citations.map((c, j) => (
-                        <div key={j} id={`citation-${j+1}`}
-                          style={{
-                            marginTop: 10,
-                            marginBottom: 0,
-                            fontSize: 14,
-                            color: '#ffe066',
-                            background: 'rgba(255,255,255,0.06)',
-                            borderRadius: 10,
-                            padding: 12,
-                            border: '1px solid #ffe06633',
-                            boxShadow: '0 1px 4px 0 #0001',
-                            position: 'relative',
-                            display: 'block',
-                          }}>
-                          <div style={{ position: 'absolute', left: 8, top: 8, fontWeight: 700, fontSize: 13, color: '#ffd700cc' }}>#{j + 1}</div>
-                          <div style={{ marginLeft: 28 }}>
-                            {c.cited_text_heading && <div style={{ fontWeight: 700, marginBottom: 4, color: '#fffbe6' }}>{c.cited_text_heading}</div>}
-                            <div style={{ marginBottom: 6 }} dangerouslySetInnerHTML={{ __html: marked.parse(c.cited_text || "") }} />
-                            <div style={{ fontStyle: 'italic', color: '#ffe066cc', marginBottom: 2 }}>
-                              {c.document_author}{c.document_title ? `, ${c.document_title}` : ''}
-                            </div>
-                            {c.source_url && <a href={c.source_url} target="_blank" rel="noopener noreferrer" style={{ color: '#ffd700', textDecoration: 'underline', fontSize: 13 }}>Source</a>}
+                    <span style={{ display: 'block', fontSize: 17, lineHeight: 1.7 }}
+                      dangerouslySetInnerHTML={{ __html: msg.citations && msg.citations.length > 0 ? linkifyCitations(msg.text, msg.citations) : marked.parse(msg.text || "") }}
+                    />
+                    {/* Citations Magisterium intégrées à la suite du texte */}
+                    {msg.citations && msg.citations.length > 0 && msg.citations.map((c, j) => (
+                      <div key={j} id={`citation-${j + 1}`}
+                        style={{
+                          marginTop: 10,
+                          marginBottom: 0,
+                          fontSize: 14,
+                          color: '#ffe066',
+                          background: 'rgba(255,255,255,0.06)',
+                          borderRadius: 10,
+                          padding: 12,
+                          border: '1px solid #ffe06633',
+                          boxShadow: '0 1px 4px 0 #0001',
+                          position: 'relative',
+                          display: 'block',
+                        }}>
+                        <div style={{ position: 'absolute', left: 8, top: 8, fontWeight: 700, fontSize: 13, color: '#ffd700cc' }}>#{j + 1}</div>
+                        <div style={{ marginLeft: 28 }}>
+                          {c.cited_text_heading && <div style={{ fontWeight: 700, marginBottom: 4, color: '#fffbe6' }}>{c.cited_text_heading}</div>}
+                          <div style={{ marginBottom: 6 }} dangerouslySetInnerHTML={{ __html: marked.parse(c.cited_text || "") }} />
+                          <div style={{ fontStyle: 'italic', color: '#ffe066cc', marginBottom: 2 }}>
+                            {c.document_author}{c.document_title ? `, ${c.document_title}` : ''}
                           </div>
+                          {c.source_url && <a href={c.source_url} target="_blank" rel="noopener noreferrer" style={{ color: '#ffd700', textDecoration: 'underline', fontSize: 13 }}>Source</a>}
                         </div>
-                      ))}
-                    </>
+                      </div>
+                    ))}
+                  </>
                 )}
             </div>
           ))}
@@ -947,126 +926,21 @@ export default function Home() {
         ${messeExtended ? "w-full max-w-full" : ""}`}
         style={{ minWidth: 320, background: panelBg, color: text, width: messeExtended ? '100vw' : '100vw', maxWidth: messeExtended ? '100vw' : '100vw' }}
       >
-        <div className="flex items-center justify-between p-4 border-b border-neutral-700">
-          <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Liturgie de la messe</h2>
-          <div className="flex gap-2">
-            <button
-              className={`text-base transition cursor-pointer px-3 py-1 rounded ${showMisselHtml ? 'bg-yellow-400 text-[#222]' : 'bg-[#222] text-yellow-300 border border-yellow-300'}`}
-              style={{ fontWeight: 600 }}
-              onClick={handleShowMisselHtml}
-              aria-label="Afficher le missel en HTML"
-              title="Afficher le missel en HTML"
-            >
-              Missel (HTML)
-            </button>
-            <button
-              className="text-xl transition cursor-pointer"
-              style={{ color: text, background: "none", border: "none", cursor: 'pointer' }}
-              onClick={() => setMesseExtended(e => !e)}
-              aria-label={messeExtended ? "Réduire" : "Étendre"}
-              title={messeExtended ? "Réduire" : "Étendre"}
-            >
-              {messeExtended ? "🗗" : "🗖"}
-            </button>
-            <button
-              className="text-2xl transition cursor-pointer"
-              style={{ color: text, background: "none", border: "none", cursor: 'pointer' }}
-              onClick={() => setMesseOpen(false)}
-              aria-label="Fermer"
-            >
-              ×
-            </button>
-          </div>
+        <div className="flex items-center justify-end p-2">
+          <button
+            className="text-2xl transition cursor-pointer"
+            style={{ color: text, background: "none", border: "none", cursor: 'pointer' }}
+            onClick={() => setMesseOpen(false)}
+            aria-label="Fermer"
+          >
+            ×
+          </button>
         </div>
-        <div className="p-6 flex-1 overflow-y-auto">
-          {showMisselHtml ? (
-            <div style={{ width: '100%', minHeight: 300 }}>
-              <button
-                className="mb-4 px-3 py-1 rounded bg-yellow-400 text-[#222] font-semibold shadow hover:bg-yellow-300 transition text-sm"
-                onClick={() => setShowMisselHtml(false)}
-              >
-                ← Retour
-              </button>
-              {misselHtmlLoading && <div className="text-center text-neutral-400">Chargement…</div>}
-              {misselHtmlError && <div className="text-center text-red-400">{misselHtmlError}</div>}
-              {misselHtml && (
-                <div className="bg-[#181818] rounded-lg p-4 shadow border border-neutral-800 prose prose-invert max-w-none" style={{ fontSize: 17, lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: misselHtml }} />
-              )}
-            </div>
-          ) : showMisselPdf ? (
-            <>
-              {messeLoading && <div className="text-center text-neutral-400">Chargement<AnimatedEllipsis /></div>}
-              {messeError && <div className="text-center text-red-400">{messeError}</div>}
-              {messeTexte && (() => {
-                const sections = parseMesseSections(messeTexte);
-                return (
-                  <div style={{ maxWidth: messeExtended ? '100%' : 700, width: messeExtended ? '100%' : undefined, margin: '0 auto' }}>
-                    {/* Navigation */}
-                    <div className="mb-6 flex flex-wrap gap-2 justify-center">
-                      {sections.map((s, i) => s.title && (
-                        <a
-                          key={i}
-                          href={`#messe-section-${i}`}
-                          className="px-3 py-1 rounded bg-yellow-400 text-[#222] font-semibold text-sm shadow hover:bg-yellow-300 transition"
-                          style={{ marginBottom: 4 }}
-                        >
-                          {s.title}
-                        </a>
-                      ))}
-                    </div>
-                    {/* Sections */}
-                    <div>
-                      {sections.map((s, i) => (
-                        <section key={i} id={`messe-section-${i}`} className="mb-8" style={{ width: '100%' }}>
-                          {s.title && <div className="text-xl font-bold text-yellow-300 mb-2 uppercase tracking-wide">{s.title}</div>}
-                          <div style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', color: text, background: 'none', fontSize: 16, lineHeight: 1.5 }}>
-                            {s.content.join('\n').replace(/\f/g, '')}
-                          </div>
-                        </section>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })()}
-            </>
-          ) : (
-            <>
-              {messeLoading && <div className="text-center text-neutral-400">Chargement<AnimatedEllipsis /></div>}
-              {messeError && <div className="text-center text-red-400">{messeError}</div>}
-              {messeTexte && (() => {
-                const sections = parseMesseSections(messeTexte);
-                return (
-                  <div style={{ maxWidth: messeExtended ? '100%' : 700, width: messeExtended ? '100%' : undefined, margin: '0 auto' }}>
-                    {/* Navigation */}
-                    <div className="mb-6 flex flex-wrap gap-2 justify-center">
-                      {sections.map((s, i) => s.title && (
-                        <a
-                          key={i}
-                          href={`#messe-section-${i}`}
-                          className="px-3 py-1 rounded bg-yellow-400 text-[#222] font-semibold text-sm shadow hover:bg-yellow-300 transition"
-                          style={{ marginBottom: 4 }}
-                        >
-                          {s.title}
-                        </a>
-                      ))}
-                    </div>
-                    {/* Sections */}
-                    <div>
-                      {sections.map((s, i) => (
-                        <section key={i} id={`messe-section-${i}`} className="mb-8" style={{ width: '100%' }}>
-                          {s.title && <div className="text-xl font-bold text-yellow-300 mb-2 uppercase tracking-wide">{s.title}</div>}
-                          <div style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', color: text, background: 'none', fontSize: 16, lineHeight: 1.5 }}>
-                            {s.content.join('\n').replace(/\f/g, '')}
-                          </div>
-                        </section>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })()}
-            </>
-          )}
-        </div>
+        <iframe
+          src="/missel-liturgie.pdf"
+          style={{ width: '100%', height: '90vh', border: 'none', borderRadius: 8, background: '#fff' }}
+          title="Missel PDF"
+        />
       </div>
 
       {/* Volet Chapelet (droite) */}
@@ -1345,7 +1219,7 @@ export default function Home() {
             aria-label="Fermer la popup de contact"
           />
           <div
-            className="fixed left-1/2 top-1/2 z-[201] bg-[#222] text-white rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[400px] flex flex-col items-center animate-fadein"
+            className="fixed left-1/2 top-1/2 z-[201] bg-[#222] text-white rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[400px] flex flex-col items-center animate-fadein max-h-[90vh] overflow-y-auto"
             style={{ transform: 'translate(-50%, -50%)' }}
             onClick={e => e.stopPropagation()}
           >
@@ -1492,6 +1366,18 @@ export default function Home() {
           <span>✝️</span>
           <span className="emoji-tooltip">Bible</span>
         </button>
+        {/* Ajoute ici le sélecteur d'icônes en colonne */}
+        <div className="flex flex-col gap-2 mt-6 items-center">
+          <button
+            key={icons[0].label}
+            className="cursor-pointer"
+            style={{ width: 44, height: 44, background: 'none', border: 'none', boxShadow: 'none', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            onClick={() => { setCarouselIndex(0); setShowIconCarousel(true); }}
+            aria-label={icons[0].label}
+          >
+            <Image src={icons[0].src} alt={icons[0].label} width={36} height={36} style={{ borderRadius: '50%' }} unoptimized />
+          </button>
+        </div>
       </div>
       {/* Affichage de l'icône sélectionnée au centre de la page */}
       {selectedIcon && (
@@ -1499,20 +1385,6 @@ export default function Home() {
           <Image src={selectedIcon} alt="Icône sélectionnée" width={200} height={200} style={{ borderRadius: '16px', boxShadow: '0 4px 32px #000a', background: '#222' }} unoptimized />
         </div>
       )}
-      {/* Sélecteur d'icônes au-dessus de l'icône de prière */}
-      <div className="fixed left-1/2 bottom-32 sm:bottom-40 z-50 flex gap-2 bg-transparent justify-center items-end" style={{ transform: 'translateX(-50%)', width: 'auto', minWidth: 0 }}>
-        {icons.map((icon, idx) => (
-          <button
-            key={icon.label}
-            className="cursor-pointer"
-            style={{ width: 44, height: 44, background: 'none', border: 'none', boxShadow: 'none', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onClick={() => setSelectedIcon(selectedIcon === icon.src ? null : icon.src)}
-            aria-label={icon.label}
-          >
-            <Image src={icon.src} alt={icon.label} width={36} height={36} style={{ borderRadius: '50%' }} unoptimized />
-          </button>
-        ))}
-      </div>
       {/* Icône de prière centrée en bas, timer à droite */}
       <div className="fixed left-1/2 bottom-4 sm:bottom-12 z-50" style={{ transform: 'translateX(-50%)' }}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -1521,36 +1393,13 @@ export default function Home() {
             alt="Prière"
             width={64}
             height={64}
-            style={{ filter: showCandle ? 'brightness(0.7)' : 'none', transition: 'filter 0.2s', cursor: 'pointer' }}
-            onClick={() => setShowCandle((v) => !v)}
+            style={{ filter: candleLit ? 'brightness(0.7)' : 'none', transition: 'filter 0.2s', cursor: 'pointer' }}
+            onClick={() => setShowDurationSelector(true)}
             unoptimized
           />
-          <button
-            className="rounded-full shadow flex items-center justify-center cursor-pointer"
-            style={{
-              width: 44,
-              height: 44,
-              background: 'rgba(255,255,255,0.08)',
-              color: text,
-              border: btnBorder,
-              fontSize: 28,
-              padding: 0,
-              borderWidth: 1,
-              borderStyle: 'solid',
-              marginBottom: 8,
-              position: 'absolute',
-              right: -52,
-              top: '50%',
-              transform: 'translateY(-50%)'
-            }}
-            aria-label="Choisir le temps de prière"
-            onClick={() => setShowDurationSelector(v => !v)}
-          >
-            🕒
-          </button>
         </div>
       </div>
-      {showCandle && <Candle />}
+      <Candle />
       {/* Popin sélecteur de temps de prière */}
       {showDurationSelector && (
         <>
@@ -1575,6 +1424,7 @@ export default function Home() {
                     setSelectedDuration(d.value);
                     setCustomDuration('');
                     setShowDurationSelector(false);
+                    setCandleLit(true); // Allume la bougie
                   }}
                   aria-label={d.label}
                 >
@@ -1605,10 +1455,14 @@ export default function Home() {
             </div>
             <button
               className="mt-2 px-4 py-2 rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition cursor-pointer"
-              onClick={() => setShowDurationSelector(false)}
+              onClick={() => {
+                setShowDurationSelector(false);
+                setCandleLit(true);
+              }}
               autoFocus
+              disabled={!selectedDuration || selectedDuration <= 0}
             >
-              Fermer
+              Prier
             </button>
           </div>
           <style>{`
@@ -1758,7 +1612,7 @@ export default function Home() {
           animation: shake-radio 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
       `}</style>
-      <div className="fixed bottom-4 right-4 z-[120] flex flex-col items-end">
+      <div className="fixed bottom-4 right-4 z-[50] flex flex-col items-end">
         <button
           className="rounded-full shadow flex items-center justify-center cursor-pointer bg-yellow-400 hover:bg-yellow-300 transition radio-shake"
           style={{ width: 56, height: 56, fontSize: 30, color: '#222', border: 'none', boxShadow: '0 2px 12px #0004', marginBottom: showRadio ? 12 : 0 }}
@@ -1787,6 +1641,46 @@ export default function Home() {
           </div>
         )}
       </div>
+      {showIconCarousel && (
+        <div className="fixed inset-0 z-[200] bg-black bg-opacity-70 flex items-center justify-center" onClick={() => setShowIconCarousel(false)}>
+          <div className="relative bg-[#222] rounded-xl shadow-2xl p-6 flex flex-col items-center" style={{ minWidth: 320, maxWidth: '90vw' }} onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-center gap-6">
+              <button
+                onClick={() => setCarouselIndex((carouselIndex - 1 + icons.length) % icons.length)}
+                style={{ fontSize: 32, background: 'none', border: 'none', color: '#ffe066', cursor: 'pointer' }}
+                aria-label="Précédent"
+              >
+                ‹
+              </button>
+              <div className="flex flex-col items-center">
+                <Image src={icons[carouselIndex].src} alt={icons[carouselIndex].label} width={160} height={160} style={{ borderRadius: 24, boxShadow: '0 4px 32px #000a', background: '#222' }} unoptimized />
+                <div className="mt-2 text-yellow-200 font-semibold text-lg text-center">{icons[carouselIndex].label}</div>
+              </div>
+              <button
+                onClick={() => setCarouselIndex((carouselIndex + 1) % icons.length)}
+                style={{ fontSize: 32, background: 'none', border: 'none', color: '#ffe066', cursor: 'pointer' }}
+                aria-label="Suivant"
+              >
+                ›
+              </button>
+            </div>
+            <button
+              className="mt-6 px-6 py-2 rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition cursor-pointer"
+              onClick={() => { setSelectedIcon(icons[carouselIndex].src); setShowIconCarousel(false); }}
+              style={{ fontSize: 18 }}
+            >
+              Choisir cette icône
+            </button>
+            <button
+              className="mt-2 px-4 py-1 rounded bg-neutral-700 text-yellow-200 font-medium hover:bg-neutral-600 transition cursor-pointer"
+              onClick={() => setShowIconCarousel(false)}
+              style={{ fontSize: 15 }}
+            >
+              Annuler
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
