@@ -22,6 +22,13 @@ export default function Home() {
   const [messeOpen, setMesseOpen] = useState(false);
   const [chapeletOpen, setChapeletOpen] = useState(false);
   const [horairesOpen, setHorairesOpen] = useState(false);
+  const [prayerOpen, setPrayerOpen] = useState(false);
+  const [prayerFilter, setPrayerFilter] = useState({
+    language: 'all',
+    category: 'all',
+    saint: 'all',
+    object: 'all'
+  });
   const [chatOpen, setChatOpen] = useState(false);
   const [bibleOpen, setBibleOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
@@ -61,6 +68,776 @@ export default function Home() {
   const [showSaintPopup, setShowSaintPopup] = useState(false);
   const [customDuration, setCustomDuration] = useState('');
   const [showChapeletHelp, setShowChapeletHelp] = useState(false);
+
+  // Données des prières avec métadonnées
+  const prayersData = [
+    // Prière du Seigneur
+    {
+      id: 'notre-pere-fr',
+      title: 'Notre Père (Français)',
+      content: `Notre Père qui es aux cieux,<br/>
+que ton nom soit sanctifié,<br/>
+que ton règne vienne,<br/>
+que ta volonté soit faite<br/>
+sur la terre comme au ciel.<br/>
+Donne-nous aujourd'hui notre pain de ce jour.<br/>
+Pardonne-nous nos offenses<br/>
+comme nous pardonnons aussi<br/>
+à ceux qui nous ont offensés.<br/>
+Et ne nous soumets pas à la tentation,<br/>
+mais délivre-nous du mal.<br/>
+Amen.`,
+      language: 'french',
+      category: 'seigneur',
+      saint: null,
+      object: 'priere-fondamentale'
+    },
+    {
+      id: 'pater-noster-lat',
+      title: 'Pater Noster (Latin)',
+      content: `Pater noster, qui es in caelis,<br/>
+sanctificetur nomen tuum.<br/>
+Adveniat regnum tuum.<br/>
+Fiat voluntas tua,<br/>
+sicut in caelo et in terra.<br/>
+Panem nostrum quotidianum da nobis hodie,<br/>
+et dimitte nobis debita nostra,<br/>
+sicut et nos dimittimus debitoribus nostris.<br/>
+Et ne nos inducas in tentationem,<br/>
+sed libera nos a malo.<br/>
+Amen.`,
+      language: 'latin',
+      category: 'seigneur',
+      saint: null,
+      object: 'priere-fondamentale'
+    },
+    // Prières mariales
+    {
+      id: 'ave-maria-fr',
+      title: 'Je vous salue Marie (Français)',
+      content: `Je vous salue, Marie, pleine de grâces,<br/>
+le Seigneur est avec vous,<br/>
+vous êtes bénie entre toutes les femmes<br/>
+et Jésus, le fruit de vos entrailles, est béni.<br/>
+Sainte Marie, Mère de Dieu,<br/>
+priez pour nous, pauvres pécheurs,<br/>
+maintenant et à l'heure de notre mort.<br/>
+Amen.`,
+      language: 'french',
+      category: 'marie',
+      saint: null,
+      object: 'priere-fondamentale'
+    },
+    {
+      id: 'ave-maria-lat',
+      title: 'Ave Maria (Latin)',
+      content: `Ave Maria, gratia plena,<br/>
+Dominus tecum.<br/>
+Benedicta tu in mulieribus,<br/>
+et benedictus fructus ventris tui, Iesus.<br/>
+Sancta Maria, Mater Dei,<br/>
+ora pro nobis peccatoribus,<br/>
+nunc et in hora mortis nostrae.<br/>
+Amen.`,
+      language: 'latin',
+      category: 'marie',
+      saint: null,
+      object: 'priere-fondamentale'
+    },
+    {
+      id: 'sub-tuum-praesidium',
+      title: 'Sous votre protection (Sub tuum praesidium)',
+      content: `<strong>Français :</strong><br/>
+Sous votre protection nous nous réfugions,<br/>
+sainte Mère de Dieu.<br/>
+Ne méprisez pas nos supplications<br/>
+dans nos nécessités,<br/>
+mais délivrez-nous de tous périls,<br/>
+ô Vierge glorieuse et bénie.<br/><br/>
+<strong>Latin :</strong><br/>
+<em>Sub tuum praesidium confugimus,<br/>
+Sancta Dei Genetrix.<br/>
+Nostras deprecationes ne despicias<br/>
+in necessitatibus,<br/>
+sed a periculis cunctis libera nos semper,<br/>
+Virgo gloriosa et benedicta.</em>`,
+      language: 'bilingue',
+      category: 'marie',
+      saint: null,
+      object: 'protection'
+    },
+    // Prières trinitaires
+    {
+      id: 'gloria-patri-fr',
+      title: 'Gloire au Père (Français)',
+      content: `Gloire au Père, et au Fils, et au Saint-Esprit,<br/>
+comme il était au commencement,<br/>
+maintenant et toujours,<br/>
+et dans les siècles des siècles.<br/>
+Amen.`,
+      language: 'french',
+      category: 'trinite',
+      saint: null,
+      object: 'priere-fondamentale'
+    },
+    {
+      id: 'gloria-patri-lat',
+      title: 'Gloria Patri (Latin)',
+      content: `Gloria Patri, et Filio, et Spiritui Sancto,<br/>
+sicut erat in principio,<br/>
+et nunc, et semper,<br/>
+et in saecula saeculorum.<br/>
+Amen.`,
+      language: 'latin',
+      category: 'trinite',
+      saint: null,
+      object: 'priere-fondamentale'
+    },
+    // Actes de vertus
+    {
+      id: 'acte-foi',
+      title: 'Acte de foi',
+      content: `Mon Dieu, je crois fermement toutes les vérités<br/>
+que vous avez révélées et que vous nous enseignez<br/>
+par votre Église, parce que vous ne pouvez ni vous tromper<br/>
+ni nous tromper. Je crois en vous, mon Dieu,<br/>
+fortifiez ma foi.`,
+      language: 'french',
+      category: 'vertus',
+      saint: null,
+      object: 'vertu'
+    },
+    {
+      id: 'acte-esperance',
+      title: 'Acte d\'espérance',
+      content: `Mon Dieu, j'espère avec une ferme confiance<br/>
+que vous me donnerez, par les mérites de Jésus-Christ,<br/>
+votre grâce en ce monde et le bonheur éternel<br/>
+dans l'autre vie, parce que vous l'avez promis<br/>
+et que vous tenez toujours vos promesses.`,
+      language: 'french',
+      category: 'vertus',
+      saint: null,
+      object: 'vertu'
+    },
+    {
+      id: 'acte-charite',
+      title: 'Acte de charité',
+      content: `Mon Dieu, je vous aime de tout mon cœur<br/>
+et par-dessus toutes choses, parce que vous êtes<br/>
+infiniment bon et infiniment aimable,<br/>
+et j'aime mon prochain comme moi-même<br/>
+pour l'amour de vous.`,
+      language: 'french',
+      category: 'vertus',
+      saint: null,
+      object: 'vertu'
+    },
+    {
+      id: 'acte-contrition',
+      title: 'Acte de contrition',
+      content: `Mon Dieu, j'ai un très grand regret de vous avoir offensé,<br/>
+parce que vous êtes infiniment bon,<br/>
+infiniment aimable, et que le péché vous déplaît.<br/>
+Je prends la ferme résolution,<br/>
+avec le secours de votre sainte grâce,<br/>
+de ne plus vous offenser et de faire pénitence.`,
+      language: 'french',
+      category: 'vertus',
+      saint: null,
+      object: 'repentance'
+    },
+    // Prières de saints
+    {
+      id: 'priere-francois',
+      title: 'Prière de saint François d\'Assise',
+      content: `Seigneur, faites de moi un instrument de votre paix.<br/>
+Là où il y a de la haine, que je mette l'amour.<br/>
+Là où il y a l'offense, que je mette le pardon.<br/>
+Là où il y a la discorde, que je mette l'union.<br/>
+Là où il y a l'erreur, que je mette la vérité.<br/>
+Là où il y a le doute, que je mette la foi.<br/>
+Là où il y a le désespoir, que je mette l'espérance.<br/>
+Là où il y a les ténèbres, que je mette votre lumière.<br/>
+Là où il y a la tristesse, que je mette la joie.`,
+      language: 'french',
+      category: 'saints',
+      saint: 'francois-assise',
+      object: 'paix'
+    },
+    {
+      id: 'priere-ignace',
+      title: 'Prière de saint Ignace de Loyola',
+      content: `Prenez, Seigneur, et recevez toute ma liberté,<br/>
+ma mémoire, mon intelligence et toute ma volonté.<br/>
+Tout ce que j'ai et possède,<br/>
+c'est vous qui me l'avez donné :<br/>
+à vous, Seigneur, je le rends.<br/>
+Tout est vôtre, disposez-en selon votre entière volonté.<br/>
+Donnez-moi votre amour et votre grâce,<br/>
+c'est assez pour moi.`,
+      language: 'french',
+      category: 'saints',
+      saint: 'ignace-loyola',
+      object: 'offrande'
+    },
+    {
+      id: 'priere-thomas',
+      title: 'Prière de saint Thomas d\'Aquin',
+      content: `<strong>Français :</strong><br/>
+Je vous salue, ô précieux et très saint Corps de Jésus-Christ,<br/>
+que je reçois maintenant,<br/>
+et que je mange avec crainte et respect.<br/>
+Que jamais je ne sois condamné pour vous avoir reçu indignement.<br/><br/>
+<strong>Latin :</strong><br/>
+<em>Ave, verum Corpus natum de Maria Virgine,<br/>
+vere passum, immolatum in cruce pro homine,<br/>
+cuius latus perforatum fluxit aqua et sanguine,<br/>
+esto nobis praegustatum mortis in examine.</em>`,
+      language: 'bilingue',
+      category: 'saints',
+      saint: 'thomas-aquin',
+      object: 'eucharistie'
+    },
+    {
+      id: 'priere-augustin',
+      title: 'Prière de saint Augustin',
+      content: `Seigneur, vous nous avez faits pour vous,<br/>
+et notre cœur est sans repos<br/>
+tant qu'il ne demeure en vous.<br/>
+Donnez-nous la grâce de vous chercher<br/>
+et de vous trouver,<br/>
+afin que nous puissions vous aimer<br/>
+et vous servir de tout notre cœur.`,
+      language: 'french',
+      category: 'saints',
+      saint: 'augustin',
+      object: 'recherche-dieu'
+    },
+    // Prières pour les défunts
+    {
+      id: 'requiem-aeternam',
+      title: 'Requiem aeternam',
+      content: `<strong>Français :</strong><br/>
+Donnez-leur le repos éternel, Seigneur,<br/>
+et que la lumière perpétuelle les éclaire.<br/>
+Qu'ils reposent en paix. Amen.<br/><br/>
+<strong>Latin :</strong><br/>
+<em>Requiem aeternam dona eis, Domine,<br/>
+et lux perpetua luceat eis.<br/>
+Requiescant in pace. Amen.</em>`,
+      language: 'bilingue',
+      category: 'defunts',
+      saint: null,
+      object: 'defunts'
+    },
+    // Action de grâce
+    {
+      id: 'te-deum',
+      title: 'Te Deum',
+      content: `<strong>Français :</strong><br/>
+Nous vous louons, ô Dieu, nous vous reconnaissons pour Seigneur.<br/>
+À vous, Père éternel, toute la terre rend hommage.<br/>
+Tous les anges, les cieux et toutes les puissances vous adorent.<br/>
+Les chérubins et les séraphins proclament sans cesse :<br/>
+"Saint, Saint, Saint est le Seigneur Dieu des armées !"<br/><br/>
+<strong>Latin :</strong><br/>
+<em>Te Deum laudamus, te Dominum confitemur.<br/>
+Te aeternum Patrem omnis terra veneratur.<br/>
+Tibi omnes Angeli, tibi caeli et universae Potestates.<br/>
+Tibi Cherubim et Seraphim incessabili voce proclamant :<br/>
+"Sanctus, Sanctus, Sanctus Dominus Deus Sabaoth !"</em>`,
+      language: 'bilingue',
+      category: 'action-grace',
+      saint: null,
+      object: 'louange'
+    },
+    // Credo
+    {
+      id: 'credo-fr',
+      title: 'Credo (Symbole des Apôtres) - Français',
+      content: `Je crois en Dieu, le Père tout-puissant,<br/>
+créateur du ciel et de la terre.<br/>
+Et en Jésus-Christ, son Fils unique, notre Seigneur,<br/>
+qui a été conçu du Saint-Esprit,<br/>
+est né de la Vierge Marie,<br/>
+a souffert sous Ponce Pilate,<br/>
+a été crucifié, est mort et a été enseveli,<br/>
+est descendu aux enfers,<br/>
+le troisième jour est ressuscité des morts,<br/>
+est monté aux cieux,<br/>
+est assis à la droite de Dieu le Père tout-puissant,<br/>
+d'où il viendra juger les vivants et les morts.<br/>
+Je crois en l'Esprit-Saint,<br/>
+à la sainte Église catholique,<br/>
+à la communion des saints,<br/>
+à la rémission des péchés,<br/>
+à la résurrection de la chair,<br/>
+à la vie éternelle. Amen.`,
+      language: 'french',
+      category: 'seigneur',
+      saint: null,
+      object: 'priere-fondamentale'
+    },
+    {
+      id: 'credo-lat',
+      title: 'Credo (Symbolum Apostolorum) - Latin',
+      content: `Credo in Deum Patrem omnipotentem,<br/>
+Creatorem caeli et terrae.<br/>
+Et in Iesum Christum, Filium eius unicum, Dominum nostrum,<br/>
+qui conceptus est de Spiritu Sancto,<br/>
+natus ex Maria Virgine,<br/>
+passus sub Pontio Pilato,<br/>
+crucifixus, mortuus et sepultus,<br/>
+descendit ad inferos,<br/>
+tertia die resurrexit a mortuis,<br/>
+ascendit ad caelos,<br/>
+sedet ad dexteram Dei Patris omnipotentis,<br/>
+inde venturus est iudicare vivos et mortuos.<br/>
+Credo in Spiritum Sanctum,<br/>
+sanctam Ecclesiam catholicam,<br/>
+sanctorum communionem,<br/>
+remissionem peccatorum,<br/>
+carnis resurrectionem,<br/>
+vitam aeternam. Amen.`,
+      language: 'latin',
+      category: 'seigneur',
+      saint: null,
+      object: 'priere-fondamentale'
+    },
+    // Confiteor
+    {
+      id: 'confiteor-fr',
+      title: 'Confiteor (J\'avoue à Dieu) - Français',
+      content: `J'avoue à Dieu tout-puissant,<br/>
+à la bienheureuse Marie toujours vierge,<br/>
+à saint Michel archange,<br/>
+à saint Jean-Baptiste,<br/>
+aux saints apôtres Pierre et Paul,<br/>
+à tous les saints,<br/>
+et à vous, frères,<br/>
+que j'ai beaucoup péché,<br/>
+par pensées, par paroles et par actions,<br/>
+par ma faute, par ma faute, par ma très grande faute.<br/>
+C'est pourquoi je supplie la bienheureuse Marie toujours vierge,<br/>
+saint Michel archange,<br/>
+saint Jean-Baptiste,<br/>
+les saints apôtres Pierre et Paul,<br/>
+tous les saints,<br/>
+et vous, frères,<br/>
+de prier pour moi le Seigneur notre Dieu.`,
+      language: 'french',
+      category: 'repentance',
+      saint: null,
+      object: 'confession'
+    },
+    {
+      id: 'confiteor-lat',
+      title: 'Confiteor - Latin',
+      content: `Confiteor Deo omnipotenti,<br/>
+beatae Mariae semper Virgini,<br/>
+beato Michaeli Archangelo,<br/>
+beato Ioanni Baptistae,<br/>
+sanctis Apostolis Petro et Paulo,<br/>
+omnibus Sanctis,<br/>
+et vobis, fratres,<br/>
+quia peccavi nimis<br/>
+cogitatione, verbo et opere,<br/>
+mea culpa, mea culpa, mea maxima culpa.<br/>
+Ideo precor beatam Mariam semper Virginem,<br/>
+beatum Michaelem Archangelum,<br/>
+beatum Ioannem Baptistam,<br/>
+sanctos Apostolos Petrum et Paulum,<br/>
+omnes Sanctos,<br/>
+et vos, fratres,<br/>
+orare pro me ad Dominum Deum nostrum.`,
+      language: 'latin',
+      category: 'repentance',
+      saint: null,
+      object: 'confession'
+    },
+    // Prières mariales supplémentaires
+    {
+      id: 'magnificat-fr',
+      title: 'Magnificat (Cantique de Marie) - Français',
+      content: `Mon âme exalte le Seigneur,<br/>
+et mon esprit tressaille de joie en Dieu, mon Sauveur,<br/>
+car il a porté son regard sur son humble servante.<br/>
+Désormais, toutes les générations me diront bienheureuse,<br/>
+car le Tout-Puissant a fait pour moi de grandes choses.<br/>
+Son nom est saint,<br/>
+et sa miséricorde s'étend d'âge en âge sur ceux qui le craignent.<br/>
+Il a déployé la force de son bras,<br/>
+il a dispersé les hommes au cœur superbe.<br/>
+Il a renversé les puissants de leurs trônes<br/>
+et élevé les humbles.<br/>
+Il a rassasié de biens les affamés<br/>
+et renvoyé les riches les mains vides.<br/>
+Il a pris en pitié Israël, son serviteur,<br/>
+se souvenant de sa miséricorde,<br/>
+selon qu'il l'avait annoncé à nos pères,<br/>
+en faveur d'Abraham et de sa descendance à jamais.`,
+      language: 'french',
+      category: 'marie',
+      saint: null,
+      object: 'louange'
+    },
+    {
+      id: 'regina-caeli-fr',
+      title: 'Regina Caeli (Reine du Ciel) - Français',
+      content: `Reine du ciel, réjouissez-vous, alléluia,<br/>
+car celui que vous avez mérité de porter, alléluia,<br/>
+est ressuscité comme il l'avait dit, alléluia.<br/>
+Priez Dieu pour nous, alléluia.`,
+      language: 'french',
+      category: 'marie',
+      saint: null,
+      object: 'paques'
+    },
+    {
+      id: 'regina-caeli-lat',
+      title: 'Regina Caeli - Latin',
+      content: `Regina caeli, laetare, alleluia,<br/>
+quia quem meruisti portare, alleluia,<br/>
+resurrexit sicut dixit, alleluia.<br/>
+Ora pro nobis Deum, alleluia.`,
+      language: 'latin',
+      category: 'marie',
+      saint: null,
+      object: 'paques'
+    },
+    {
+      id: 'salve-regina-fr',
+      title: 'Salve Regina (Je vous salue, Reine) - Français',
+      content: `Je vous salue, Reine, Mère de miséricorde,<br/>
+vie, douceur et espérance, notre salut.<br/>
+Vers vous nous crions, enfants d'Ève exilés.<br/>
+Vers vous nous soupirons, gémissant et pleurant<br/>
+dans cette vallée de larmes.<br/>
+Ô vous, notre avocate, tournez vers nous<br/>
+vos regards miséricordieux.<br/>
+Et, après cet exil, montrez-nous Jésus,<br/>
+le fruit béni de vos entrailles.<br/>
+Ô clémente, ô pieuse, ô douce Vierge Marie !`,
+      language: 'french',
+      category: 'marie',
+      saint: null,
+      object: 'intercession'
+    },
+    {
+      id: 'salve-regina-lat',
+      title: 'Salve Regina - Latin',
+      content: `Salve Regina, Mater misericordiae,<br/>
+vita, dulcedo et spes nostra, salve.<br/>
+Ad te clamamus, exsules filii Evae.<br/>
+Ad te suspiramus, gementes et flentes<br/>
+in hac lacrimarum valle.<br/>
+Eia ergo, advocata nostra, illos tuos<br/>
+misericordes oculos ad nos converte.<br/>
+Et Iesum, benedictum fructum ventris tui,<br/>
+nobis post hoc exsilium ostende.<br/>
+O clemens, o pia, o dulcis Virgo Maria !`,
+      language: 'latin',
+      category: 'marie',
+      saint: null,
+      object: 'intercession'
+    },
+    // Prières de saints supplémentaires
+    {
+      id: 'priere-bernard',
+      title: 'Prière de saint Bernard de Clairvaux',
+      content: `Souvenez-vous, ô très miséricordieuse Vierge Marie,<br/>
+qu'on n'a jamais entendu dire qu'aucun de ceux<br/>
+qui ont eu recours à votre protection,<br/>
+imploré votre assistance ou réclamé votre secours,<br/>
+ait été abandonné.<br/>
+Animé d'une pareille confiance,<br/>
+ô Vierge des vierges, ô ma Mère,<br/>
+j'accours vers vous, et gémissant sous le poids<br/>
+de mes péchés, je me prosterne à vos pieds.<br/>
+Ô Mère du Verbe incarné,<br/>
+ne rejetez pas mes prières,<br/>
+mais écoutez-les favorablement et daignez les exaucer.`,
+      language: 'french',
+      category: 'saints',
+      saint: 'bernard-clairvaux',
+      object: 'intercession'
+    },
+    {
+      id: 'priere-teresa',
+      title: 'Prière de sainte Thérèse d\'Avila',
+      content: `Que rien ne te trouble,<br/>
+que rien ne t'effraie,<br/>
+tout passe,<br/>
+Dieu ne change pas,<br/>
+la patience obtient tout,<br/>
+celui qui possède Dieu<br/>
+ne manque de rien :<br/>
+Dieu seul suffit.`,
+      language: 'french',
+      category: 'saints',
+      saint: 'therese-avila',
+      object: 'confiance'
+    },
+    {
+      id: 'priere-jean-paul',
+      title: 'Prière de saint Jean-Paul II',
+      content: `Marie, Mère de l'Église,<br/>
+nous te confions l'Église tout entière<br/>
+et chacun de nous.<br/>
+Tu es la Mère de l'Église,<br/>
+tu es la Mère de l'humanité.<br/>
+Aide-nous à être des témoins<br/>
+de l'amour du Christ<br/>
+dans le monde d'aujourd'hui.<br/>
+Amen.`,
+      language: 'french',
+      category: 'saints',
+      saint: 'jean-paul-ii',
+      object: 'eglise'
+    },
+    // Prières pour les malades
+    {
+      id: 'priere-malades',
+      title: 'Prière pour les malades',
+      content: `Seigneur Jésus, médecin de nos âmes et de nos corps,<br/>
+vous qui avez guéri les malades<br/>
+et consolé les affligés,<br/>
+regardez avec compassion<br/>
+tous ceux qui souffrent.<br/>
+Donnez-leur la force de supporter<br/>
+leurs épreuves avec patience,<br/>
+et accordez-leur la guérison<br/>
+selon votre sainte volonté.<br/>
+Que votre présence les réconforte<br/>
+et que votre paix les accompagne. Amen.`,
+      language: 'french',
+      category: 'malades',
+      saint: null,
+      object: 'guerison'
+    },
+    // Prières pour la famille
+    {
+      id: 'priere-famille',
+      title: 'Prière pour la famille',
+      content: `Sainte Famille de Nazareth,<br/>
+Jésus, Marie et Joseph,<br/>
+protégez notre famille.<br/>
+Apprenez-nous à nous aimer<br/>
+comme vous vous êtes aimés.<br/>
+Aidez-nous à grandir dans la foi,<br/>
+dans l'espérance et dans la charité.<br/>
+Que notre foyer soit un lieu<br/>
+de paix, de joie et d'amour.<br/>
+Bénissez nos parents, nos enfants<br/>
+et tous nos proches. Amen.`,
+      language: 'french',
+      category: 'famille',
+      saint: null,
+      object: 'famille'
+    },
+    // Prières pour la paix
+    {
+      id: 'priere-paix',
+      title: 'Prière pour la paix',
+      content: `Seigneur, fais de moi un instrument de ta paix.<br/>
+Là où est la haine, que je mette l'amour.<br/>
+Là où est l'offense, que je mette le pardon.<br/>
+Là où est la discorde, que je mette l'union.<br/>
+Là où est l'erreur, que je mette la vérité.<br/>
+Là où est le doute, que je mette la foi.<br/>
+Là où est le désespoir, que je mette l'espérance.<br/>
+Là où sont les ténèbres, que je mette ta lumière.<br/>
+Là où est la tristesse, que je mette la joie.`,
+      language: 'french',
+      category: 'paix',
+      saint: null,
+      object: 'paix'
+    },
+    // Prières pour les vocations
+    {
+      id: 'priere-vocations',
+      title: 'Prière pour les vocations',
+      content: `Seigneur Jésus, bon Pasteur,<br/>
+tu as appelé les apôtres à te suivre<br/>
+et à devenir pêcheurs d'hommes.<br/>
+Appelle encore aujourd'hui<br/>
+de nombreux jeunes<br/>
+à te consacrer leur vie<br/>
+dans le sacerdoce ou la vie religieuse.<br/>
+Donne-leur la force de répondre<br/>
+généreusement à ton appel.<br/>
+Bénis les familles<br/>
+qui encouragent leurs enfants<br/>
+à suivre ta voie. Amen.`,
+      language: 'french',
+      category: 'vocations',
+      saint: null,
+      object: 'vocations'
+    },
+    // Prières pour les défunts
+    {
+      id: 'priere-defunts',
+      title: 'Prière pour les défunts',
+      content: `Seigneur, nous te confions nos frères et sœurs<br/>
+qui ont quitté cette terre.<br/>
+Accueille-les dans ton royaume<br/>
+où il n'y a plus de larmes ni de souffrances.<br/>
+Donne-leur le repos éternel<br/>
+et que la lumière perpétuelle les éclaire.<br/>
+Console leurs familles et leurs amis<br/>
+dans leur deuil et leur tristesse.<br/>
+Que nous nous retrouvions un jour<br/>
+tous ensemble dans ta joie éternelle. Amen.`,
+      language: 'french',
+      category: 'defunts',
+      saint: null,
+      object: 'defunts'
+    },
+    // Prières de protection
+    {
+      id: 'priere-protection',
+      title: 'Prière de protection',
+      content: `Ange de Dieu, mon gardien,<br/>
+à qui la bonté divine m'a confié,<br/>
+éclaire-moi, garde-moi,<br/>
+dirige-moi et gouverne-moi.<br/>
+Amen.`,
+      language: 'french',
+      category: 'protection',
+      saint: null,
+      object: 'protection'
+    },
+    {
+      id: 'priere-michel',
+      title: 'Prière à saint Michel Archange',
+      content: `Saint Michel Archange,<br/>
+défendez-nous dans le combat,<br/>
+soyez notre secours contre la malice<br/>
+et les embûches du démon.<br/>
+Que Dieu exerce sur lui son empire,<br/>
+nous vous en supplions.<br/>
+Et vous, prince de la milice céleste,<br/>
+refoulez en enfer, par la force divine,<br/>
+Satan et les autres esprits mauvais<br/>
+qui rôdent dans le monde<br/>
+pour la perte des âmes. Amen.`,
+      language: 'french',
+      category: 'saints',
+      saint: 'michel-archange',
+      object: 'protection'
+    },
+    // Prières d'action de grâce
+    {
+      id: 'action-grace-simple',
+      title: 'Action de grâce simple',
+      content: `Seigneur, je vous remercie<br/>
+pour tous les bienfaits que vous me donnez<br/>
+chaque jour de ma vie.<br/>
+Merci pour ma famille, mes amis,<br/>
+pour la santé, pour le travail,<br/>
+pour tous les petits bonheurs quotidiens.<br/>
+Aidez-moi à ne jamais oublier<br/>
+que tout vient de vous<br/>
+et à vous rendre grâce<br/>
+en vivant selon votre volonté. Amen.`,
+      language: 'french',
+      category: 'action-grace',
+      saint: null,
+      object: 'remerciement'
+    },
+    // Prières pour les enfants
+    {
+      id: 'priere-enfants',
+      title: 'Prière des enfants',
+      content: `Mon Dieu, je vous aime<br/>
+de tout mon petit cœur.<br/>
+Bénissez papa et maman,<br/>
+mes frères et sœurs,<br/>
+mes grands-parents<br/>
+et tous ceux que j'aime.<br/>
+Aidez-moi à être sage<br/>
+et à faire plaisir à tout le monde.<br/>
+Merci pour tout ce que vous me donnez.<br/>
+Amen.`,
+      language: 'french',
+      category: 'enfants',
+      saint: null,
+      object: 'enfants'
+    }
+  ];
+
+  // Fonction de filtrage des prières
+  const filteredPrayers = prayersData.filter(prayer => {
+    const languageMatch = prayerFilter.language === 'all' || prayer.language === prayerFilter.language;
+    const categoryMatch = prayerFilter.category === 'all' || prayer.category === prayerFilter.category;
+    const saintMatch = prayerFilter.saint === 'all' || prayer.saint === prayerFilter.saint;
+    const objectMatch = prayerFilter.object === 'all' || prayer.object === prayerFilter.object;
+    
+    return languageMatch && categoryMatch && saintMatch && objectMatch;
+  });
+
+  // Options pour les filtres
+  const filterOptions = {
+    language: [
+      { value: 'all', label: 'Toutes les langues' },
+      { value: 'french', label: 'Français' },
+      { value: 'latin', label: 'Latin' },
+      { value: 'bilingue', label: 'Bilingue' }
+    ],
+    category: [
+      { value: 'all', label: 'Toutes les catégories' },
+      { value: 'seigneur', label: 'Prière du Seigneur' },
+      { value: 'marie', label: 'Prière à Marie' },
+      { value: 'trinite', label: 'Prière à la Trinité' },
+      { value: 'vertus', label: 'Actes de vertus' },
+      { value: 'saints', label: 'Prière des saints' },
+      { value: 'defunts', label: 'Prière pour les défunts' },
+      { value: 'action-grace', label: 'Action de grâce' },
+      { value: 'repentance', label: 'Repentance' },
+      { value: 'malades', label: 'Malades' },
+      { value: 'famille', label: 'Famille' },
+      { value: 'paix', label: 'Paix' },
+      { value: 'vocations', label: 'Vocations' },
+      { value: 'protection', label: 'Protection' },
+      { value: 'enfants', label: 'Enfants' }
+    ],
+    saint: [
+      { value: 'all', label: 'Tous les saints' },
+      { value: 'francois-assise', label: 'Saint François d\'Assise' },
+      { value: 'ignace-loyola', label: 'Saint Ignace de Loyola' },
+      { value: 'thomas-aquin', label: 'Saint Thomas d\'Aquin' },
+      { value: 'augustin', label: 'Saint Augustin' },
+      { value: 'bernard-clairvaux', label: 'Saint Bernard de Clairvaux' },
+      { value: 'therese-avila', label: 'Sainte Thérèse d\'Avila' },
+      { value: 'jean-paul-ii', label: 'Saint Jean-Paul II' },
+      { value: 'michel-archange', label: 'Saint Michel Archange' }
+    ],
+    object: [
+      { value: 'all', label: 'Tous les objets' },
+      { value: 'priere-fondamentale', label: 'Prière fondamentale' },
+      { value: 'protection', label: 'Protection' },
+      { value: 'vertu', label: 'Vertu' },
+      { value: 'repentance', label: 'Repentance' },
+      { value: 'paix', label: 'Paix' },
+      { value: 'offrande', label: 'Offrande' },
+      { value: 'eucharistie', label: 'Eucharistie' },
+      { value: 'recherche-dieu', label: 'Recherche de Dieu' },
+      { value: 'defunts', label: 'Défunts' },
+      { value: 'louange', label: 'Louange' },
+      { value: 'confession', label: 'Confession' },
+      { value: 'intercession', label: 'Intercession' },
+      { value: 'paques', label: 'Pâques' },
+      { value: 'guerison', label: 'Guérison' },
+      { value: 'famille', label: 'Famille' },
+      { value: 'vocations', label: 'Vocations' },
+      { value: 'confiance', label: 'Confiance' },
+      { value: 'eglise', label: 'Église' },
+      { value: 'remerciement', label: 'Remerciement' },
+      { value: 'enfants', label: 'Enfants' }
+    ]
+  };
+
   const [showDurationSelector, setShowDurationSelector] = useState(false);
   const [candleLit, setCandleLit] = useState(false); // Nouvel état : la bougie est-elle allumée ?
 
@@ -590,6 +1367,7 @@ export default function Home() {
     setChatOpen(false);
     setLectioOpen(false);
     setHorairesLeftOpen(false);
+    setPrayerOpen(false);
   }
   function closeAllRightPanels() {
     setMesseOpen(false);
@@ -684,7 +1462,7 @@ export default function Home() {
       </header>
 
       {/* Overlays */}
-      {(lectioOpen || messeOpen || chapeletOpen || horairesOpen || chatOpen) && (
+      {(lectioOpen || messeOpen || chapeletOpen || horairesOpen || chatOpen || prayerOpen) && (
         <div
           className="fixed inset-0 z-30 transition-opacity duration-300"
           style={{ background: "rgba(0,0,0,0.5)" }}
@@ -694,6 +1472,7 @@ export default function Home() {
             setChapeletOpen(false);
             setHorairesOpen(false);
             setChatOpen(false);
+            setPrayerOpen(false);
           }}
         />
       )}
@@ -813,6 +1592,148 @@ export default function Home() {
             ➤
           </button>
         </form>
+      </div>
+
+      {/* Volet Prières (gauche) */}
+      <div
+        className={`fixed top-0 left-0 h-screen w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
+        ${prayerOpen ? "translate-x-0" : "-translate-x-full"}`}
+        style={{ minWidth: 320, background: panelBg, color: text }}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-neutral-700">
+          <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Prières</h2>
+          <button
+            className="text-2xl transition cursor-pointer"
+            style={{ color: text, background: "none", border: "none", cursor: 'pointer' }}
+            onClick={() => setPrayerOpen(false)}
+            aria-label="Fermer"
+          >
+            ×
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Interface de filtres */}
+          <div className="sticky top-0 z-10 p-4 rounded-lg mb-4" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {/* Filtre par langue */}
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: text }}>Langue</label>
+                <select
+                  value={prayerFilter.language}
+                  onChange={(e) => setPrayerFilter(prev => ({ ...prev, language: e.target.value }))}
+                  className="w-full p-2 rounded text-sm"
+                  style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
+                >
+                  {filterOptions.language.map(option => (
+                    <option key={option.value} value={option.value} style={{ background: "#1a1a1a", color: text }}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filtre par catégorie */}
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: text }}>Catégorie</label>
+                <select
+                  value={prayerFilter.category}
+                  onChange={(e) => setPrayerFilter(prev => ({ ...prev, category: e.target.value }))}
+                  className="w-full p-2 rounded text-sm"
+                  style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
+                >
+                  {filterOptions.category.map(option => (
+                    <option key={option.value} value={option.value} style={{ background: "#1a1a1a", color: text }}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filtre par saint */}
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: text }}>Saint</label>
+                <select
+                  value={prayerFilter.saint}
+                  onChange={(e) => setPrayerFilter(prev => ({ ...prev, saint: e.target.value }))}
+                  className="w-full p-2 rounded text-sm"
+                  style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
+                >
+                  {filterOptions.saint.map(option => (
+                    <option key={option.value} value={option.value} style={{ background: "#1a1a1a", color: text }}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filtre par objet */}
+              <div>
+                <label className="block text-sm font-medium mb-1" style={{ color: text }}>Objet</label>
+                <select
+                  value={prayerFilter.object}
+                  onChange={(e) => setPrayerFilter(prev => ({ ...prev, object: e.target.value }))}
+                  className="w-full p-2 rounded text-sm"
+                  style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
+                >
+                  {filterOptions.object.map(option => (
+                    <option key={option.value} value={option.value} style={{ background: "#1a1a1a", color: text }}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            
+            {/* Bouton de réinitialisation */}
+            <div className="mt-3 flex justify-end">
+              <button
+                onClick={() => setPrayerFilter({ language: 'all', category: 'all', saint: 'all', object: 'all' })}
+                className="px-4 py-2 text-sm rounded"
+                style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
+              >
+                Réinitialiser les filtres
+              </button>
+            </div>
+          </div>
+
+          {/* Affichage des prières filtrées */}
+          <div className="space-y-4">
+            {filteredPrayers.length === 0 ? (
+              <div className="text-center py-8" style={{ color: text }}>
+                <p className="text-lg">Aucune prière ne correspond aux filtres sélectionnés.</p>
+                <p className="text-sm mt-2 opacity-75">Essayez de modifier vos critères de recherche.</p>
+              </div>
+            ) : (
+              filteredPrayers.map((prayer) => (
+                <div key={prayer.id} className="p-4 rounded-lg" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-lg font-semibold" style={{ color: text }}>{prayer.title}</h3>
+                    <div className="flex gap-2 text-xs">
+                      {prayer.language && (
+                        <span className="px-2 py-1 rounded" style={{ background: "rgba(255,255,255,0.1)", color: text }}>
+                          {prayer.language === 'french' ? '🇫🇷' : prayer.language === 'latin' ? '🏛️' : '🌐'}
+                        </span>
+                      )}
+                      {prayer.saint && (
+                        <span className="px-2 py-1 rounded" style={{ background: "rgba(255,255,255,0.1)", color: text }}>
+                          👤
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <p 
+                    className="text-sm leading-relaxed" 
+                    style={{ 
+                      color: text, 
+                      fontStyle: prayer.language === 'latin' ? 'italic' : 'normal' 
+                    }}
+                    dangerouslySetInnerHTML={{ __html: prayer.content }}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Volet Lectures du jour (gauche) */}
@@ -1326,6 +2247,14 @@ export default function Home() {
         }
       `}</style>
       <div className="fixed left-4 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50">
+        <button
+          className="cursor-pointer emoji-btn"
+          style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
+          onClick={() => { closeAllLeftPanels(); setPrayerOpen((open) => !open); }}
+        >
+          <span>🙏</span>
+          <span className="emoji-tooltip">Prières</span>
+        </button>
         <button
           className="cursor-pointer emoji-btn"
           style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
