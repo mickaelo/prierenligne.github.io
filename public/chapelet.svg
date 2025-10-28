@@ -1,0 +1,157 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Dégradés pour un aspect réaliste -->
+    <radialGradient id="beadGradient" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#fef3c7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </radialGradient>
+    
+    <radialGradient id="crossGradient" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#fef3c7;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#92400e;stop-opacity:1" />
+    </radialGradient>
+    
+    <radialGradient id="medalGradient" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#fef3c7;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Ombre portée -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+    
+    <!-- Effet de profondeur -->
+    <filter id="depth" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.2"/>
+      <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#000000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Fond -->
+  <rect width="800" height="600" fill="#fefefe"/>
+  
+  <!-- Chapelet principal -->
+  <g id="rosary">
+    
+    <!-- Croix latine en haut -->
+    <g id="cross" transform="translate(400, 60)">
+      <!-- Croix verticale -->
+      <rect x="-4" y="-25" width="8" height="50" rx="4" fill="url(#crossGradient)" stroke="#92400e" stroke-width="1" filter="url(#depth)"/>
+      <!-- Croix horizontale -->
+      <rect x="-15" y="-4" width="30" height="8" rx="4" fill="url(#crossGradient)" stroke="#92400e" stroke-width="1"/>
+      <!-- Détail central -->
+      <circle cx="0" cy="0" r="2" fill="#92400e"/>
+    </g>
+    
+    <!-- Premier gros grain (Notre Père) -->
+    <circle cx="400" cy="120" r="12" fill="url(#beadGradient)" stroke="#92400e" stroke-width="2" filter="url(#shadow)"/>
+    
+    <!-- 3 petits grains (Ave Maria d'introduction) -->
+    <circle cx="360" cy="150" r="8" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1.5" filter="url(#shadow)"/>
+    <circle cx="400" cy="160" r="8" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1.5" filter="url(#shadow)"/>
+    <circle cx="440" cy="150" r="8" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1.5" filter="url(#shadow)"/>
+    
+    <!-- Gros grain (Gloire au Père) -->
+    <circle cx="400" cy="200" r="12" fill="url(#beadGradient)" stroke="#92400e" stroke-width="2" filter="url(#shadow)"/>
+    
+    <!-- Médaille centrale -->
+    <g id="medal" transform="translate(400, 300)">
+      <circle cx="0" cy="0" r="25" fill="url(#medalGradient)" stroke="#92400e" stroke-width="2" filter="url(#depth)"/>
+      <!-- Détail de la médaille -->
+      <circle cx="0" cy="0" r="20" fill="none" stroke="#92400e" stroke-width="1"/>
+      <circle cx="0" cy="0" r="15" fill="none" stroke="#92400e" stroke-width="1"/>
+      <!-- M de Marie -->
+      <text x="0" y="6" text-anchor="middle" font-family="serif" font-size="16" font-weight="bold" fill="#92400e">M</text>
+    </g>
+    
+    <!-- 5 grosses perles en cercle avec 10 petites perles entre chaque -->
+    <!-- Grosse perle 1 (en haut) -->
+    <circle cx="400" cy="180" r="15" fill="url(#beadGradient)" stroke="#92400e" stroke-width="2" filter="url(#shadow)"/>
+    <text x="400" y="185" text-anchor="middle" font-family="serif" font-size="14" font-weight="bold" fill="#92400e">1</text>
+    
+    <!-- 10 petites perles entre perle 1 et 2 -->
+    <circle cx="400" cy="210" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="400" cy="225" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="400" cy="240" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="400" cy="255" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="400" cy="270" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="400" cy="285" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="400" cy="300" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="400" cy="315" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="400" cy="330" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="400" cy="345" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    
+    <!-- Grosse perle 2 (bas droite) -->
+    <circle cx="400" cy="375" r="15" fill="url(#beadGradient)" stroke="#92400e" stroke-width="2" filter="url(#shadow)"/>
+    <text x="400" y="380" text-anchor="middle" font-family="serif" font-size="14" font-weight="bold" fill="#92400e">2</text>
+    
+    <!-- 10 petites perles entre perle 2 et 3 -->
+    <circle cx="375" cy="405" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="350" cy="420" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="325" cy="435" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="300" cy="450" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="275" cy="465" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="250" cy="480" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="225" cy="495" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="200" cy="510" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="175" cy="525" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="150" cy="540" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    
+    <!-- Grosse perle 3 (bas gauche) -->
+    <circle cx="120" cy="570" r="15" fill="url(#beadGradient)" stroke="#92400e" stroke-width="2" filter="url(#shadow)"/>
+    <text x="120" y="575" text-anchor="middle" font-family="serif" font-size="14" font-weight="bold" fill="#92400e">3</text>
+    
+    <!-- 10 petites perles entre perle 3 et 4 -->
+    <circle cx="90" cy="540" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="65" cy="525" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="40" cy="510" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="15" cy="495" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-10" cy="480" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-35" cy="465" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-60" cy="450" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-85" cy="435" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-110" cy="420" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-135" cy="405" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    
+    <!-- Grosse perle 4 (haut gauche) -->
+    <circle cx="-165" cy="375" r="15" fill="url(#beadGradient)" stroke="#92400e" stroke-width="2" filter="url(#shadow)"/>
+    <text x="-165" y="380" text-anchor="middle" font-family="serif" font-size="14" font-weight="bold" fill="#92400e">4</text>
+    
+    <!-- 10 petites perles entre perle 4 et 5 -->
+    <circle cx="-135" cy="345" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-110" cy="330" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-85" cy="315" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-60" cy="300" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-35" cy="285" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="-10" cy="270" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="15" cy="255" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="40" cy="240" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="65" cy="225" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="90" cy="210" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    
+    <!-- Grosse perle 5 (haut droite) -->
+    <circle cx="120" cy="180" r="15" fill="url(#beadGradient)" stroke="#92400e" stroke-width="2" filter="url(#shadow)"/>
+    <text x="120" y="185" text-anchor="middle" font-family="serif" font-size="14" font-weight="bold" fill="#92400e">5</text>
+    
+    <!-- 10 petites perles entre perle 5 et 1 -->
+    <circle cx="150" cy="210" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="175" cy="225" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="200" cy="240" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="225" cy="255" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="250" cy="270" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="275" cy="285" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="300" cy="300" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="325" cy="315" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="350" cy="330" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    <circle cx="375" cy="345" r="6" fill="url(#beadGradient)" stroke="#92400e" stroke-width="1" filter="url(#shadow)"/>
+    
+    <!-- Légende -->
+    <text x="400" y="620" text-anchor="middle" font-family="serif" font-size="16" font-weight="bold" fill="#92400e">Chapelet Catholique</text>
+    <text x="400" y="640" text-anchor="middle" font-family="serif" font-size="12" fill="#d97706">Croix • Notre Père • 3 Ave Maria • Gloire • 5 Dizaines</text>
+    
+  </g>
+</svg> 

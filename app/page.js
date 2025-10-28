@@ -904,7 +904,7 @@ Amen.`,
   }, [lectioOpen, lectioDate]);
 
   // Couleurs du styles.css d'origine
-  const bg = "#1a1a1a";
+  const bg = "white";
   const text = "#fff";
   const btnBg = "rgba(255,255,255,0.1)";
   const btnBorder = "1px solid rgba(255,255,255,0.2)";
@@ -949,7 +949,7 @@ Amen.`,
   function Candle() {
     // Flamme visible seulement si candleLit
     return (
-      <div style={{ position: 'fixed', left: '50%', top: '50%', zIndex: 50, transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}>
+      <div style={{ position: 'fixed', left: '50%', top: '75%', zIndex: 50, transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}>
         <div style={{ width: 40, height: 120, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Flamme */}
           {candleLit && (
@@ -960,7 +960,7 @@ Amen.`,
           {/* Mèche blanche à bord noir, dépassant de la cire */}
           <div style={{ width: 2, height: 16, background: '#fff', border: '1px solid #222', position: 'absolute', top: 32, left: '50%', transform: 'translateX(-50%)', zIndex: 2, borderRadius: 1 }} />
           {/* Corps de la bougie (cire) */}
-          <div style={{ width: 24, height: 80, background: '#fffbe6', borderRadius: 12, marginTop: 48, boxShadow: '0 2px 8px #0006', border: '1px solid #ffe066' }} />
+          <div style={{ width: 24, height: 80, background: '#f3bf00', borderRadius: 12, marginTop: 48, boxShadow: '0 2px 8px #0006', border: '1px solid #ffe066' }} />
         </div>
       </div>
     );
@@ -1438,6 +1438,168 @@ Amen.`,
     // eslint-disable-next-line
   }, [selectedRadio]);
 
+  // --- Radio Maria : programme et encart "En direct" ---
+  function parseHmToMinutes(hm) {
+    const [h, m] = hm.split(":").map(Number);
+    return h * 60 + m;
+  }
+  
+  // Programme Radio Maria 2025-2026 basé sur la brochure officielle
+  const radioMariaSchedule = [
+    { time: "00:00", title: "Chapelet" },
+    { time: "00:30", title: "Psaumes" },
+    { time: "01:00", title: "Enseignement" },
+    { time: "02:00", title: "Formation Humaine" },
+    { time: "03:00", title: "Chapelet de la Miséricorde" },
+    { time: "03:15", title: "Livre de spiritualité" },
+    { time: "03:30", title: "Bible en continu" },
+    { time: "04:00", title: "Enseignement" },
+    { time: "05:00", title: "Sanctuaires et communautés" },
+    { time: "05:30", title: "Chapelet en latin" },
+    { time: "06:00", title: "Aube nouvelle" },
+    { time: "07:00", title: "Laudes (Famille Missionnaire de Notre Dame)" },
+    { time: "07:35", title: "Saints du jour" },
+    { time: "07:45", title: "Commentaires des textes de la messe" },
+    { time: "08:00", title: "Prières du matin" },
+    { time: "08:15", title: "Lecture patristique" },
+    { time: "08:30", title: "Chapelet avec un auditeur" },
+    { time: "09:10", title: "Formation Humaine" },
+    { time: "10:10", title: "Catéchèse du Père Mathieu" },
+    { time: "11:10", title: "Office du Milieu du Jour" },
+    { time: "11:15", title: "Messe en direct" },
+    { time: "11:30", title: "Messe en direct" },
+    { time: "12:00", title: "Angelus et Milieu du Jour" },
+    { time: "12:10", title: "Psaumes" },
+    { time: "12:15", title: "Nouveau Testament" },
+    { time: "12:30", title: "Nouveau Testament" },
+    { time: "12:45", title: "Open Bible" },
+    { time: "13:00", title: "Vatican News" },
+    { time: "13:15", title: "Dédicaces / Appel à la conversion" },
+    { time: "14:00", title: "Enseignements" },
+    { time: "15:00", title: "Chapelet de la Miséricorde" },
+    { time: "15:15", title: "Livre de spiritualité" },
+    { time: "15:30", title: "Chapelet (Lourdes ou ailleurs)" },
+    { time: "16:10", title: "Approfondis ta foi" },
+    { time: "17:05", title: "Sanctuaires et communautés / Interview" },
+    { time: "17:40", title: "Vêpres" },
+    { time: "18:00", title: "Chapelet" },
+    { time: "18:45", title: "Psaumes / Spiritualité" },
+    { time: "19:00", title: "Messe de ND de Boulogne" },
+    { time: "19:40", title: "Pour vous les enfants" },
+    { time: "20:00", title: "Catéchèse du Père Mathieu" },
+    { time: "21:00", title: "Formation Humaine" },
+    { time: "22:00", title: "Complies" },
+    { time: "22:20", title: "Appel à la conversion" },
+    { time: "23:00", title: "Enseignement" },
+  ].sort((a, b) => parseHmToMinutes(a.time) - parseHmToMinutes(b.time));
+
+  function getParisNowMinutes() {
+    const parisNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' }));
+    return parisNow.getHours() * 60 + parisNow.getMinutes();
+  }
+
+  function computeCurrentAndNextProgram() {
+    const nowM = getParisNowMinutes();
+    const dayOfWeek = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' })).getDay(); // 0=dimanche, 1=lundi, etc.
+    
+    // Variations selon les jours de la semaine basées sur la brochure officielle
+    let schedule = [...radioMariaSchedule];
+    
+    // Dimanche : Messe dominicale à 10h00
+    if (dayOfWeek === 0) {
+      schedule = schedule.map(item => {
+        if (item.time === "10:10") return { ...item, title: "Messe dominicale" };
+        if (item.time === "12:10") return { ...item, title: "Psaumes" };
+        if (item.time === "12:30") return { ...item, title: "Nouveau Testament" };
+        if (item.time === "13:00") return { ...item, title: "Formation Humaine" };
+        if (item.time === "16:10") return { ...item, title: "Enseignement" };
+        if (item.time === "17:05") return { ...item, title: "Poésie religieuse" };
+        if (item.time === "18:00") return { ...item, title: "Chapelet et vêpres" };
+        if (item.time === "18:45") return { ...item, title: "Enseignement" };
+        return item;
+      });
+    }
+    
+    // Mardi : Messe de ND de Pellevoisin à 11h15
+    if (dayOfWeek === 2) {
+      schedule = schedule.map(item => {
+        if (item.time === "11:15") return { ...item, title: "Messe de ND de Pellevoisin" };
+        if (item.time === "13:15") return { ...item, title: "Appel à la conversion" };
+        return item;
+      });
+    }
+    
+    // Mercredi : Messe de ND du Laus à 11h15
+    if (dayOfWeek === 3) {
+      schedule = schedule.map(item => {
+        if (item.time === "11:15") return { ...item, title: "Messe de ND du Laus" };
+        return item;
+      });
+    }
+    
+    // Jeudi : Messe de ND de Grâces (Cotignac) à 11h30
+    if (dayOfWeek === 4) {
+      schedule = schedule.map(item => {
+        if (item.time === "11:30") return { ...item, title: "Messe de ND de Grâces (Cotignac)" };
+        return item;
+      });
+    }
+    
+    // Vendredi : Vierge Marie à 10h10
+    if (dayOfWeek === 5) {
+      schedule = schedule.map(item => {
+        if (item.time === "10:10") return { ...item, title: "Vierge Marie" };
+        if (item.time === "11:30") return { ...item, title: "Messe de Saint Louis d'Antin" };
+        if (item.time === "16:10") return { ...item, title: "Catéchèse de Mgr Macaire" };
+        if (item.time === "17:05") return { ...item, title: "Préparons dimanche" };
+        if (item.time === "18:45") return { ...item, title: "Enseignement" };
+        return item;
+      });
+    }
+    
+    // Samedi : Messe de ND de Boulogne à 19h00
+    if (dayOfWeek === 6) {
+      schedule = schedule.map(item => {
+        if (item.time === "19:00") return { ...item, title: "Messe de ND de Boulogne" };
+        return item;
+      });
+    }
+    
+    let currentIdx = -1;
+    for (let i = 0; i < schedule.length; i++) {
+      const start = parseHmToMinutes(schedule[i].time);
+      const next = parseHmToMinutes(schedule[(i + 1) % schedule.length].time);
+      if (start <= nowM && (i === schedule.length - 1 ? nowM < 1440 : nowM < next)) {
+        currentIdx = i;
+        break;
+      }
+    }
+    if (currentIdx === -1) currentIdx = schedule.length - 1; // just before midnight wrap
+    const current = schedule[currentIdx];
+    const next = schedule[(currentIdx + 1) % schedule.length];
+    return { current, next };
+  }
+
+  const [{ current: currentRM, next: nextRM }, setRmState] = useState(computeCurrentAndNextProgram());
+  useEffect(() => {
+    const id = setInterval(() => setRmState(computeCurrentAndNextProgram()), 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  function playRadioMariaNow() {
+    setSelectedRadio(radios[0]);
+    if (!showRadio) setShowRadio(true);
+    // try to autoplay after load
+    setTimeout(() => {
+      try {
+        if (radioRef.current) {
+          radioRef.current.play();
+          setRadioPlaying(true);
+        }
+      } catch {}
+    }, 200);
+  }
+
   // Ajoute un nouvel état pour le carousel
   const [showIconCarousel, setShowIconCarousel] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -1455,11 +1617,30 @@ Amen.`,
   return (
     <div className="min-h-screen flex flex-col font-sans relative overflow-x-hidden" style={{ background: bg, color: text }}>
       {/* Header */}
-      <header className="w-full flex items-center justify-center py-3 border-b border-neutral-800 shadow-sm relative z-10" style={{ background: bg }}>
+      <header className="w-full flex items-center justify-center py-3 border-b border-neutral-800 shadow-sm relative z-10" style={{ background: 'black' }}>
         <div className="flex items-center gap-3">
           <span className="text-lg font-semibold tracking-tight" style={{ color: text }}>Prier en ligne</span>
         </div>
       </header>
+
+      {/* Image Christ au centre */}
+      <div className="fixed inset-0 flex items-start justify-center z-0 pointer-events-none" style={{ paddingTop: '20vh' }}>
+        <div className="relative">
+          <Image 
+            src="/christ.png" 
+            alt="Christ" 
+            width={300} 
+            height={300} 
+            style={{ 
+              filter: 'drop-shadow(0 0 20px rgba(255, 255, 255, 0.1))',
+              maxWidth: '400px',
+              maxHeight: '400px',
+              objectFit: 'contain'
+            }}
+            unoptimized
+          />
+        </div>
+      </div>
 
       {/* Overlays */}
       {(lectioOpen || messeOpen || chapeletOpen || horairesOpen || chatOpen || prayerOpen) && (
@@ -1625,7 +1806,7 @@ Amen.`,
                   style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
                 >
                   {filterOptions.language.map(option => (
-                    <option key={option.value} value={option.value} style={{ background: "#1a1a1a", color: text }}>
+                    <option key={option.value} value={option.value} style={{ background: "#8f2727", color: text }}>
                       {option.label}
                     </option>
                   ))}
@@ -1642,7 +1823,7 @@ Amen.`,
                   style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
                 >
                   {filterOptions.category.map(option => (
-                    <option key={option.value} value={option.value} style={{ background: "#1a1a1a", color: text }}>
+                    <option key={option.value} value={option.value} style={{ background: "#8f2727", color: text }}>
                       {option.label}
                     </option>
                   ))}
@@ -1659,7 +1840,7 @@ Amen.`,
                   style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
                 >
                   {filterOptions.saint.map(option => (
-                    <option key={option.value} value={option.value} style={{ background: "#1a1a1a", color: text }}>
+                    <option key={option.value} value={option.value} style={{ background: "#8f2727", color: text }}>
                       {option.label}
                     </option>
                   ))}
@@ -1676,7 +1857,7 @@ Amen.`,
                   style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
                 >
                   {filterOptions.object.map(option => (
-                    <option key={option.value} value={option.value} style={{ background: "#1a1a1a", color: text }}>
+                    <option key={option.value} value={option.value} style={{ background: "#8f2727", color: text }}>
                       {option.label}
                     </option>
                   ))}
@@ -2527,6 +2708,29 @@ Amen.`,
           )}
         </div>
       </div>
+      {/* Encart Radio Maria en direct */}
+      <div className="fixed top-14 left-4 right-4 sm:top-auto sm:bottom-[92px] sm:left-auto sm:right-4 z-[55]">
+        <div className="rounded-xl shadow-2xl p-3 flex items-center gap-2"
+          style={{ background: "#1f1f1f", color: text, border: "1px solid rgba(255,255,255,0.12)", maxWidth: 340 }}>
+          <div className="flex flex-col">
+            <div className="text-xs uppercase tracking-wide" style={{ color: '#ffeb99' }}>En direct · Radio Maria</div>
+            <div className="text-sm font-semibold" style={{ color: '#fff' }}>{currentRM?.title || 'Programme en cours'}</div>
+            {nextRM && (
+              <div className="text-xs opacity-80" style={{ color: '#ddd' }}>Ensuite {nextRM.time} · {nextRM.title}</div>
+            )}
+          </div>
+          <button
+            onClick={playRadioMariaNow}
+            className="ml-auto px-3 py-2 rounded font-bold text-sm"
+            style={{ background: '#ffe066', color: '#222', border: 'none', boxShadow: '0 1px 6px #0006', cursor: 'pointer' }}
+            aria-label="Lancer Radio Maria"
+            title="Écouter Radio Maria maintenant"
+          >
+            ▶ Écouter
+          </button>
+        </div>
+      </div>
+
       {/* Bouton Radio Maria */}
       <style>{`
         @keyframes shake-radio {
