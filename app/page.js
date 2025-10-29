@@ -2488,7 +2488,7 @@ Amen.`,
           <span>✝️</span>
           <span className="emoji-tooltip">Bible</span>
         </button>
-        {/* Ajoute ici le sélecteur d'icônes en colonne */}
+        {/* Ajoute ici le sélecteur d'icônes en colonne
         <div className="flex flex-col gap-2 mt-6 items-center">
           <button
             key={icons[0].label}
@@ -2499,7 +2499,7 @@ Amen.`,
           >
             <Image src={icons[0].src} alt={icons[0].label} width={36} height={36} style={{ borderRadius: '50%' }} unoptimized />
           </button>
-        </div>
+        </div> */}
       </div>
       {/* Affichage de l'icône sélectionnée au centre de la page */}
       {selectedIcon && (
