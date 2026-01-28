@@ -773,7 +773,7 @@ Amen.`,
     const categoryMatch = prayerFilter.category === 'all' || prayer.category === prayerFilter.category;
     const saintMatch = prayerFilter.saint === 'all' || prayer.saint === prayerFilter.saint;
     const objectMatch = prayerFilter.object === 'all' || prayer.object === prayerFilter.object;
-    
+
     return languageMatch && categoryMatch && saintMatch && objectMatch;
   });
 
@@ -906,7 +906,7 @@ Amen.`,
   // Couleurs du styles.css d'origine
   const bg = "white";
   const text = "#fff";
-  const btnBg = "rgba(255,255,255,0.1)";
+  const btnBg = "rgb(139, 69, 19)";
   const btnBorder = "1px solid rgba(255,255,255,0.2)";
   const btnHoverBg = "rgba(255,255,255,0.2)";
   const panelBg = "#181818"; // fond bien opaque
@@ -1443,7 +1443,7 @@ Amen.`,
     const [h, m] = hm.split(":").map(Number);
     return h * 60 + m;
   }
-  
+
   // Programme Radio Maria 2025-2026 basé sur la brochure officielle
   const radioMariaSchedule = [
     { time: "00:00", title: "Chapelet" },
@@ -1501,10 +1501,10 @@ Amen.`,
   function computeCurrentAndNextProgram() {
     const nowM = getParisNowMinutes();
     const dayOfWeek = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' })).getDay(); // 0=dimanche, 1=lundi, etc.
-    
+
     // Variations selon les jours de la semaine basées sur la brochure officielle
     let schedule = [...radioMariaSchedule];
-    
+
     // Dimanche : Messe dominicale à 10h00
     if (dayOfWeek === 0) {
       schedule = schedule.map(item => {
@@ -1519,7 +1519,7 @@ Amen.`,
         return item;
       });
     }
-    
+
     // Mardi : Messe de ND de Pellevoisin à 11h15
     if (dayOfWeek === 2) {
       schedule = schedule.map(item => {
@@ -1528,7 +1528,7 @@ Amen.`,
         return item;
       });
     }
-    
+
     // Mercredi : Messe de ND du Laus à 11h15
     if (dayOfWeek === 3) {
       schedule = schedule.map(item => {
@@ -1536,7 +1536,7 @@ Amen.`,
         return item;
       });
     }
-    
+
     // Jeudi : Messe de ND de Grâces (Cotignac) à 11h30
     if (dayOfWeek === 4) {
       schedule = schedule.map(item => {
@@ -1544,7 +1544,7 @@ Amen.`,
         return item;
       });
     }
-    
+
     // Vendredi : Vierge Marie à 10h10
     if (dayOfWeek === 5) {
       schedule = schedule.map(item => {
@@ -1556,7 +1556,7 @@ Amen.`,
         return item;
       });
     }
-    
+
     // Samedi : Messe de ND de Boulogne à 19h00
     if (dayOfWeek === 6) {
       schedule = schedule.map(item => {
@@ -1564,7 +1564,7 @@ Amen.`,
         return item;
       });
     }
-    
+
     let currentIdx = -1;
     for (let i = 0; i < schedule.length; i++) {
       const start = parseHmToMinutes(schedule[i].time);
@@ -1596,7 +1596,7 @@ Amen.`,
           radioRef.current.play();
           setRadioPlaying(true);
         }
-      } catch {}
+      } catch { }
     }, 200);
   }
 
@@ -1617,14 +1617,14 @@ Amen.`,
   return (
     <div className="min-h-screen flex flex-col font-sans relative overflow-x-hidden" style={{ background: bg, color: text }}>
       {/* Header */}
-      <header className="w-full flex items-center justify-center py-3 border-b border-neutral-800 shadow-sm relative z-10" style={{ background: 'black' }}>
+      <header className="w-full flex items-center justify-center py-4 border-b border-neutral-800 shadow-sm relative z-10" style={{ background: 'rgb(139, 69, 19)' }}>
         <div className="flex items-center gap-3">
           <span className="text-lg font-semibold tracking-tight" style={{ color: text }}>Prier en ligne</span>
         </div>
       </header>
 
       {/* Image Christ au centre */}
-      <div className="fixed inset-0 flex items-start justify-center z-0 pointer-events-none" style={{ paddingTop: '20vh' }}>
+      {/* <div className="fixed inset-0 flex items-start justify-center z-0 pointer-events-none" style={{ paddingTop: '20vh' }}>
         <div className="relative">
           <Image 
             src="/christ.png" 
@@ -1640,7 +1640,7 @@ Amen.`,
             unoptimized
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Overlays */}
       {(lectioOpen || messeOpen || chapeletOpen || horairesOpen || chatOpen || prayerOpen) && (
@@ -1777,9 +1777,9 @@ Amen.`,
 
       {/* Volet Prières (gauche) */}
       <div
-        className={`fixed top-0 left-0 h-screen w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
+        className={`fixed top-0 left-0 w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${prayerOpen ? "translate-x-0" : "-translate-x-full"}`}
-        style={{ minWidth: 320, background: panelBg, color: text }}
+        style={{ minWidth: 320, background: panelBg, color: text, height: '100dvh', maxHeight: '100dvh' }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Prières</h2>
@@ -1792,17 +1792,17 @@ Amen.`,
             ×
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto px-4 pt-2 pb-4 space-y-4">
           {/* Interface de filtres */}
-          <div className="sticky top-0 z-10 p-4 rounded-lg mb-4" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="sticky top-0 z-10 rounded-lg mb-3 py-2 px-3" style={{ background: "rgba(15,23,42,0.9)", border: "1px solid rgba(255,255,255,0.15)", backdropFilter: 'blur(8px)' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 items-end">
               {/* Filtre par langue */}
               <div>
                 <label className="block text-sm font-medium mb-1" style={{ color: text }}>Langue</label>
                 <select
                   value={prayerFilter.language}
                   onChange={(e) => setPrayerFilter(prev => ({ ...prev, language: e.target.value }))}
-                  className="w-full p-2 rounded text-sm"
+                  className="w-full px-2 py-1 rounded text-sm"
                   style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
                 >
                   {filterOptions.language.map(option => (
@@ -1819,7 +1819,7 @@ Amen.`,
                 <select
                   value={prayerFilter.category}
                   onChange={(e) => setPrayerFilter(prev => ({ ...prev, category: e.target.value }))}
-                  className="w-full p-2 rounded text-sm"
+                  className="w-full px-2 py-1 rounded text-sm"
                   style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
                 >
                   {filterOptions.category.map(option => (
@@ -1836,7 +1836,7 @@ Amen.`,
                 <select
                   value={prayerFilter.saint}
                   onChange={(e) => setPrayerFilter(prev => ({ ...prev, saint: e.target.value }))}
-                  className="w-full p-2 rounded text-sm"
+                  className="w-full px-2 py-1 rounded text-sm"
                   style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
                 >
                   {filterOptions.saint.map(option => (
@@ -1853,7 +1853,7 @@ Amen.`,
                 <select
                   value={prayerFilter.object}
                   onChange={(e) => setPrayerFilter(prev => ({ ...prev, object: e.target.value }))}
-                  className="w-full p-2 rounded text-sm"
+                  className="w-full px-2 py-1 rounded text-sm"
                   style={{ background: "rgba(255,255,255,0.1)", color: text, border: "1px solid rgba(255,255,255,0.2)" }}
                 >
                   {filterOptions.object.map(option => (
@@ -1864,7 +1864,7 @@ Amen.`,
                 </select>
               </div>
             </div>
-            
+
             {/* Bouton de réinitialisation */}
             <div className="mt-3 flex justify-end">
               <button
@@ -1902,11 +1902,11 @@ Amen.`,
                       )}
                     </div>
                   </div>
-                  <p 
-                    className="text-sm leading-relaxed" 
-                    style={{ 
-                      color: text, 
-                      fontStyle: prayer.language === 'latin' ? 'italic' : 'normal' 
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{
+                      color: text,
+                      fontStyle: prayer.language === 'latin' ? 'italic' : 'normal'
                     }}
                     dangerouslySetInnerHTML={{ __html: prayer.content }}
                   />
@@ -1919,10 +1919,10 @@ Amen.`,
 
       {/* Volet Lectures du jour (gauche) */}
       <div
-        className={`fixed top-0 left-0 h-screen w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
+        className={`fixed top-0 left-0 w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${lectioOpen ? "translate-x-0" : "-translate-x-full"}
         ${lectioExtended ? "w-full max-w-full" : "sm:w-1/3 max-w-lg"}`}
-        style={{ minWidth: 320, background: panelBg, color: text, width: lectioExtended ? '100vw' : undefined, maxWidth: lectioExtended ? '100vw' : undefined }}
+        style={{ minWidth: 320, background: panelBg, color: text, width: lectioExtended ? '100vw' : undefined, maxWidth: lectioExtended ? '100vw' : undefined, height: '100dvh', maxHeight: '100dvh' }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Lectio divina</h2>
@@ -2168,7 +2168,7 @@ Amen.`,
               {showChapeletHelp && (
                 <>
                   <div
-                    className="fixed inset-0 z-[200] bg-black bg-opacity-60 transition-opacity duration-300 flex items-center justify-center"
+                    className="fixed inset-0 z-[200] bg-rgb(139, 69, 19) bg-opacity-60 transition-opacity duration-300 flex items-center justify-center"
                     onClick={() => setShowChapeletHelp(false)}
                     aria-label="Fermer la popup tutoriel chapelet"
                   />
@@ -2208,10 +2208,10 @@ Amen.`,
 
       {/* Volet Horaires des messes (gauche) */}
       <div
-        className={`fixed top-0 left-0 h-screen w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
+        className={`fixed top-0 left-0 w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${horairesLeftOpen ? "translate-x-0" : "-translate-x-full"}
         ${horairesExtended ? "w-full max-w-full" : "sm:w-1/3 max-w-lg"}`}
-        style={{ minWidth: 320, background: panelBg, color: text, width: horairesExtended ? '100vw' : undefined, maxWidth: horairesExtended ? '100vw' : undefined }}
+        style={{ minWidth: 320, background: panelBg, color: text, width: horairesExtended ? '100vw' : undefined, maxWidth: horairesExtended ? '100vw' : undefined, height: '100dvh', maxHeight: '100dvh' }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Horaires des messes</h2>
@@ -2316,7 +2316,7 @@ Amen.`,
       {showContactPopup && (
         <>
           <div
-            className="fixed inset-0 z-[200] bg-black bg-opacity-60 transition-opacity duration-300 flex items-center justify-center"
+            className="fixed inset-0 z-[200] bg-rgb(139, 69, 19) bg-opacity-60 transition-opacity duration-300 flex items-center justify-center"
             onClick={() => setShowContactPopup(false)}
             aria-label="Fermer la popup de contact"
           />
@@ -2357,7 +2357,7 @@ Amen.`,
       {showSaintPopup && saintBio && (
         <>
           <div
-            className="fixed inset-0 z-[200] bg-black bg-opacity-60 transition-opacity duration-300 flex items-center justify-center"
+            className="fixed inset-0 z-[200] bg-rgb(139, 69, 19) bg-opacity-60 transition-opacity duration-300 flex items-center justify-center"
             onClick={() => setShowSaintPopup(false)}
             aria-label="Fermer la popup saint du jour"
           />
@@ -2407,30 +2407,31 @@ Amen.`,
           filter: drop-shadow(0 0 8px #ffe066cc);
         }
         .emoji-tooltip {
-          opacity: 0;
-          pointer-events: none;
-          position: absolute;
-          left: 120%;
-          top: 50%;
-          transform: translateY(-50%);
-          background: #222;
-          color: #ffe066;
-          padding: 6px 14px;
-          border-radius: 8px;
-          font-size: 1rem;
-          white-space: nowrap;
-          box-shadow: 0 2px 12px #000a;
-          transition: opacity 0.18s;
-          z-index: 10;
-        }
-        .emoji-btn:hover .emoji-tooltip, .emoji-btn:focus .emoji-tooltip {
           opacity: 1;
+          pointer-events: none;
+          position: static;
+          margin-top: 6px;
+          background: rgba(248, 250, 252, 0.9);
+          color: #111827;
+          padding: 2px 6px;
+          border-radius: 999px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          line-height: 1.2;
+          white-space: normal;
+          text-align: center;
+          word-break: keep-all;
+          overflow-wrap: break-word;
+          max-width: 100%;
+          box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
         }
       `}</style>
-      <div className="fixed left-4 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50">
+      <div className="fixed inset-x-0 top-1/2 -translate-y-1/2 grid grid-cols-4 gap-5 z-50 px-4 place-items-center">
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
+          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
           onClick={() => { closeAllLeftPanels(); setPrayerOpen((open) => !open); }}
         >
           <span>🙏</span>
@@ -2438,7 +2439,7 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
+          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
           onClick={() => { closeAllLeftPanels(); setLectioOpen((open) => !open); }}
         >
           <span>📖</span>
@@ -2446,7 +2447,7 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllRightPanels(); setMesseOpen((open) => !open); }}
         >
           <span>⛪</span>
@@ -2454,7 +2455,7 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllRightPanels(); setChapeletOpen(!chapeletOpen); }}
         >
           <span>📿</span>
@@ -2462,7 +2463,7 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllLeftPanels(); setHorairesLeftOpen(!horairesLeftOpen); }}
         >
           <span>🕐</span>
@@ -2470,24 +2471,23 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: 'none', border: 'none', boxShadow: 'none', padding: 0, minWidth: 0, fontSize: 32, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllRightPanels(); setBibleOpen(!bibleOpen); }}
         >
           <span>✝️</span>
           <span className="emoji-tooltip">Bible</span>
         </button>
         {/* Ajoute ici le sélecteur d'icônes en colonne */}
-        <div className="flex flex-col gap-2 mt-6 items-center">
-          <button
-            key={icons[0].label}
-            className="cursor-pointer"
-            style={{ width: 44, height: 44, background: 'none', border: 'none', boxShadow: 'none', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onClick={() => { setCarouselIndex(0); setShowIconCarousel(true); }}
-            aria-label={icons[0].label}
-          >
-            <Image src={icons[0].src} alt={icons[0].label} width={36} height={36} style={{ borderRadius: '50%' }} unoptimized />
-          </button>
-        </div>
+        <button
+          key={icons[0].label}
+          className="cursor-pointer"
+          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          onClick={() => { setCarouselIndex(0); setShowIconCarousel(true); }}
+          aria-label={icons[0].label}
+        >
+          <Image src={icons[0].src} alt={icons[0].label} width={50} height={50} unoptimized />
+          <span className="emoji-tooltip">Icônes</span>
+        </button>
       </div>
       {/* Affichage de l'icône sélectionnée au centre de la page */}
       {selectedIcon && (
@@ -2496,7 +2496,7 @@ Amen.`,
         </div>
       )}
       {/* Icône de prière centrée en bas, timer à droite */}
-      <div className="fixed left-1/2 bottom-4 sm:bottom-12 z-50" style={{ transform: 'translateX(-50%)' }}>
+      {/* <div className="fixed left-1/2 bottom-4 sm:bottom-12 z-50" style={{ transform: 'translateX(-50%)' }}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
           <Image
             src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f64f.png"
@@ -2509,12 +2509,12 @@ Amen.`,
           />
         </div>
       </div>
-      <Candle />
+      <Candle /> */}
       {/* Popin sélecteur de temps de prière */}
       {showDurationSelector && (
         <>
           <div
-            className="fixed inset-0 z-[200] bg-black bg-opacity-60 transition-opacity duration-300 flex items-center justify-center"
+            className="fixed inset-0 z-[200] bg-rgb(139, 69, 19) bg-opacity-60 transition-opacity duration-300 flex items-center justify-center"
             onClick={() => setShowDurationSelector(false)}
             aria-label="Fermer la sélection du temps de prière"
           />
@@ -2563,17 +2563,6 @@ Amen.`,
                 onClick={e => e.stopPropagation()}
               />
             </div>
-            <button
-              className="mt-2 px-4 py-2 rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition cursor-pointer"
-              onClick={() => {
-                setShowDurationSelector(false);
-                setCandleLit(true);
-              }}
-              autoFocus
-              disabled={!selectedDuration || selectedDuration <= 0}
-            >
-              Prier
-            </button>
           </div>
           <style>{`
             @keyframes fadein { from { opacity: 0; transform: scale(0.95) translate(-50%, -50%); } to { opacity: 1; transform: scale(1) translate(-50%, -50%); } }
@@ -2583,10 +2572,10 @@ Amen.`,
       )}
       {/* Volet Bible (droite) */}
       <div
-        className={`fixed top-0 right-0 h-screen w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
+        className={`fixed top-0 right-0 w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${bibleOpen ? "translate-x-0" : "translate-x-full"}
         ${bibleExtended ? "w-full max-w-full" : "sm:w-1/3 max-w-lg"}`}
-        style={{ minWidth: 320, background: panelBg, color: text, width: bibleExtended ? '100vw' : undefined, maxWidth: bibleExtended ? '100vw' : undefined }}
+        style={{ minWidth: 320, background: panelBg, color: text, width: bibleExtended ? '100vw' : undefined, maxWidth: bibleExtended ? '100vw' : undefined, height: '100dvh', maxHeight: '100dvh' }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Bible</h2>
@@ -2709,7 +2698,7 @@ Amen.`,
         </div>
       </div>
       {/* Encart Radio Maria en direct */}
-      <div className="fixed top-14 left-4 right-4 sm:top-auto sm:bottom-[92px] sm:left-auto sm:right-4 z-[55]">
+      {/* <div className="fixed top-14 left-4 right-4 sm:top-auto sm:bottom-[92px] sm:left-auto sm:right-4 z-[55]">
         <div className="rounded-xl shadow-2xl p-3 flex items-center gap-2"
           style={{ background: "#1f1f1f", color: text, border: "1px solid rgba(255,255,255,0.12)", maxWidth: 340 }}>
           <div className="flex flex-col">
@@ -2729,7 +2718,7 @@ Amen.`,
             ▶ Écouter
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Bouton Radio Maria */}
       <style>{`
@@ -2775,7 +2764,7 @@ Amen.`,
         )}
       </div>
       {showIconCarousel && (
-        <div className="fixed inset-0 z-[200] bg-black bg-opacity-70 flex items-center justify-center" onClick={() => setShowIconCarousel(false)}>
+        <div className="fixed inset-0 z-[200] bg-rgb(139, 69, 19) bg-opacity-70 flex items-center justify-center" onClick={() => setShowIconCarousel(false)}>
           <div className="relative bg-[#222] rounded-xl shadow-2xl p-6 flex flex-col items-center" style={{ minWidth: 320, maxWidth: '90vw' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-center gap-6">
               <button
