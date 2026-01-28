@@ -2440,7 +2440,7 @@ Amen.`,
           box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
         }
       `}</style>
-      <div className="fixed inset-x-0 top-1/2 -translate-y-1/2 grid grid-cols-4 gap-5 z-50 px-4 place-items-center">
+      <div className="fixed inset-x-0 top-1/2 -translate-y-1/2 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-5 z-50 px-2 sm:px-4 place-items-center">
         <button
           className="cursor-pointer emoji-btn"
           style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
