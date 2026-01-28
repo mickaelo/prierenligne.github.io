@@ -20,9 +20,6 @@
     "puppeteer": "^24.13.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-native": "0.83.2",
-    "react-native-svg": "15.15.1",
-    "react-native-web": "0.21.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
