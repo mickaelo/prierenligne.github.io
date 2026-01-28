@@ -1615,7 +1615,7 @@ Amen.`,
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans relative overflow-x-hidden" style={{ background: bg, color: text }}>
+    <div className="flex flex-col font-sans relative" style={{ background: bg, color: text }}>
       {/* Header */}
       <header className="w-full flex items-center justify-center py-4 border-b border-neutral-800 shadow-sm relative z-10" style={{ background: 'rgb(139, 69, 19)' }}>
         <div className="flex items-center gap-3">
