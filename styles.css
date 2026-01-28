@@ -698,6 +698,7 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -957,6 +958,11 @@ body {
     .messes-horaires, .readings {
         width: 50%;
         background-color: #8f2727;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        height: 100dvh;
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
     }
 
     .toggle-readings {
@@ -1102,6 +1108,11 @@ body {
     .messes-horaires, .readings {
         width: 100%;
         background-color: #8f2727;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        height: 100dvh;
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
     }
 
     .toggle-readings {
@@ -1416,6 +1427,7 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1561,6 +1573,11 @@ body {
         width: 50%;
         transform: translateX(100%);
         visibility: hidden;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        height: 100dvh;
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
     }
 
     .rosary.visible {
@@ -1575,6 +1592,11 @@ body {
         width: 100%;
         transform: translateX(100%);
         visibility: hidden;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        height: 100dvh;
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
     }
 
     .rosary.visible {
@@ -2698,6 +2720,7 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2805,12 +2828,22 @@ body {
 @media screen and (max-width: 768px) {
     .mass-liturgie {
         width: 50%;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        height: 100dvh;
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
     }
 }
 
 @media screen and (max-width: 480px) {
     .mass-liturgie {
         width: 100%;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        height: 100dvh;
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
     }
 }
 

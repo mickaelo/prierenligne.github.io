@@ -1660,10 +1660,22 @@ Amen.`,
 
       {/* Volet Chatbot (gauche) */}
       <div
-        className={`fixed top-0 left-0 h-full w-full sm:w-[400px] max-w-full shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col max-h-[100vh] overflow-y-auto
+        className={`fixed top-0 left-0 h-full w-full sm:w-[400px] max-w-full shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col overflow-y-auto
         ${chatOpen ? "translate-x-0" : "-translate-x-full"}
         ${chatExtended ? "w-full max-w-full" : "sm:w-[400px] max-w-full"}`}
-        style={{ minWidth: 320, background: panelBg, color: text, width: chatExtended ? '100vw' : undefined, maxWidth: chatExtended ? '100vw' : undefined }}
+        style={{ 
+          minWidth: 320, 
+          background: panelBg, 
+          color: text, 
+          width: chatExtended ? '100vw' : undefined, 
+          maxWidth: chatExtended ? '100vw' : undefined,
+          height: '100dvh',
+          maxHeight: '100dvh',
+          paddingTop: 'max(0px, env(safe-area-inset-top))',
+          paddingBottom: 'max(0px, env(safe-area-inset-bottom))',
+          paddingLeft: 'max(0px, env(safe-area-inset-left))',
+          paddingRight: 'max(0px, env(safe-area-inset-right))'
+        }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <h2 className="text-xl font-bold" style={{ color: text, fontSize: 14 }}>Posez vos questions sur l'Eglise, la foi, le catéchisme</h2>
@@ -1696,7 +1708,7 @@ Amen.`,
             </button>
           </div>
         </div>
-        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3" style={{ maxHeight: 'calc(100dvh - 120px - env(safe-area-inset-top) - env(safe-area-inset-bottom))' }}>
           {chatMessages.map((msg, i) => (
             <div key={i} style={{
               alignSelf: msg.from === "user" ? "flex-end" : "flex-start",
@@ -2500,11 +2512,11 @@ Amen.`,
         <div style={{ position: 'relative', display: 'inline-block' }}>
           <Image
             src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f64f.png"
-            alt="Prière"
+            alt="Icône de prière"
             width={64}
             height={64}
             style={{ filter: candleLit ? 'brightness(0.7)' : 'none', transition: 'filter 0.2s', cursor: 'pointer' }}
-            onClick={() => setShowDurationSelector(true)}
+            onClick={() => setShowIconCarousel(true)}
             unoptimized
           />
         </div>
@@ -2705,17 +2717,18 @@ Amen.`,
             <div className="text-xs uppercase tracking-wide" style={{ color: '#ffeb99' }}>En direct · Radio Maria</div>
             <div className="text-sm font-semibold" style={{ color: '#fff' }}>{currentRM?.title || 'Programme en cours'}</div>
             {nextRM && (
-              <div className="text-xs opacity-80" style={{ color: '#ddd' }}>Ensuite {nextRM.time} · {nextRM.title}</div>
+              <div className="text-[10px] sm:text-xs opacity-70 sm:opacity-80 hidden sm:block" style={{ color: '#ddd' }}>Ensuite {nextRM.time} · {nextRM.title}</div>
             )}
           </div>
           <button
             onClick={playRadioMariaNow}
-            className="ml-auto px-3 py-2 rounded font-bold text-sm"
-            style={{ background: '#ffe066', color: '#222', border: 'none', boxShadow: '0 1px 6px #0006', cursor: 'pointer' }}
+            className="ml-auto px-2 py-1.5 sm:px-3 sm:py-2 rounded font-bold text-[10px] sm:text-sm flex-shrink-0"
+            style={{ background: '#ffe066', color: '#222', border: 'none', boxShadow: '0 1px 4px #0004', cursor: 'pointer' }}
             aria-label="Lancer Radio Maria"
             title="Écouter Radio Maria maintenant"
           >
-            ▶ Écouter
+            <span className="hidden sm:inline">▶ Écouter</span>
+            <span className="sm:hidden">▶</span>
           </button>
         </div>
       </div> */}
@@ -2788,7 +2801,11 @@ Amen.`,
             </div>
             <button
               className="mt-6 px-6 py-2 rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition cursor-pointer"
-              onClick={() => { setSelectedIcon(icons[carouselIndex].src); setShowIconCarousel(false); }}
+              onClick={() => { 
+                setSelectedIcon(icons[carouselIndex].src); 
+                setShowIconCarousel(false);
+                setShowDurationSelector(true);
+              }}
               style={{ fontSize: 18 }}
             >
               Choisir cette icône
