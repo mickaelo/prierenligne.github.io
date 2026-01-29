@@ -11,7 +11,7 @@ function linkifyCitations(markdown, citations) {
   return marked.parse(markdown || "").replace(/\[\^(\d+)\]/g, (match, n) => {
     const idx = parseInt(n, 10) - 1;
     if (citations[idx]) {
-      return `<a href=\"#citation-${n}\" style=\"color:#ffe066;text-decoration:underline dotted;cursor:pointer;\">[^${n}]</a>`;
+      return `<a href=\"#citation-${n}\" style=\"color:#94a3b8;text-decoration:underline dotted;cursor:pointer;\">[^${n}]</a>`;
     }
     return match;
   });
@@ -68,6 +68,8 @@ export default function Home() {
   const [showSaintPopup, setShowSaintPopup] = useState(false);
   const [customDuration, setCustomDuration] = useState('');
   const [showChapeletHelp, setShowChapeletHelp] = useState(false);
+  const [chapeletType, setChapeletType] = useState('classique'); // 'classique' | 'sept-douleurs' | 'miséricorde'
+  const [openSeptDouleurs, setOpenSeptDouleurs] = useState({ intro: true, litanie: false });
 
   // Données des prières avec métadonnées
   const prayersData = [
@@ -905,11 +907,11 @@ Amen.`,
 
   // Couleurs du styles.css d'origine
   const bg = "white";
-  const text = "#fff";
+  const text = "black";
   const btnBg = "rgb(139, 69, 19)";
   const btnBorder = "1px solid rgba(255,255,255,0.2)";
   const btnHoverBg = "rgba(255,255,255,0.2)";
-  const panelBg = "#181818"; // fond bien opaque
+  const panelBg = "#ffffff"; // fond bien opaque
 
   // Animation de fonte de la bougie
   useEffect(() => {
@@ -954,13 +956,13 @@ Amen.`,
           {/* Flamme */}
           {candleLit && (
             <div style={{ width: 20, height: 32, position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2 }}>
-              <div style={{ width: 20, height: 32, background: 'radial-gradient(ellipse at center, #fffbe6 60%, #ffd700 100%)', borderRadius: '50% 50% 40% 40%', filter: 'blur(1px)', opacity: 0.85 }} />
+              <div style={{ width: 20, height: 32, background: 'radial-gradient(ellipse at center, #e2e8f0 60%, #cbd5e1 100%)', borderRadius: '50% 50% 40% 40%', filter: 'blur(1px)', opacity: 0.85 }} />
             </div>
           )}
           {/* Mèche blanche à bord noir, dépassant de la cire */}
           <div style={{ width: 2, height: 16, background: '#fff', border: '1px solid #222', position: 'absolute', top: 32, left: '50%', transform: 'translateX(-50%)', zIndex: 2, borderRadius: 1 }} />
           {/* Corps de la bougie (cire) */}
-          <div style={{ width: 24, height: 80, background: '#f3bf00', borderRadius: 12, marginTop: 48, boxShadow: '0 2px 8px #0006', border: '1px solid #ffe066' }} />
+          <div style={{ width: 24, height: 80, background: '#94a3b8', borderRadius: 12, marginTop: 48, boxShadow: '0 2px 8px #0006', border: '1px solid #64748b' }} />
         </div>
       </div>
     );
@@ -1089,6 +1091,124 @@ Amen.`,
   function togglePrayer(idx) {
     setOpenPrayers(op => op.map((v, i) => i === idx ? !v : v));
   }
+
+  // --- Chapelet des Sept Douleurs (Notre-Dame de Kibeho) ---
+  const septDouleursIntro = `Quand la Mère du Verbe est apparue à Kibeho, elle nous a confié le Chapelet des Sept douleurs, par Marie Claire en 1982. Le 31 mai 1982 elle a dit : « Ce que je vous demande c'est de vous repentir, de vous convertir. Si vous récitez bien ce chapelet en le méditant, vous trouverez la force de revenir à Dieu. Aujourd'hui, le monde ne sait plus demander pardon. Il continue à crucifier le Fils de Dieu sur la Croix. » Le 21 juillet 1982 : « Sachez que je suis tout le temps avec vous et que je vous accompagne tout au long des jours. » À Kibeho, Marie nous invite à nous mettre à son école, pour contempler le visage du Christ à travers ce chapelet ; et elle nous accompagne par son exemple de Fidèle qui a servi le Seigneur corps et âme, tous les jours de sa vie. Ce chapelet accompagne nos petits pas dans le cheminement de conversion du cœur ; et nous prions pour l'Église et ses pasteurs.`;
+  const septDouleursIntroLa = `Cum Mater Verbi Kibeho apparuit, Rosarium Septem Dolorum per Mariam Clara anno 1982 nobis tradidit. « Poenitentiam agite et convertimini ; si hoc rosarium recitantes meditamini, vires ad Deum revertendi invenietis. » Ad Kibeho Maria nos ad suam scholam invitat, ut Christi vultum per hoc rosarium contemplemur.`;
+  const septDouleursIntroPrayer = `Mon Dieu, je t'offre ce Chapelet des Sept Douleurs pour ta sainte gloire et pour honorer ta Sainte Mère en méditant et en partageant sa Douleur avec Elle. Je t'en supplie, donne-moi de regretter les péchés que j'ai commis, aide-moi à être doux et humble comme je le dois, afin de pouvoir obtenir toutes les indulgences qu'il contient.`;
+  const septDouleursIntroPrayerLa = `Deus meus, offero tibi hoc Rosarium Septem Dolorum ad tuam sanctam gloriam et ad honorem Sanctae Matris tuae, eius Dolorem meditando et participando. Te supplex oro : da mihi paenitentiam peccatorum meorum, fac me mitem et humilem, ut omnes indulgentias assequi valeam.`;
+  const septDouleursActeContrition = `Seigneur, j'ai un très grand regret de t'avoir offensé, parce que tu es infiniment bon, infiniment aimable et que le péché te déplaît. Je prends la ferme résolution, avec le secours de ta sainte grâce de ne plus t'offenser et de faire pénitence. Amen.`;
+  const septDouleursActeContritionLa = `Domine, ex toto corde paenitet me quia Te offendi, quia Tu es infinite bonus et peccatum Tibi displicet. Firmiter propono, adiuvante gratia Tua, non amplius Te offendere et paenitentiam agere. Amen.`;
+  const aveMaria = `Je vous salue Marie, pleine de grâce, le Seigneur est avec vous, vous êtes bénie entre toutes les femmes, et Jésus, le fruit de vos entrailles est béni. Sainte Marie, Mère de Dieu, priez pour nous pauvres pécheurs, maintenant et à l'heure de notre mort. Amen.`;
+  const aveMariaLa = `Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus. Sancta Maria, Mater Dei, ora pro nobis peccatoribus, nunc et in hora mortis nostrae. Amen.`;
+  const mereMiséricorde = `Mère de Miséricorde, rappelez-nous tous les jours la passion de Jésus`;
+  const mereMiséricordeLa = `Mater Misericordiae, memor nos fac passionis Iesu omni die`;
+  const septDouleursClosing = `Ô Marie, Reine des Martyrs, ton âme a été submergée dans un océan de douleurs. Par la force des larmes que Tu as versées dans ces moments de terrible souffrance, nous Te supplions d'obtenir pour nous et pour les pécheurs du monde entier, une vraie conversion.`;
+  const septDouleursClosingLa = `O Maria, Regina Martyrum, anima tua in dolorum oceanum demersa est. Per vim lacrimarum quas in horribili passione fudisti, te rogamus ut nobis et peccatoribus totius mundi veram conversionem impetres.`;
+  const coeurDouloureux = `Cœur profondément Douloureux et Immaculé de la Vierge Marie, priez pour nous qui avons recours à Vous`;
+  const coeurDouloureuxLa = `Cor Dolorosum et Immaculatum Virginis Mariae, ora pro nobis qui ad te confugimus`;
+  const septDouleursSorrows = [
+    {
+      title: "Le Vieillard Siméon annonce à la Vierge Marie qu'un glaive de douleur transpercera son cœur",
+      titleLa: "Senex Simeon nuntiat Virginis Mariae gladium doloris animam eius transfixurum",
+      ref: "Lc 2,25-28a ; 33-35",
+      scripture: "Il vint donc au Temple, poussé par l'Esprit, et quand les parents apportèrent le petit enfant Jésus pour accomplir les prescriptions de la Loi à son égard, il le reçut dans ses bras et bénit Dieu. (…) Siméon le bénit et dit à Marie, sa mère : « Vois ! Cet enfant doit amener la chute et le relèvement d'un grand nombre en Israël ; il doit être un signe en butte à la contradiction, – et toi-même, une épée te transpercera l'âme ! – afin que se révèlent les pensées intimes d'un grand nombre. »",
+      scriptureLa: "Venit in Templum ductus Spiritu ; cum parentes puerum Iesum offerrent, accepit eum in ulnas et benedixit Deum. Simeon benedixit et dixit ad Mariam matrem eius : Ecce positus est hic in ruinam et in resurrectionem multorum in Israel, et in signum cui contradicetur ; et tuam ipsius animam pertransibit gladius.",
+      meditation: "Marie avait respecté les prescriptions de la Loi de purification. Elle est venue au Temple pour offrir à Dieu le Fils qu'elle avait reçu. Après qu'elle eut fini d'offrir à Dieu son fils Jésus, le vieux Siméon a prophétisé qu'une épée transpercerait son âme.",
+      meditationLa: "Maria Legi purificationis oboedivit. Venit in Templum ut Filium Deo offerret. Simeon prophetavit gladium animam eius transfixurum.",
+      prayer: "Notre Dieu, toi qui nous aimes tant, confiants et humbles, nous te prions : préserve-nous du découragement. Donne-nous, Seigneur, un cœur fort comme celui de la Vierge Marie. Oh ! Mère du Verbe qui nous aime, toi qui as beaucoup souffert, obtiens-nous la grâce d'accepter et supporter les souffrances de chaque jour. Amen.",
+      prayerLa: "Deus noster, Te amantissime, humiliter precamur : custodi nos a desperatione. Da nobis, Domine, cor forte sicut Virginis Mariae. O Mater Verbi, quae multa passa es, impetra nobis gratiam tolerandi quotidiana adversa. Amen."
+    },
+    {
+      title: "La fuite en Égypte",
+      titleLa: "Fuga in Aegyptum",
+      ref: "Mt 2, 13-15",
+      scripture: "L'Ange du Seigneur apparaît en songe à Joseph : « Lève-toi, prends avec toi l'enfant et sa mère, et fuis en Égypte ; restes-y jusqu'à ce que je te dise. Car Hérode va rechercher l'enfant pour le faire périr. » Il se leva, prit avec lui l'enfant et sa mère, de nuit, et se retira en Égypte.",
+      scriptureLa: "Angelus Domini apparuit in somnis Ioseph : Surge, accipe puerum et matrem eius et fuge in Aegyptum. Et surgens accepit puerum et matrem eius nocte et secessit in Aegyptum.",
+      meditation: "Marie cherche ce qu'il faut prendre pour fuir avec Joseph et l'enfant Jésus. D'un amour maternel incommensurable, elle veut protéger l'enfant. Un enfant innocent, forcé à l'exil ! Une souffrance pour lui et ses parents !",
+      meditationLa: "Maria cum Ioseph et puero Iesu fugit. Amore materno immenso puerum protegere vult. Puer innocens in exilium actus ! Dolor ei et parentibus !",
+      prayer: "Vierge Marie, Mère que nous aimons, toi qui as souffert en emportant l'enfant Jésus en exil, donne-nous d'accepter la volonté de Dieu et d'accueillir de bon cœur les souffrances comme tu l'as fait. Mère très tendre, nous t'offrons tous les réfugiés d'aujourd'hui, garde-les du désespoir. Amen.",
+      prayerLa: "Virgo Maria, Mater amata, quae cum puero Iesu in exilium passa es, da nobis voluntatem Dei accipere et dolores libenter ferre. Mater dulcissima, tibi offerimus omnes hodiernos profugos ; custodi eos a desperatione. Amen."
+    },
+    {
+      title: "La Douleur du Cœur de Marie au temps de la disparition de Jésus",
+      titleLa: "Dolor Cordis Mariae cum Iesus disparuit",
+      ref: "Lc 2, 43-50",
+      scripture: "À la fin de la fête, le jeune Jésus resta à Jérusalem à l'insu de ses parents. Au bout de trois jours ils le trouvèrent dans le Temple. Sa mère lui dit : « Mon enfant, pourquoi nous as-tu fait cela ? Vois comme ton père et moi, nous avons souffert en te cherchant ! » Il leur dit : « Ne saviez-vous pas qu'il me faut être chez mon Père ? »",
+      scriptureLa: "Post diem festum puer Iesus remansit Hierosolymis inscientibus parentibus. Post tres dies invenerunt eum in Templo. Mater dixit : Fili, quid fecisti nobis sic ? Ecce pater tuus et ego dolentes quaerebamus te. Ille dixit : Nesciebatis quia in his quae Patris mei sunt oportet me esse ?",
+      meditation: "Jésus est le Fils unique de Dieu et le fils unique de Marie. Elle était triste de ne pas le voir et, bravant toute fatigue, elle et Joseph retournèrent à Jérusalem pour le chercher. Ne nous lassons pas de chercher Dieu dans la simplicité du cœur.",
+      meditationLa: "Iesus est Filius unicus Dei et filius unicus Mariae. Tristis erat eum non videns ; cum Ioseph Hierosolymam rediit ut eum quaereret. Non lassemur quaerere Deum in simplicitate cordis.",
+      prayer: "Vierge Marie, notre Mère, toi qui as souffert à cause de la disparition du Fils de Dieu, obtiens-nous la grâce de rechercher incessamment Dieu, et donne-nous de ressentir son manque et la patience pour vaincre tout ce qui nous égare de Dieu. Amen.",
+      prayerLa: "Virgo Maria, Mater nostra, quae ob amissionem Filii Dei passa es, impetra nobis gratiam Deum indesinenter quaerendi et eius desiderium ac patientiam vincendi omne quod nos a Deo avertit. Amen."
+    },
+    {
+      title: "La Vierge Marie rencontre Jésus qui porte la Croix",
+      titleLa: "Virgo Maria Iesum Crucem portantem occurrit",
+      ref: "Lc 23, 26-31",
+      scripture: "Une grande masse du peuple le suivait, ainsi que des femmes qui se frappaient la poitrine et se lamentaient sur lui. Jésus dit : « Filles de Jérusalem, ne pleurez pas sur moi ! Pleurez plutôt sur vous-mêmes et sur vos enfants ! Car si l'on traite ainsi le bois vert, qu'adviendra-t-il du sec ? »",
+      scriptureLa: "Sequebatur autem illum multa turba populi et mulierum quae plangebant et lamentabantur super eum. Iesus dixit : Filiae Hierusalem, nolite flere super me ; super vos ipsas flete et super filios vestros. Si in viridi ligno haec faciunt, in arido quid fiet ?",
+      meditation: "La Vierge Marie aimait son fils comme son fils unique et comme le Fils du Très-Haut. Cet amour a provoqué en elle beaucoup de peine quand elle l'a rencontré portant sa croix. Nous pouvons réaliser comment est bouleversé le cœur de celle qui a vécu tout cela avec lui.",
+      meditationLa: "Virgo Maria amabat Filium suum unicum et Filium Altissimi. Hic amor multum dolorem in ea excitavit cum eum Crucem portantem occurrit. Cor eius qui haec omnia cum eo vixit commotum esse intellegimus.",
+      prayer: "Mère du Verbe, toi qui as tellement souffert, console les mères blessées en voyant leurs enfants haïs, pourchassés ou tués. Console les enfants accusés injustement. Apprends-nous à accepter ce qui nous fait souffrir, avec amour et patience. Nous nous confions à toi. Amen.",
+      prayerLa: "Mater Verbi, quae tantum passa es, consolare matres vulneratas videndo filios odio habitos, persecutos vel occisos. Consolare pueros iniuste accusatos. Doce nos ferre cum amore et patientia quae nos affligunt. Tibi nos committimus. Amen."
+    },
+    {
+      title: "La Vierge Marie au pied de la Croix de Jésus",
+      titleLa: "Virgo Maria ad pedem Crucis Iesu",
+      ref: "Jn 19, 25-27",
+      scripture: "Près de la croix de Jésus se tenaient sa mère et la sœur de sa mère, Marie, femme de Cléophas, et Marie Madeleine. Jésus dit à sa mère : « Femme, voici ton fils. » Puis au disciple : « Voici ta mère. » Et à partir de cette heure-là, le disciple la prit chez lui.",
+      scriptureLa: "Stabant iuxta crucem Iesu mater eius et soror matris eius, Maria uxor Cleopae, et Maria Magdalene. Iesus dixit matri : Mulier, ecce filius tuus. Deinde discipulo : Ecce mater tua. Et ex illa hora accepit eam discipulus in sua.",
+      meditation: "La Vierge Marie a gravi avec Jésus la montagne du Calvaire. Lorsque Jésus fut crucifié, elle a énormément souffert dans son cœur, comme si elle avait elle-même été clouée sur la Croix. Jésus passa six heures dans une grande souffrance, voyant sa Mère si affligée.",
+      meditationLa: "Virgo Maria cum Iesu montem Calvariae ascendit. Cum Iesus crucifixus esset, in corde suo vehementer passa est, quasi ipsa in Cruce clavis fixa fuisset. Iesus sex horas in magno dolore pertransiit, Matrem tam afflictam videns.",
+      prayer: "Mère du Verbe et notre Mère, Reine des martyrs, obtiens-nous le courage que tu as eu quand ton Fils mourait sur la Croix. Donne-nous de ne plus te faire souffrir et de faire toujours ce que tu attends de nous. Par ton intercession, glorifier Dieu par nos croix de chaque jour. Amen.",
+      prayerLa: "Mater Verbi et Mater nostra, Regina Martyrum, impetra nobis fortitudinem quam habuisti cum Filius tuus in Cruce moreretur. Da nobis ne te amplius affligamus et semper facere quod a nobis exspectas. Per tuam intercessionem glorificemus Deum per cruces cotidianas. Amen."
+    },
+    {
+      title: "La Vierge Marie reçoit le Corps de Jésus dans ses bras",
+      titleLa: "Virgo Maria Corpus Iesu in ulnas accipit",
+      ref: "Jn 19,38-40",
+      scripture: "Joseph d'Arimathie demanda à Pilate de pouvoir enlever le corps de Jésus. Ils vinrent donc et enlevèrent son corps. Nicodème vint aussi, apportant un mélange de myrrhe et d'aloès. Ils prirent le corps de Jésus et le lièrent de linges, avec les aromates, selon le mode de sépulture en usage chez les Juifs.",
+      scriptureLa: "Ioseph ab Arimathaea rogavit Pilatum ut tolleret corpus Iesu. Venerunt ergo et tulerunt corpus eius. Nicodemus venit ferens mixturam myrrhae et aloes. Tulerunt corpus Iesu et ligaverunt illud linteis cum aromatibus, sicut mos Iudaeis est sepelienti.",
+      meditation: "Contemplons Jésus cloué sur la croix jusqu'à ce qu'il meure. Regardons sa Mère qui reçoit son corps dans ses bras. Marie éprouve beaucoup de peine mais elle offre ce corps pour la gloire de Dieu. Apprenons par notre Mère de ne jamais nous attacher aux choses qui passent.",
+      meditationLa: "Contemplemur Iesum in cruce clavis fixum donec moreretur. Ecce Mater eius corpus eius in ulnas accipit. Maria multum dolet sed corpus illud ad gloriam Dei offert. Discamus a Matre nostra numquam rebus transeuntibus inhaerere.",
+      prayer: "Marie, Mère du Verbe incarné, obtiens-nous auprès de ton fils la grâce d'une foi toujours croissante ! Marie, Mère des Douleurs, obtiens-nous la grâce de la persévérance ! Obtiens-nous la grâce de te plaire en faisant tout ce que tu nous demandes. Amen.",
+      prayerLa: "Maria, Mater Verbi incarnati, impetra nobis a Filio tuo gratiam fidei semper crescentis ! Maria, Mater Dolorum, impetra nobis gratiam perseverantiae ! Impetra nobis gratiam tibi placendi faciendo omnia quae a nobis petis. Amen."
+    },
+    {
+      title: "La Vierge Marie met le corps de Jésus au tombeau",
+      titleLa: "Virgo Maria Corpus Iesu in sepulcrum deponit",
+      ref: "Jn 19,41-42",
+      scripture: "Il y avait un jardin au lieu où il avait été crucifié, et dans ce jardin un tombeau neuf, dans lequel personne n'avait encore été mis. À cause de la Préparation des Juifs, comme le tombeau était proche, c'est là qu'ils déposèrent Jésus.",
+      scriptureLa: "Erat autem in loco ubi crucifixus est hortus, et in horto monumentum novum, in quo nondum quisquam positus erat. Propter Parasceven Iudaeorum, quia iuxta monumentum erat, ibi posuerunt Iesum.",
+      meditation: "La Vierge Marie a accompagné le corps sacré de son fils lors de sa sépulture, puis elle regarda comment on ferme le tombeau avec une grosse pierre. Pour cette sainte Mère cependant, tout n'était pas terminé. Marie nous apprend à garder confiance jusqu'à la fin. « Tenez fermes et soyez assurés que tout changera. »",
+      meditationLa: "Virgo Maria corpus sanctum Filii sui ad sepulturam comitata est, deinde vidit quomodo monumentum lapide magno clauditur. Huic sanctae Matri tamen nondum omnia finita erant. Maria nos docet fiduciam usque ad finem servare : State firmi et certi quia omnia mutabuntur.",
+      prayer: "Mère du Verbe, nous recourons à toi pour que tu intercèdes pour nous et pour l'Église. Obtiens aux fidèles de ton Fils de tenir dans les épreuves. Mère de Miséricorde, veille sur les prêtres. Donne à ceux que les épreuves enferment dans l'isolement Jésus, la lumière du monde. Amen.",
+      prayerLa: "Mater Verbi, ad te confugimus ut pro nobis et pro Ecclesia intercedas. Impetra fidelibus Filii tui ut in tribulationibus perseverent. Mater Misericordiae, custodi sacerdotes. Da eis quos tribulationes in solitudinem concludunt Iesum, lucem mundi. Amen."
+    }
+  ];
+  const septDouleursLitanie = `Seigneur, prends pitié. — Ô Christ, prends pitié. — Seigneur, prends pitié.
+Père du Ciel qui est Dieu, prends pitié de nous. — Fils Rédempteur du monde qui est Dieu, prends pitié de nous. — Esprit Saint qui est Dieu, prends pitié de nous. — Sainte Trinité qui est un seul Dieu, prends pitié de nous.
+Sainte Marie, prie pour nous. — Sainte Mère de Dieu, prie pour nous. — Sainte Vierge des Vierges, prie pour nous. — Mère du Crucifié, prie pour nous. — Mère des douleurs, prie pour nous. — Mère désolée, prie pour nous. — Mère en larmes, prie pour nous. — Mère au Cœur transpercé par l'épée, prie pour nous. — Mère crucifiée dans ton Cœur, prie pour nous. — Miroir de patience, prie pour nous. — Rocher de constance, prie pour nous. — Ancre de confiance, prie pour nous. — Réconfort des abandonnés, prie pour nous. — Refuge des incrédules, prie pour nous. — Force des faibles, prie pour nous. — Espoir des misérables, prie pour nous. — Trésor des fidèles, prie pour nous. — Consolation des veuves, prie pour nous. — Mère des orphelins, prie pour nous.
+Agneau de Dieu qui enlèves le péché du monde, écoute-nous Seigneur. — Agneau de Dieu qui enlèves le péché du monde, pardonne-nous Seigneur. — Agneau de Dieu qui enlèves le péché du monde, exauce-nous Seigneur.
+V/. Priez pour nous Sainte Mère de Dieu, — R/. Afin que nous soyons rendus dignes des promesses du Christ.
+Prions : Seigneur, daigne nous accorder, à nous tes serviteurs, de jouir toujours de la santé de l'âme et du corps ; et par la glorieuse intercession de la Bienheureuse Marie toujours vierge, délivre-nous des tristesses de la vie présente, et donne-nous d'avoir part aux joies éternelles. Par Jésus, le Christ, Notre Seigneur. Amen !`;
+  const septDouleursLitanieLa = `Kyrie eleison. — Christe eleison. — Kyrie eleison.
+Pater de caelis Deus, miserere nobis. — Fili Redemptor mundi Deus, miserere nobis. — Spiritus Sancte Deus, miserere nobis. — Sancta Trinitas unus Deus, miserere nobis.
+Sancta Maria, ora pro nobis. — Sancta Dei Genetrix, ora pro nobis. — Sancta Virgo virginum, ora pro nobis. — Mater Crucifici, ora pro nobis. — Mater dolorosa, ora pro nobis. — Mater dolens, ora pro nobis. — Mater lacrimans, ora pro nobis. — Mater cuius Cor gladio transfixum, ora pro nobis. — Mater in Corde crucifixa, ora pro nobis. — Speculum patientiae, ora pro nobis. — Petra constantiae, ora pro nobis. — Ancora spei, ora pro nobis. — Solatium derelictorum, ora pro nobis. — Refugium incredulorum, ora pro nobis. — Fortitudo infirmorum, ora pro nobis. — Spes miserorum, ora pro nobis. — Thesaurus fidelium, ora pro nobis. — Consolatio viduarum, ora pro nobis. — Mater orphanorum, ora pro nobis.
+Agnus Dei qui tollis peccata mundi, exaudi nos Domine. — Agnus Dei qui tollis peccata mundi, miserere nobis. — Agnus Dei qui tollis peccata mundi, exaudi nos Domine.
+V/. Ora pro nobis Sancta Dei Genetrix. — R/. Ut digni efficiamur promissionibus Christi.
+Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et corporis sanitate gaudere ; et gloriosa Beatae Mariae semper Virginis intercessione a praesenti liberari tristitia et aeterna perfrui laetitia. Per Christum Dominum nostrum. Amen.`;
+
+  // --- Chapelet de la Divine Miséricorde ---
+  const misericordeQuand = `On peut réciter ce chapelet quand on veut, mais plus particulièrement : tous les jours à 15 h (heure de la miséricorde, heure de la mort de notre Sauveur Jésus-Christ) ; lors d'une neuvaine à la Miséricorde Divine.`;
+  const misericordeOuverture = `Dieu éternel, en qui la miséricorde est sans fin et le trésor de la compassion inépuisable, regardez avec bonté et augmentez votre miséricorde en nous, afin que, dans les moments difficiles, nous ne désespérions ni ne nous découragions, mais nous nous soumettions avec une grande confiance à Votre sainte volonté, qui est amour et miséricorde.`;
+  const misericordePetitJournal1 = `Vous avez été à l'agonie, Jésus, mais la source de vie a jailli pour les âmes. Un océan de Miséricorde s'est découvert pour le monde entier. Ô source de vie, insondable Miséricorde de Dieu, submergez le monde entier, engloutissez-nous. (Petit Journal - § 1747)`;
+  const misericordePetitJournal2 = `Ô Sang et Eau, qui avez jailli du Cœur de Jésus comme source de Miséricorde pour nous, j'ai confiance en Vous. (Petit Journal - § 187)`;
+  const misericordePereEternel = `Père Éternel, je Vous offre le corps et le sang, l'âme et la divinité de Votre Fils bien-aimé, notre Seigneur Jésus-Christ, en réparation de nos péchés et ceux du monde entier.`;
+  const misericordePassion = `Par sa douloureuse Passion, soyez miséricordieux pour nous et pour le monde entier.`;
+  const misericordeNotrePere = `Notre Père, qui es aux cieux, que ton nom soit sanctifié, que ton règne vienne, que ta volonté soit faite sur la terre comme au ciel. Donne-nous aujourd'hui notre pain de ce jour. Pardonne-nous nos offenses, comme nous pardonnons aussi à ceux qui nous ont offensés. Et ne nous laisse pas entrer en tentation mais délivre-nous du Mal. Amen.`;
+  const misericordeJeCrois = `Je crois en Dieu, le Père Tout-Puissant, Créateur du ciel et de la terre. Et en Jésus-Christ, son Fils unique notre Seigneur, qui a été conçu du Saint-Esprit, est né de la Vierge Marie, a souffert sous Ponce Pilate, a été crucifié, est mort et a été enseveli, est descendu aux enfers. Le troisième jour est ressuscité des morts, est monté aux cieux, est assis à la droite de Dieu le Père Tout-Puissant, d'où Il viendra juger les vivants et les morts. Je crois en l'Esprit Saint, à la sainte Église catholique, à la communion des saints, à la rémission des péchés, à la résurrection de la chair, à la vie éternelle. Amen.`;
+  const misericordeAve = `Je vous salue, Marie pleine de grâce ; Le Seigneur est avec vous. Vous êtes bénie entre toutes les femmes Et Jésus, le fruit de vos entrailles, est béni. Sainte Marie, Mère de Dieu, Priez pour nous pauvres pécheurs, Maintenant et à l'heure de notre mort. Amen.`;
 
   // --- Horaires des messes ---
   const [horairesLeftOpen, setHorairesLeftOpen] = useState(false);
@@ -1233,11 +1353,11 @@ Amen.`,
     let html = '';
     for (const date of Object.keys(groupedByDate)) {
       html += `<div class='mb-6'>`;
-      html += `<div class='text-lg font-bold text-yellow-300 mb-2'>${date}</div>`;
+      html += `<div class='text-lg font-bold text-neutral-800 mb-2'>${date}</div>`;
       groupedByDate[date].forEach(item => {
-        html += `<div class='bg-[#181818] rounded-lg p-3 shadow border border-neutral-800 mb-2 flex flex-col gap-1'>`;
-        html += `<div class='text-base font-bold text-yellow-200'><span class='messe-heure'>${item.horaire}</span></div>`;
-        html += `<div class='text-sm text-yellow-100'><span class='messe-lieu'>${item.lieu}</span></div>`;
+        html += `<div class='bg-neutral-100 text-neutral-800 rounded-lg p-3 shadow border border-neutral-300 mb-2 flex flex-col gap-1'>`;
+        html += `<div class='text-base font-bold text-neutral-800'><span class='messe-heure'>${item.horaire}</span></div>`;
+        html += `<div class='text-sm text-neutral-600'><span class='messe-lieu'>${item.lieu}</span></div>`;
         html += `</div>`;
       });
       html += `</div>`;
@@ -1617,9 +1737,9 @@ Amen.`,
   return (
     <div className="flex flex-col font-sans relative" style={{ background: bg, color: text }}>
       {/* Header */}
-      <header className="w-full flex items-center justify-center py-4 border-b border-neutral-800 shadow-sm relative z-10" style={{ background: 'rgb(139, 69, 19)' }}>
+      <header className="w-full flex items-center justify-center py-4 border-b border-neutral-800 shadow-sm relative z-10" style={{ background: 'rgb(87, 87, 87)' }}>
         <div className="flex items-center gap-3">
-          <span className="text-lg font-semibold tracking-tight" style={{ color: text }}>Prier en ligne</span>
+          <span className="text-lg font-semibold tracking-tight" style={{ color: "rgb(255, 255, 255)" }}>Prier en ligne</span>
         </div>
       </header>
 
@@ -1728,7 +1848,7 @@ Amen.`,
               {msg.from === "user"
                 ? msg.text
                 : (msg.text === '...'
-                  ? <span style={{ color: '#ffe066', fontWeight: 600, fontSize: 18, background: 'none' }}><AnimatedEllipsis /></span>
+                  ? <span style={{ color: '#94a3b8', fontWeight: 600, fontSize: 18, background: 'none' }}><AnimatedEllipsis /></span>
                   : <>
                     <span style={{ display: 'block', fontSize: 17, lineHeight: 1.7 }}
                       dangerouslySetInnerHTML={{ __html: msg.citations && msg.citations.length > 0 ? linkifyCitations(msg.text, msg.citations) : marked.parse(msg.text || "") }}
@@ -1740,23 +1860,23 @@ Amen.`,
                           marginTop: 10,
                           marginBottom: 0,
                           fontSize: 14,
-                          color: '#ffe066',
+                          color: '#94a3b8',
                           background: 'rgba(255,255,255,0.06)',
                           borderRadius: 10,
                           padding: 12,
-                          border: '1px solid #ffe06633',
+                          border: '1px solid #64748b44',
                           boxShadow: '0 1px 4px 0 #0001',
                           position: 'relative',
                           display: 'block',
                         }}>
-                        <div style={{ position: 'absolute', left: 8, top: 8, fontWeight: 700, fontSize: 13, color: '#ffd700cc' }}>#{j + 1}</div>
+                        <div style={{ position: 'absolute', left: 8, top: 8, fontWeight: 700, fontSize: 13, color: '#94a3b8' }}>#{j + 1}</div>
                         <div style={{ marginLeft: 28 }}>
-                          {c.cited_text_heading && <div style={{ fontWeight: 700, marginBottom: 4, color: '#fffbe6' }}>{c.cited_text_heading}</div>}
+                          {c.cited_text_heading && <div style={{ fontWeight: 700, marginBottom: 4, color: '#e2e8f0' }}>{c.cited_text_heading}</div>}
                           <div style={{ marginBottom: 6 }} dangerouslySetInnerHTML={{ __html: marked.parse(c.cited_text || "") }} />
-                          <div style={{ fontStyle: 'italic', color: '#ffe066cc', marginBottom: 2 }}>
+                          <div style={{ fontStyle: 'italic', color: '#94a3b8', marginBottom: 2 }}>
                             {c.document_author}{c.document_title ? `, ${c.document_title}` : ''}
                           </div>
-                          {c.source_url && <a href={c.source_url} target="_blank" rel="noopener noreferrer" style={{ color: '#ffd700', textDecoration: 'underline', fontSize: 13 }}>Source</a>}
+                          {c.source_url && <a href={c.source_url} target="_blank" rel="noopener noreferrer" style={{ color: '#94a3b8', textDecoration: 'underline', fontSize: 13 }}>Source</a>}
                         </div>
                       </div>
                     ))}
@@ -1966,20 +2086,20 @@ Amen.`,
             </div>
             <div className="flex gap-2 mt-1 sm:mt-0">
               <button
-                className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                className="px-2 py-1 rounded bg-neutral-200 border border-neutral-400 text-[#222] hover:bg-neutral-300 transition text-sm"
                 style={{ cursor: 'pointer' }}
                 onClick={() => setLectioDate(new Date(lectioDate.getTime() - 86400000))}
                 aria-label="Jour précédent"
               >◀</button>
               <button
-                className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                className="px-2 py-1 rounded bg-neutral-200 border border-neutral-400 text-[#222] hover:bg-neutral-300 transition text-sm"
                 style={{ cursor: 'pointer' }}
                 onClick={() => setLectioDate(new Date())}
                 aria-label="Aujourd'hui"
                 disabled={lectioDate.toDateString() === new Date().toDateString()}
               >Aujourd'hui</button>
               <button
-                className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                className="px-2 py-1 rounded bg-neutral-200 border border-neutral-400 text-[#222] hover:bg-neutral-300 transition text-sm"
                 style={{ cursor: 'pointer' }}
                 onClick={() => setLectioDate(new Date(lectioDate.getTime() + 86400000))}
                 aria-label="Jour suivant"
@@ -1988,15 +2108,15 @@ Amen.`,
           </div>
           {/* Infos liturgiques */}
           {lectioInfo && lectioInfo.length > 0 && (
-            <div className="text-yellow-200 text-base space-y-1">
+            <div className="text-neutral-800 text-base space-y-1">
               {lectioInfo.map((line, i) => {
                 // If the line matches the saint du jour (heuristic: starts with 'Saint du jour :' or is the only line after ligne1)
                 if ((i > 0 && lectioInfo.length > 1 && i === 1) || (lectioInfo.length === 1 && i === 0)) {
                   return (
                     <div key={i}>
-                      <span style={{ fontWeight: 'bold', color: '#ffd700' }}>Saint du jour : </span>
+                      <span style={{ fontWeight: 'bold', color: '#94a3b8' }}>Saint du jour : </span>
                       <span
-                        style={{ fontWeight: 'bold', color: '#ffe066', cursor: saintBio ? 'pointer' : 'default', textDecoration: saintBio ? 'underline dotted' : 'none' }}
+                        style={{ fontWeight: 'bold', color: '#94a3b8', cursor: saintBio ? 'pointer' : 'default', textDecoration: saintBio ? 'underline dotted' : 'none' }}
                         onClick={() => saintBio && setShowSaintPopup(true)}
                         tabIndex={saintBio ? 0 : -1}
                         role={saintBio ? 'button' : undefined}
@@ -2017,14 +2137,14 @@ Amen.`,
           {(!lectioLoading && !lectioError && lectioLectures.length > 0) ? (
             <div className="flex flex-col gap-4" style={{ maxWidth: lectioExtended ? '100%' : 600, width: lectioExtended ? '100%' : undefined }}>
               {lectioLectures.map((lecture, idx) => (
-                <div key={idx} className="bg-[#181818] rounded-lg p-3 shadow border border-neutral-800" style={{ width: '100%' }}>
-                  <div className="font-bold text-yellow-300 mb-1">
+                <div key={idx} className="bg-neutral-100 text-neutral-800 rounded-lg p-3 shadow border border-neutral-300" style={{ width: '100%' }}>
+                  <div className="font-bold text-neutral-800 mb-1">
                     {lecture.type === 'lecture_1' ? 'Première lecture' :
                       lecture.type === 'lecture_2' ? 'Deuxième lecture' :
                         lecture.type === 'psaume' ? 'Psaume' :
                           lecture.type === 'evangile' ? 'Évangile' : lecture.type}
                   </div>
-                  <div className="text-sm text-yellow-100 mb-1">{lecture.ref}</div>
+                  <div className="text-sm text-neutral-300 mb-1">{lecture.ref}</div>
                   <div className="text-base" style={{ lineHeight: 1.2 }} dangerouslySetInnerHTML={{ __html: (lecture.verset_evangile || lecture.refrain_psalmique || '') + (lecture.contenu || '') }} />
                 </div>
               ))}
@@ -2069,7 +2189,7 @@ Amen.`,
             <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Chapelet</h2>
             <button
               className="text-xl ml-1 transition cursor-pointer"
-              style={{ color: '#ffe066', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
               onClick={() => setShowChapeletHelp(v => !v)}
               aria-label={showChapeletHelp ? "Masquer le tutoriel" : "Afficher le tutoriel"}
               title={showChapeletHelp ? "Masquer le tutoriel" : "Afficher le tutoriel"}
@@ -2098,6 +2218,192 @@ Amen.`,
           </div>
         </div>
         <div className="p-6 flex-1 overflow-y-auto">
+          {/* Onglets Chapelet classique / Sept Douleurs / Divine Miséricorde */}
+          <div className="flex flex-wrap gap-2 mb-4 border-b border-neutral-700 pb-2">
+            <button
+              className={`px-3 py-2 rounded-t text-sm font-semibold border-b-2 transition cursor-pointer ${chapeletType === 'classique' ? 'border-neutral-500 text-neutral-800' : 'border-transparent text-neutral-500 hover:text-neutral-800'}`}
+              onClick={() => setChapeletType('classique')}
+            >
+              Chapelet (mystères)
+            </button>
+            <button
+              className={`px-3 py-2 rounded-t text-sm font-semibold border-b-2 transition cursor-pointer ${chapeletType === 'sept-douleurs' ? 'border-neutral-500 text-neutral-800' : 'border-transparent text-neutral-500 hover:text-neutral-800'}`}
+              onClick={() => setChapeletType('sept-douleurs')}
+            >
+              Sept Douleurs
+            </button>
+            <button
+              className={`px-3 py-2 rounded-t text-sm font-semibold border-b-2 transition cursor-pointer ${chapeletType === 'miséricorde' ? 'border-neutral-500 text-neutral-800' : 'border-transparent text-neutral-500 hover:text-neutral-800'}`}
+              onClick={() => setChapeletType('miséricorde')}
+            >
+              Divine Miséricorde
+            </button>
+          </div>
+
+          {chapeletType === 'miséricorde' ? (
+            /* --- Contenu Chapelet de la Divine Miséricorde --- */
+            <div className="space-y-6" style={{ maxWidth: chapeletExtended ? '100%' : 600 }}>
+              <h3 className="text-lg font-bold text-neutral-800">Chapelet de la Divine Miséricorde</h3>
+              <p className="text-sm text-neutral-700 bg-neutral-100 rounded px-3 py-2 border border-neutral-300">
+                <strong>Quand le réciter :</strong> {misericordeQuand}
+              </p>
+
+              {/* 1. Signe de croix */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">1. Signe de croix</div>
+                <div className="text-base">Au nom du Père et du Fils et du Saint-Esprit. Amen.</div>
+              </div>
+
+              {/* 2. Prières d'ouverture (facultatif) */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">2. Prières d'ouverture (facultatif)</div>
+                <div className="text-base space-y-3 whitespace-pre-line" style={{ lineHeight: 1.5 }}>
+                  <div className="italic text-neutral-600">« {misericordePetitJournal1} »</div>
+                  <div className="italic text-neutral-600">« {misericordePetitJournal2} »</div>
+                  <div className="pt-2 border-t border-neutral-300">{misericordeOuverture}</div>
+                </div>
+              </div>
+
+              {/* 3. Notre Père */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">3. Notre Père</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{misericordeNotrePere}</div>
+              </div>
+
+              {/* 4. Je vous salue Marie */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">4. Je vous salue Marie</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{misericordeAve}</div>
+              </div>
+
+              {/* 5. Symbole des apôtres */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">5. Symbole des apôtres (Je crois en Dieu)</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{misericordeJeCrois}</div>
+              </div>
+
+              {/* 6. Père éternel (sur les gros grains) */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">6. Père éternel (sur chaque gros grain)</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>« {misericordePereEternel} »</div>
+              </div>
+
+              {/* 7. Par sa douloureuse Passion (x10, répété 5 fois) */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">7. Sur les petits grains (10 fois par dizaine × 5 dizaines)</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>« {misericordePassion} »</div>
+                <p className="text-sm text-neutral-600 mt-2">Répéter cette invocation 10 fois sur chaque dizaine de grains, puis dire à nouveau « Père éternel » (n° 6) sur le gros grain suivant — et ainsi de suite pour les 5 dizaines.</p>
+              </div>
+
+              {/* Prière de clôture (facultative) */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">Prière de clôture (facultative)</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{misericordeNotrePere}</div>
+              </div>
+            </div>
+          ) : chapeletType === 'sept-douleurs' ? (
+            /* --- Contenu Chapelet des Sept Douleurs --- */
+            <div className="space-y-6" style={{ maxWidth: chapeletExtended ? '100%' : 600 }}>
+              <h3 className="text-lg font-bold text-neutral-800">{prayerLang === 'la' ? 'Rosarium Septem Dolorum Beatae Mariae Virginis' : 'Le Chapelet des Sept Douleurs de la Vierge Marie'}</h3>
+              <p className="text-sm text-neutral-700 bg-neutral-100 rounded px-3 py-2 border border-neutral-300">
+                <strong>Quand le réciter :</strong> À tout moment ; traditionnellement le vendredi (jour des douleurs de Marie) et en Carême.
+              </p>
+
+              {/* Choix de langue Français / Latin */}
+              <div className="flex gap-2 mb-2 justify-center">
+                <button
+                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition cursor-pointer ${prayerLang === 'fr' ? 'bg-neutral-200 text-[#222] border-neutral-400' : 'bg-neutral-300 text-[#222] border-neutral-400'}`}
+                  onClick={() => setPrayerLang('fr')}
+                >Français</button>
+                <button
+                  className={`px-3 py-1 rounded-full text-sm font-semibold border transition cursor-pointer ${prayerLang === 'la' ? 'bg-neutral-200 text-[#222] border-neutral-400' : 'bg-neutral-300 text-[#222] border-neutral-400'}`}
+                  onClick={() => setPrayerLang('la')}
+                >Latin</button>
+              </div>
+
+              {/* Introduction */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <button
+                  className="w-full text-left font-bold text-neutral-800 flex items-center gap-2 cursor-pointer select-none"
+                  onClick={() => setOpenSeptDouleurs(o => ({ ...o, intro: !o.intro }))}
+                  aria-expanded={openSeptDouleurs.intro}
+                >
+                  <span>{openSeptDouleurs.intro ? '▼' : '▶'}</span> {prayerLang === 'la' ? 'Introductio' : 'Introduction'}
+                </button>
+                {openSeptDouleurs.intro && (
+                  <div className="mt-3 text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{prayerLang === 'la' ? septDouleursIntroLa : septDouleursIntro}</div>
+                )}
+              </div>
+
+              <p className="text-sm text-neutral-600">{prayerLang === 'la' ? 'In nomine Patris et Filii et Spiritus Sancti. Amen' : 'Au Nom du Père et du Fils et du Saint Esprit. Amen'}</p>
+
+              {/* Prière d'introduction */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">{prayerLang === 'la' ? 'Oratio introductoria' : "La prière d'introduction"}</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>« {prayerLang === 'la' ? septDouleursIntroPrayerLa : septDouleursIntroPrayer} »</div>
+              </div>
+
+              {/* Acte de contrition */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">{prayerLang === 'la' ? 'Actus contritionis' : "L'acte de contrition des péchés"}</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{prayerLang === 'la' ? septDouleursActeContritionLa : septDouleursActeContrition}</div>
+              </div>
+
+              {/* 3 Je vous salue Marie */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">{prayerLang === 'la' ? 'Ave Maria (3 vicibus)' : '« Je Vous salue, Marie » (3 fois)'}</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{prayerLang === 'la' ? aveMariaLa : aveMaria}</div>
+              </div>
+
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-3 border border-neutral-300 text-center font-semibold">
+                {prayerLang === 'la' ? 'Oratio' : 'Prière'} : « {prayerLang === 'la' ? mereMiséricordeLa : mereMiséricorde} »
+              </div>
+
+              {/* Les 7 douleurs */}
+              <div className="font-bold text-neutral-800 text-lg">{prayerLang === 'la' ? 'Septem Dolores Beatae Mariae Virginis' : 'Les sept douleurs de la Vierge Marie'}</div>
+              {septDouleursSorrows.map((s, i) => (
+                <div key={i} className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300 space-y-3">
+                  <div className="font-bold text-neutral-800">{i + 1}. {prayerLang === 'la' ? s.titleLa : s.title}</div>
+                  <div className="text-sm text-neutral-600">{prayerLang === 'la' ? 'Verbum Dei' : 'La Parole de Dieu'} : {s.ref}</div>
+                  <div className="text-base italic" style={{ lineHeight: 1.5 }}>{prayerLang === 'la' ? s.scriptureLa : s.scripture}</div>
+                  <div className="text-sm font-semibold text-neutral-600">{prayerLang === 'la' ? 'Ad meditandum' : 'Pour notre méditation'}</div>
+                  <div className="text-base" style={{ lineHeight: 1.5 }}>{prayerLang === 'la' ? s.meditationLa : s.meditation}</div>
+                  <div className="text-base" style={{ lineHeight: 1.5 }}><strong>[{prayerLang === 'la' ? 'Oratio' : 'Prière'}]</strong> {prayerLang === 'la' ? s.prayerLa : s.prayer}</div>
+                  <div className="pt-2 border-t border-neutral-300 space-y-1 text-sm">
+                    <div>– {prayerLang === 'la' ? 'Pater Noster (1 vice)' : 'Notre Père (1 fois)'}</div>
+                    <div>– {prayerLang === 'la' ? 'Ave Maria (7 vicibus)' : 'Je vous salue Marie (7 fois)'}</div>
+                    <div>– {prayerLang === 'la' ? 'Oratio' : 'Prière'} : « {prayerLang === 'la' ? mereMiséricordeLa : mereMiséricorde} »</div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Prière de conclusion */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <div className="font-bold text-neutral-800 mb-2">{prayerLang === 'la' ? 'Oratio conclusiva' : 'La prière de conclusion'}</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>« {prayerLang === 'la' ? septDouleursClosingLa : septDouleursClosing} »</div>
+              </div>
+
+              {/* Cœur Douloureux (3 fois) */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300 text-center">
+                <div className="font-bold text-neutral-800 mb-2">* {prayerLang === 'la' ? coeurDouloureuxLa : coeurDouloureux} (3 {prayerLang === 'la' ? 'vicibus' : 'fois'})</div>
+              </div>
+
+              {/* Litanie */}
+              <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
+                <button
+                  className="w-full text-left font-bold text-neutral-800 flex items-center gap-2 cursor-pointer select-none"
+                  onClick={() => setOpenSeptDouleurs(o => ({ ...o, litanie: !o.litanie }))}
+                  aria-expanded={openSeptDouleurs.litanie}
+                >
+                  <span>{openSeptDouleurs.litanie ? '▼' : '▶'}</span> {prayerLang === 'la' ? 'Litaniae Beatae Mariae Virginis de Septem Doloribus' : 'Litanie de Notre-Dame des 7 Douleurs'}
+                </button>
+                {openSeptDouleurs.litanie && (
+                  <div className="mt-3 text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{prayerLang === 'la' ? septDouleursLitanieLa : septDouleursLitanie}</div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <>
           {/* Navigation jour */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
             <div className="font-semibold text-lg">
@@ -2105,20 +2411,20 @@ Amen.`,
             </div>
             <div className="flex gap-2 mt-1 sm:mt-0">
               <button
-                className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                className="px-2 py-1 rounded bg-neutral-200 border border-neutral-400 text-[#222] hover:bg-neutral-300 transition text-sm"
                 style={{ cursor: 'pointer' }}
                 onClick={() => setChapeletDate(new Date(chapeletDate.getTime() - 86400000))}
                 aria-label="Jour précédent"
               >◀</button>
               <button
-                className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                className="px-2 py-1 rounded bg-neutral-200 border border-neutral-400 text-[#222] hover:bg-neutral-300 transition text-sm"
                 style={{ cursor: 'pointer' }}
                 onClick={() => setChapeletDate(new Date())}
                 aria-label="Aujourd'hui"
                 disabled={chapeletDate.toDateString() === new Date().toDateString()}
               >Aujourd'hui</button>
               <button
-                className="px-2 py-1 rounded bg-[#222] border border-neutral-700 text-white hover:bg-neutral-800 transition text-sm"
+                className="px-2 py-1 rounded bg-neutral-200 border border-neutral-400 text-[#222] hover:bg-neutral-300 transition text-sm"
                 style={{ cursor: 'pointer' }}
                 onClick={() => setChapeletDate(new Date(chapeletDate.getTime() + 86400000))}
                 aria-label="Jour suivant"
@@ -2131,19 +2437,19 @@ Amen.`,
               <div className="mt-8" style={{ maxWidth: chapeletExtended ? '100%' : 600, width: chapeletExtended ? '100%' : undefined }}>
                 <div className="flex gap-2 mb-4 justify-center">
                   <button
-                    className={`px-3 py-1 rounded-full text-sm font-semibold border transition ${prayerLang === 'fr' ? 'bg-yellow-400 text-[#222] border-yellow-400' : 'bg-[#222] text-white border-neutral-700'}`}
+                    className={`px-3 py-1 rounded-full text-sm font-semibold border transition ${prayerLang === 'fr' ? 'bg-neutral-200 text-[#222] border-neutral-400' : 'bg-neutral-300 text-[#222] border-neutral-400'}`}
                     onClick={() => setPrayerLang('fr')}
                   >Français</button>
                   <button
-                    className={`px-3 py-1 rounded-full text-sm font-semibold border transition ${prayerLang === 'la' ? 'bg-yellow-400 text-[#222] border-yellow-400' : 'bg-[#222] text-white border-neutral-700'}`}
+                    className={`px-3 py-1 rounded-full text-sm font-semibold border transition ${prayerLang === 'la' ? 'bg-neutral-200 text-[#222] border-neutral-400' : 'bg-neutral-300 text-[#222] border-neutral-400'}`}
                     onClick={() => setPrayerLang('la')}
                   >Latin</button>
                 </div>
                 <div className="flex flex-col gap-6">
                   {prayers.map((p, i) => (
-                    <div key={i} className="bg-[#181818] rounded-lg shadow border border-neutral-800" style={{ width: '100%' }}>
+                    <div key={i} className="bg-neutral-100 text-neutral-800 rounded-lg shadow border border-neutral-300" style={{ width: '100%' }}>
                       <div
-                        className="font-bold text-yellow-200 mb-2 cursor-pointer flex items-center gap-2 select-none"
+                        className="font-bold text-neutral-800 mb-2 cursor-pointer flex items-center gap-2 select-none"
                         style={{ userSelect: 'none' }}
                         onClick={() => togglePrayer(i)}
                         tabIndex={0}
@@ -2163,14 +2469,14 @@ Amen.`,
               </div>
               {/* Mystères du chapelet */}
               <div className="mt-8 mb-4" style={{ maxWidth: chapeletExtended ? '100%' : 600, width: chapeletExtended ? '100%' : undefined }}>
-                <div className="text-lg font-bold text-yellow-300 mb-1 capitalize">Mystères {mystereChapelet.categorie}</div>
-                <div className="text-base text-yellow-100 mb-2">{mystereChapelet.description}</div>
+                <div className="text-lg font-bold text-neutral-800 mb-1 capitalize">Mystères {mystereChapelet.categorie}</div>
+                <div className="text-base text-neutral-600 mb-2">{mystereChapelet.description}</div>
                 <div className="flex flex-col gap-4">
                   {mystereChapelet.mysteres.map((m, i) => (
-                    <div key={i} className="bg-[#181818] rounded-lg p-3 shadow border border-neutral-800" style={{ width: '100%' }}>
-                      <div className="font-bold text-yellow-200 mb-1">{i + 1}. {m.nom}</div>
-                      <div className="text-sm text-yellow-100 mb-1">Fruit : {m.fruit}</div>
-                      <div className="text-sm text-yellow-100 mb-1">{m.citation}</div>
+                    <div key={i} className="bg-neutral-100 text-neutral-800 rounded-lg p-3 shadow border border-neutral-300" style={{ width: '100%' }}>
+                      <div className="font-bold text-neutral-800 mb-1">{i + 1}. {m.nom}</div>
+                      <div className="text-sm text-neutral-600 mb-1">Fruit : {m.fruit}</div>
+                      <div className="text-sm text-neutral-600 mb-1">{m.citation}</div>
                       <div className="text-base" style={{ lineHeight: 1.2 }}>{m.meditation}</div>
                     </div>
                   ))}
@@ -2185,12 +2491,12 @@ Amen.`,
                     aria-label="Fermer la popup tutoriel chapelet"
                   />
                   <div
-                    className="fixed left-1/2 top-1/2 z-[201] bg-[#222] text-white rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[500px] flex flex-col items-center animate-fadein"
+                    className="fixed left-1/2 top-1/2 z-[201] bg-white text-neutral-800 rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[500px] flex flex-col items-center animate-fadein border border-neutral-200"
                     style={{ transform: 'translate(-50%, -50%)', marginTop: 32, marginBottom: 32, maxHeight: '80vh', overflowY: 'auto' }}
                     onClick={e => e.stopPropagation()}
                   >
-                    <h3 className="text-2xl font-bold mb-3 text-yellow-300">Comment dire le chapelet</h3>
-                    <ol className="list-decimal list-inside text-base space-y-1 text-yellow-100 mb-4" style={{ lineHeight: 1.4 }}>
+                    <h3 className="text-2xl font-bold mb-3 text-neutral-800">Comment dire le chapelet</h3>
+                    <ol className="list-decimal list-inside text-base space-y-1 text-neutral-700 mb-4" style={{ lineHeight: 1.4 }}>
                       <li>Commencez par le Signe de Croix</li>
                       <li>Dites le <b>Je crois en Dieu</b></li>
                       <li>Sur le premier gros grain, dites le <b>Notre Père</b></li>
@@ -2202,7 +2508,7 @@ Amen.`,
                       <li>Répétez pour les cinq mystères du jour</li>
                     </ol>
                     <button
-                      className="mt-2 px-4 py-2 rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition cursor-pointer"
+                      className="mt-2 px-4 py-2 rounded bg-neutral-200 text-[#222] font-bold shadow hover:bg-neutral-300 transition cursor-pointer"
                       onClick={() => setShowChapeletHelp(false)}
                       autoFocus
                     >
@@ -2214,6 +2520,8 @@ Amen.`,
             </>
           ) : (
             <div className="text-center text-neutral-400">Aucun mystère trouvé pour ce jour.</div>
+          )}
+            </>
           )}
         </div>
       </div>
@@ -2251,7 +2559,7 @@ Amen.`,
           <div className="flex flex-col gap-4 mx-auto" style={{ maxWidth: horairesExtended ? '100%' : 600, width: horairesExtended ? '100%' : undefined }}>
             <div className="flex items-center gap-2 mb-2 justify-center">
               <button
-                className="px-3 py-2 cursor-pointer rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition text-sm"
+                className="px-3 py-2 cursor-pointer rounded bg-neutral-200 text-[#222] font-bold shadow hover:bg-neutral-300 transition text-sm"
                 onClick={handleGeoLoc}
                 disabled={horairesGeoLoading}
               >📍 Avec ma position</button>
@@ -2260,7 +2568,7 @@ Amen.`,
                 <input
                   ref={horairesInputRef}
                   type="text"
-                  className="px-3 py-2 rounded border border-neutral-700 bg-[#222] text-white w-full"
+                  className="px-3 py-2 rounded border border-neutral-400 bg-white text-[#222] w-full"
                   placeholder="Ville ou village"
                   value={horairesVille}
                   onChange={e => { setHorairesVille(e.target.value); setHorairesResult(null); setHorairesError(null); }}
@@ -2270,14 +2578,14 @@ Amen.`,
                 />
                 {horairesSuggestions.length > 0 && horairesVille.length > 1 && (
                   <div
-                    className="absolute left-0 right-0 bg-[#222] border border-neutral-700 rounded shadow z-50 mt-1 max-h-40 overflow-y-auto"
+                    className="absolute left-0 right-0 bg-white text-neutral-800 border border-neutral-300 rounded shadow z-50 mt-1 max-h-40 overflow-y-auto"
                     onMouseEnter={() => setIsSuggestionsHovered(true)}
                     onMouseLeave={() => setIsSuggestionsHovered(false)}
                   >
                     {horairesSuggestions.map((s, i) => (
                       <div
                         key={i}
-                        className="px-3 py-2 cursor-pointer hover:bg-yellow-400 hover:text-[#222] transition"
+                        className="px-3 py-2 cursor-pointer text-neutral-800 hover:bg-neutral-100 transition"
                         onClick={() => { setHorairesVille(s.display_name.split(",")[0]); setHorairesSuggestions([]); fetchHorairesForVille(s.display_name.split(",")[0]); }}
                       >
                         {s.display_name}
@@ -2333,13 +2641,13 @@ Amen.`,
             aria-label="Fermer la popup de contact"
           />
           <div
-            className="fixed left-1/2 top-1/2 z-[201] bg-[#222] text-white rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[400px] flex flex-col items-center animate-fadein max-h-[90vh] overflow-y-auto"
+            className="fixed left-1/2 top-1/2 z-[201] bg-white text-neutral-800 rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[400px] flex flex-col items-center animate-fadein max-h-[90vh] overflow-y-auto border border-neutral-200"
             style={{ transform: 'translate(-50%, -50%)' }}
             onClick={e => e.stopPropagation()}
           >
             <h3 className="text-2xl font-bold mb-3">Informations</h3>
             <div className="mb-4 w-full">
-              <p className="italic text-yellow-200 text-center">" Prier ne consiste pas à beaucoup penser mais à beaucoup aimer "<br /><span className="text-sm">(sainte Thérèse d'Avila)</span></p>
+              <p className="italic text-neutral-800 text-center">" Prier ne consiste pas à beaucoup penser mais à beaucoup aimer "<br /><span className="text-sm">(sainte Thérèse d'Avila)</span></p>
             </div>
             <div className="mb-4 w-full text-base space-y-1">
               <p>Cette application vous permet de prier avec une bougie virtuelle et d'accéder aux lectures du jour ainsi qu'au chapelet.</p>
@@ -2348,10 +2656,10 @@ Amen.`,
               <p>• Le chapelet affiche les mystères correspondant au jour de la semaine</p>
             </div>
             <div className="mb-4 w-full flex flex-col items-center">
-              <div className="text-lg font-semibold text-yellow-300 select-all">prierenligne@gmail.com</div>
+              <div className="text-lg font-semibold text-neutral-800 select-all">prierenligne@gmail.com</div>
             </div>
             <button
-              className="mt-2 px-4 py-2 rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition cursor-pointer"
+              className="mt-2 px-4 py-2 rounded bg-neutral-200 text-[#222] font-bold shadow hover:bg-neutral-300 transition cursor-pointer"
               onClick={() => setShowContactPopup(false)}
               autoFocus
             >
@@ -2374,14 +2682,14 @@ Amen.`,
             aria-label="Fermer la popup saint du jour"
           />
           <div
-            className="fixed left-1/2 top-1/2 z-[201] bg-[#222] text-white rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[500px] flex flex-col items-center animate-fadein"
+            className="fixed left-1/2 top-1/2 z-[201] bg-white text-neutral-800 rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[500px] flex flex-col items-center animate-fadein border border-neutral-200"
             style={{ transform: 'translate(-50%, -50%)', marginTop: 32, marginBottom: 32, maxHeight: '80vh', overflowY: 'auto' }}
             onClick={e => e.stopPropagation()}
           >
-            <h3 className="text-2xl font-bold mb-3 text-yellow-300">Saint du jour</h3>
-            <div className="mb-4 w-full text-base space-y-1" style={{ color: '#ffe066' }} dangerouslySetInnerHTML={{ __html: saintBio }} />
+            <h3 className="text-2xl font-bold mb-3 text-neutral-800">Saint du jour</h3>
+            <div className="mb-4 w-full text-base space-y-1 text-neutral-800" dangerouslySetInnerHTML={{ __html: saintBio }} />
             <button
-              className="mt-2 px-4 py-2 rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition cursor-pointer"
+              className="mt-2 px-4 py-2 rounded bg-neutral-200 text-[#222] font-bold shadow hover:bg-neutral-300 transition cursor-pointer"
               onClick={() => setShowSaintPopup(false)}
               autoFocus
             >
@@ -2416,7 +2724,7 @@ Amen.`,
         }
         .emoji-btn:hover, .emoji-btn:focus {
           transform: scale(1.25);
-          filter: drop-shadow(0 0 8px #ffe066cc);
+          filter: drop-shadow(0 0 8px #64748b99);
         }
         .emoji-tooltip {
           opacity: 1;
@@ -2443,7 +2751,7 @@ Amen.`,
       <div className="fixed inset-x-0 top-1/2 -translate-y-1/2 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-5 z-50 px-2 sm:px-4 place-items-center">
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
+          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
           onClick={() => { closeAllLeftPanels(); setPrayerOpen((open) => !open); }}
         >
           <span>🙏</span>
@@ -2451,7 +2759,7 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
+          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
           onClick={() => { closeAllLeftPanels(); setLectioOpen((open) => !open); }}
         >
           <span>📖</span>
@@ -2459,7 +2767,7 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllRightPanels(); setMesseOpen((open) => !open); }}
         >
           <span>⛪</span>
@@ -2467,7 +2775,7 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllRightPanels(); setChapeletOpen(!chapeletOpen); }}
         >
           <span>📿</span>
@@ -2475,7 +2783,7 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllLeftPanels(); setHorairesLeftOpen(!horairesLeftOpen); }}
         >
           <span>🕐</span>
@@ -2483,7 +2791,7 @@ Amen.`,
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllRightPanels(); setBibleOpen(!bibleOpen); }}
         >
           <span>✝️</span>
@@ -2493,7 +2801,7 @@ Amen.`,
         <button
           key={icons[0].label}
           className="cursor-pointer"
-          style={{ background: '#ffffff', border: '2px solid #ffe066', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { setCarouselIndex(0); setShowIconCarousel(true); }}
           aria-label={icons[0].label}
         >
@@ -2531,16 +2839,16 @@ Amen.`,
             aria-label="Fermer la sélection du temps de prière"
           />
           <div
-            className="fixed left-1/2 top-1/2 z-[201] bg-[#222] text-white rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[340px] flex flex-col items-center animate-fadein"
+            className="fixed left-1/2 top-1/2 z-[201] bg-white text-neutral-800 rounded-xl shadow-2xl p-6 max-w-[90vw] w-full sm:w-[340px] flex flex-col items-center animate-fadein border border-neutral-200"
             style={{ transform: 'translate(-50%, -50%)', marginTop: 32, marginBottom: 32 }}
             onClick={e => e.stopPropagation()}
           >
-            <h3 className="text-xl font-bold mb-3 text-yellow-300">Choisir le temps de prière</h3>
+            <h3 className="text-xl font-bold mb-3 text-neutral-800">Choisir le temps de prière</h3>
             <div className="flex gap-2 mb-4 justify-center">
               {durations.map((d) => (
                 <button
                   key={d.label}
-                  className={`rounded border px-3 py-1 text-sm font-medium transition cursor-pointer ${selectedDuration === d.value ? 'border-yellow-400 bg-[#222] text-yellow-200' : 'border-neutral-700 bg-[#181818] text-neutral-300'}`}
+                  className={`rounded border px-3 py-1 text-sm font-medium transition cursor-pointer ${selectedDuration === d.value ? 'border-neutral-500 bg-neutral-200 text-[#222]' : 'border-neutral-400 bg-neutral-100 text-neutral-700'}`}
                   style={{ minWidth: 48, height: 32, lineHeight: '28px', boxShadow: 'none' }}
                   onClick={() => {
                     setSelectedDuration(d.value);
@@ -2568,7 +2876,7 @@ Amen.`,
                   }
                 }}
                 placeholder="min"
-                className="px-2 py-1 rounded border border-neutral-700 bg-[#181818] text-sm text-yellow-200 w-16 outline-none"
+                className="px-2 py-1 rounded border border-neutral-400 bg-white text-sm text-[#222] w-16 outline-none"
                 style={{ height: 32, lineHeight: '28px' }}
                 aria-label="Durée personnalisée en minutes"
                 onFocus={e => e.stopPropagation()}
@@ -2624,7 +2932,7 @@ Amen.`,
               justifyContent: 'center',
               pointerEvents: 'auto',
             }}>
-              <div className="animate-spin" style={{ width: 48, height: 48, border: '5px solid #ffe066', borderTop: '5px solid transparent', borderRadius: '50%' }} />
+              <div className="animate-spin" style={{ width: 48, height: 48, border: '5px solid #64748b', borderTop: '5px solid transparent', borderRadius: '50%' }} />
             </div>
           )}
           {/* Affichage navigation ou texte biblique */}
@@ -2632,12 +2940,12 @@ Amen.`,
             <div className="flex flex-col gap-6" style={bibleLoading ? { filter: 'blur(1px)', pointerEvents: 'none', userSelect: 'none' } : {}}>
               {/* Ancien Testament */}
               <div>
-                <div className="text-lg font-bold text-yellow-300 mb-2">Ancien Testament</div>
+                <div className="text-lg font-bold text-neutral-800 mb-2">Ancien Testament</div>
                 <div className="flex flex-col gap-1">
                   {bibleBooks["Ancien Testament"].map((book, idx) => (
                     <div
                       key={book + idx}
-                      className="text-base text-yellow-100 hover:text-yellow-300 cursor-pointer"
+                      className="text-base text-neutral-700 hover:text-neutral-800 cursor-pointer"
                       style={{ paddingLeft: 8 }}
                       onClick={() => handleClickBibleBook(book)}
                     >
@@ -2648,19 +2956,19 @@ Amen.`,
               </div>
               {/* Nouveau Testament */}
               <div>
-                <div className="text-lg font-bold text-yellow-300 mb-2">Nouveau Testament</div>
+                <div className="text-lg font-bold text-neutral-800 mb-2">Nouveau Testament</div>
                 <div className="flex flex-col gap-1">
                   {bibleBooks["Nouveau Testament"].map((book, idx) => (
-                    <div key={book + idx} className="text-base text-yellow-100 hover:text-yellow-300 cursor-pointer" style={{ paddingLeft: 8 }}>{book}</div>
+                    <div key={book + idx} className="text-base text-neutral-700 hover:text-neutral-800 cursor-pointer" style={{ paddingLeft: 8 }}>{book}</div>
                   ))}
                 </div>
               </div>
               {/* Psaumes */}
               <div>
-                <div className="text-lg font-bold text-yellow-300 mb-2">Psaumes</div>
+                <div className="text-lg font-bold text-neutral-800 mb-2">Psaumes</div>
                 <div className="flex flex-wrap gap-2">
                   {bibleBooks["Psaumes"].map((psaume, idx) => (
-                    <div key={"psaume-" + psaume} className="text-base text-yellow-100 hover:text-yellow-300 cursor-pointer border border-yellow-300 rounded px-2 py-1" style={{ minWidth: 36, textAlign: 'center' }}>{psaume}</div>
+                    <div key={"psaume-" + psaume} className="text-base text-neutral-700 hover:text-neutral-800 cursor-pointer border border-neutral-500 rounded px-2 py-1" style={{ minWidth: 36, textAlign: 'center' }}>{psaume}</div>
                   ))}
                 </div>
               </div>
@@ -2670,10 +2978,10 @@ Amen.`,
               {/* Sélecteur de chapitre si livre courant connu */}
               {bibleCurrentBook && (
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="font-bold text-yellow-200 text-base">{bibleCurrentBook.name}</span>
-                  <span className="text-yellow-100">Chapitre</span>
+                  <span className="font-bold text-neutral-800 text-base">{bibleCurrentBook.name}</span>
+                  <span className="text-neutral-600">Chapitre</span>
                   <select
-                    className="rounded border border-yellow-300 bg-[#181818] text-yellow-200 px-2 py-1 text-base outline-none"
+                    className="rounded border border-neutral-400 bg-white text-[#222] px-2 py-1 text-base outline-none"
                     value={bibleCurrentChapitre}
                     onChange={e => {
                       const chap = parseInt(e.target.value, 10);
@@ -2689,7 +2997,7 @@ Amen.`,
                 </div>
               )}
               <button
-                className="self-start mb-2 px-3 py-1 rounded bg-yellow-400 text-[#222] font-semibold shadow hover:bg-yellow-300 transition text-sm"
+                className="self-start mb-2 px-3 py-1 rounded bg-neutral-200 text-[#222] font-semibold shadow hover:bg-neutral-300 transition text-sm"
                 onClick={() => {
                   setBibleContent(null);
                   setBibleError(null);
@@ -2703,7 +3011,7 @@ Amen.`,
               </button>
               {bibleError && <div className="text-center text-red-400">{bibleError}</div>}
               {bibleContent && (
-                <div className="bg-[#181818] rounded-lg p-4 shadow border border-neutral-800 prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: bibleContent }} />
+                <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 shadow border border-neutral-300 max-w-none prose prose-neutral" dangerouslySetInnerHTML={{ __html: bibleContent }} />
               )}
             </div>
           )}
@@ -2714,8 +3022,8 @@ Amen.`,
         <div className="rounded-xl shadow-2xl p-3 flex items-center gap-2"
           style={{ background: "#1f1f1f", color: text, border: "1px solid rgba(255,255,255,0.12)", maxWidth: 340 }}>
           <div className="flex flex-col">
-            <div className="text-xs uppercase tracking-wide" style={{ color: '#ffeb99' }}>En direct · Radio Maria</div>
-            <div className="text-sm font-semibold" style={{ color: '#fff' }}>{currentRM?.title || 'Programme en cours'}</div>
+            <div className="text-xs uppercase tracking-wide" style={{ color: '#94a3b8' }}>En direct · Radio Maria</div>
+            <div className="text-sm font-semibold" style={{ color: '#222' }}>{currentRM?.title || 'Programme en cours'}</div>
             {nextRM && (
               <div className="text-[10px] sm:text-xs opacity-70 sm:opacity-80 hidden sm:block" style={{ color: '#ddd' }}>Ensuite {nextRM.time} · {nextRM.title}</div>
             )}
@@ -2723,7 +3031,7 @@ Amen.`,
           <button
             onClick={playRadioMariaNow}
             className="ml-auto px-2 py-1.5 sm:px-3 sm:py-2 rounded font-bold text-[10px] sm:text-sm flex-shrink-0"
-            style={{ background: '#ffe066', color: '#222', border: 'none', boxShadow: '0 1px 4px #0004', cursor: 'pointer' }}
+            style={{ background: '#64748b', color: '#fff', border: 'none', boxShadow: '0 1px 4px #0004', cursor: 'pointer' }}
             aria-label="Lancer Radio Maria"
             title="Écouter Radio Maria maintenant"
           >
@@ -2749,7 +3057,7 @@ Amen.`,
       `}</style>
       <div className="fixed bottom-4 right-4 z-[50] flex flex-col items-end">
         <button
-          className="rounded-full shadow flex items-center justify-center cursor-pointer bg-yellow-400 hover:bg-yellow-300 transition radio-shake"
+          className="rounded-full shadow flex items-center justify-center cursor-pointer bg-neutral-400 hover:bg-neutral-500 transition radio-shake"
           style={{ width: 56, height: 56, fontSize: 30, color: '#222', border: 'none', boxShadow: '0 2px 12px #0004', marginBottom: showRadio ? 12 : 0 }}
           aria-label={showRadio ? "Fermer la radio" : "Écouter la radio"}
           title={showRadio ? "Fermer la radio" : "Écouter la radio"}
@@ -2758,12 +3066,12 @@ Amen.`,
           <span role="img" aria-label="Radio">📻</span>
         </button>
         {showRadio && (
-          <div className="bg-[#222] text-white rounded-xl shadow-2xl p-4 flex flex-col items-center animate-fadein" style={{ minWidth: 220, maxWidth: 320, marginBottom: 8 }}>
+          <div className="bg-white text-neutral-800 rounded-xl shadow-2xl p-4 flex flex-col items-center animate-fadein border border-neutral-200" style={{ minWidth: 220, maxWidth: 320, marginBottom: 8 }}>
             <div className="flex gap-2 mb-2">
               {radios.map(radio => (
                 <button
                   key={radio.name}
-                  className={`px-3 py-1 rounded font-bold text-sm transition ${selectedRadio.name === radio.name ? 'bg-yellow-400 text-[#222]' : 'bg-[#181818] text-yellow-200 border border-yellow-400'}`}
+                  className={`px-3 py-1 rounded font-bold text-sm transition ${selectedRadio.name === radio.name ? 'bg-neutral-300 text-[#222]' : 'bg-neutral-100 text-neutral-800 border border-neutral-400'}`}
                   style={{ outline: 'none', borderWidth: 1, borderStyle: 'solid' }}
                   onClick={() => setSelectedRadio(radio)}
                   aria-label={`Écouter ${radio.name}`}
@@ -2778,29 +3086,29 @@ Amen.`,
       </div>
       {showIconCarousel && (
         <div className="fixed inset-0 z-[200] bg-rgb(139, 69, 19) bg-opacity-70 flex items-center justify-center" onClick={() => setShowIconCarousel(false)}>
-          <div className="relative bg-[#222] rounded-xl shadow-2xl p-6 flex flex-col items-center" style={{ minWidth: 320, maxWidth: '90vw' }} onClick={e => e.stopPropagation()}>
+          <div className="relative bg-white text-neutral-800 rounded-xl shadow-2xl p-6 flex flex-col items-center border border-neutral-200" style={{ minWidth: 320, maxWidth: '90vw' }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-center gap-6">
               <button
                 onClick={() => setCarouselIndex((carouselIndex - 1 + icons.length) % icons.length)}
-                style={{ fontSize: 32, background: 'none', border: 'none', color: '#ffe066', cursor: 'pointer' }}
+                style={{ fontSize: 32, background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
                 aria-label="Précédent"
               >
                 ‹
               </button>
               <div className="flex flex-col items-center">
                 <Image src={icons[carouselIndex].src} alt={icons[carouselIndex].label} width={160} height={160} style={{ borderRadius: 24, boxShadow: '0 4px 32px #000a', background: '#222' }} unoptimized />
-                <div className="mt-2 text-yellow-200 font-semibold text-lg text-center">{icons[carouselIndex].label}</div>
+                <div className="mt-2 text-neutral-800 font-semibold text-lg text-center">{icons[carouselIndex].label}</div>
               </div>
               <button
                 onClick={() => setCarouselIndex((carouselIndex + 1) % icons.length)}
-                style={{ fontSize: 32, background: 'none', border: 'none', color: '#ffe066', cursor: 'pointer' }}
+                style={{ fontSize: 32, background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
                 aria-label="Suivant"
               >
                 ›
               </button>
             </div>
             <button
-              className="mt-6 px-6 py-2 rounded bg-yellow-400 text-[#222] font-bold shadow hover:bg-yellow-300 transition cursor-pointer"
+              className="mt-6 px-6 py-2 rounded bg-neutral-200 text-[#222] font-bold shadow hover:bg-neutral-300 transition cursor-pointer"
               onClick={() => { 
                 setSelectedIcon(icons[carouselIndex].src); 
                 setShowIconCarousel(false);
@@ -2811,7 +3119,7 @@ Amen.`,
               Choisir cette icône
             </button>
             <button
-              className="mt-2 px-4 py-1 rounded bg-neutral-700 text-yellow-200 font-medium hover:bg-neutral-600 transition cursor-pointer"
+              className="mt-2 px-4 py-1 rounded bg-neutral-200 text-[#222] font-medium hover:bg-neutral-300 transition cursor-pointer"
               onClick={() => setShowIconCarousel(false)}
               style={{ fontSize: 15 }}
             >

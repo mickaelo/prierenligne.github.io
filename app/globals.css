@@ -28,7 +28,7 @@ body {
 /* Scrollbar style global */
 html, body, * {
   scrollbar-width: thin;
-  scrollbar-color: #a67c00 #fffbe9;
+  scrollbar-color: #64748b #f1f5f9;
 }
 
 /* Webkit (Chrome, Safari, Edge) */
@@ -37,7 +37,7 @@ html, body, * {
   background: #fffbe9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #a67c00;
+  background: #64748b;
   border-radius: 8px;
 }
 ::-webkit-scrollbar-track {
