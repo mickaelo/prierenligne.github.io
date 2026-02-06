@@ -1911,7 +1911,17 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
       <div
         className={`fixed top-0 left-0 w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${prayerOpen ? "translate-x-0" : "-translate-x-full"}`}
-        style={{ minWidth: 320, background: panelBg, color: text, height: '100dvh', maxHeight: '100dvh' }}
+        style={{ 
+          minWidth: 320, 
+          background: panelBg, 
+          color: text, 
+          height: '90vh', 
+          maxHeight: '90vh',
+          paddingTop: 'max(0px, env(safe-area-inset-top))',
+          paddingBottom: 'max(0px, env(safe-area-inset-bottom))',
+          paddingLeft: 'max(0px, env(safe-area-inset-left))',
+          paddingRight: 'max(0px, env(safe-area-inset-right))'
+        }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Prières</h2>
@@ -2054,7 +2064,19 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         className={`fixed top-0 left-0 w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${lectioOpen ? "translate-x-0" : "-translate-x-full"}
         ${lectioExtended ? "w-full max-w-full" : "sm:w-1/3 max-w-lg"}`}
-        style={{ minWidth: 320, background: panelBg, color: text, width: lectioExtended ? '100vw' : undefined, maxWidth: lectioExtended ? '100vw' : undefined, height: '100dvh', maxHeight: '100dvh' }}
+        style={{ 
+          minWidth: 320, 
+          background: panelBg, 
+          color: text, 
+          width: lectioExtended ? '100vw' : undefined, 
+          maxWidth: lectioExtended ? '100vw' : undefined, 
+          height: '90vh', 
+          maxHeight: '90vh',
+          paddingTop: 'max(0px, env(safe-area-inset-top))',
+          paddingBottom: 'max(0px, env(safe-area-inset-bottom))',
+          paddingLeft: 'max(0px, env(safe-area-inset-left))',
+          paddingRight: 'max(0px, env(safe-area-inset-right))'
+        }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Lectio divina</h2>
@@ -2155,10 +2177,20 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
 
       {/* Volet Liturgie de la messe (droite) */}
       <div
-        className={`fixed top-0 right-0 h-screen w-full max-w-full shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
+        className={`fixed top-0 right-0 h-[90vh] w-full max-w-full shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${messeOpen ? "translate-x-0" : "translate-x-full"}
         ${messeExtended ? "w-full max-w-full" : ""}`}
-        style={{ minWidth: 320, background: panelBg, color: text, width: messeExtended ? '100vw' : '100vw', maxWidth: messeExtended ? '100vw' : '100vw' }}
+        style={{ 
+          minWidth: 320, 
+          background: panelBg, 
+          color: text, 
+          width: messeExtended ? '100vw' : '100vw', 
+          maxWidth: messeExtended ? '100vw' : '100vw',
+          paddingTop: 'max(0px, env(safe-area-inset-top))',
+          paddingBottom: 'max(0px, env(safe-area-inset-bottom))',
+          paddingLeft: 'max(0px, env(safe-area-inset-left))',
+          paddingRight: 'max(0px, env(safe-area-inset-right))'
+        }}
       >
         <div className="flex items-center justify-end p-2">
           <button
@@ -2179,10 +2211,20 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
 
       {/* Volet Chapelet (droite) */}
       <div
-        className={`fixed top-0 right-0 h-screen w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
+        className={`fixed top-0 right-0 h-[90vh] w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${chapeletOpen ? "translate-x-0" : "translate-x-full"}
         ${chapeletExtended ? "w-full max-w-full" : "sm:w-1/3 max-w-lg"}`}
-        style={{ minWidth: 320, background: panelBg, color: text, width: chapeletExtended ? '100vw' : undefined, maxWidth: chapeletExtended ? '100vw' : undefined }}
+        style={{ 
+          minWidth: 320, 
+          background: panelBg, 
+          color: text, 
+          width: chapeletExtended ? '100vw' : undefined, 
+          maxWidth: chapeletExtended ? '100vw' : undefined,
+          paddingTop: 'max(0px, env(safe-area-inset-top))',
+          paddingBottom: 'max(0px, env(safe-area-inset-bottom))',
+          paddingLeft: 'max(0px, env(safe-area-inset-left))',
+          paddingRight: 'max(0px, env(safe-area-inset-right))'
+        }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <div className="flex items-center gap-2">
@@ -2260,7 +2302,6 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
                 <div className="text-base space-y-3 whitespace-pre-line" style={{ lineHeight: 1.5 }}>
                   <div className="italic text-neutral-600">« {misericordePetitJournal1} »</div>
                   <div className="italic text-neutral-600">« {misericordePetitJournal2} »</div>
-                  <div className="pt-2 border-t border-neutral-300">{misericordeOuverture}</div>
                 </div>
               </div>
 
@@ -2298,7 +2339,7 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
               {/* Prière de clôture (facultative) */}
               <div className="bg-neutral-100 text-neutral-800 rounded-lg p-4 border border-neutral-300">
                 <div className="font-bold text-neutral-800 mb-2">Prière de clôture (facultative)</div>
-                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{misericordeNotrePere}</div>
+                <div className="text-base whitespace-pre-line" style={{ lineHeight: 1.5 }}>{misericordeOuverture}</div>
               </div>
             </div>
           ) : chapeletType === 'sept-douleurs' ? (
@@ -2531,7 +2572,19 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         className={`fixed top-0 left-0 w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${horairesLeftOpen ? "translate-x-0" : "-translate-x-full"}
         ${horairesExtended ? "w-full max-w-full" : "sm:w-1/3 max-w-lg"}`}
-        style={{ minWidth: 320, background: panelBg, color: text, width: horairesExtended ? '100vw' : undefined, maxWidth: horairesExtended ? '100vw' : undefined, height: '100dvh', maxHeight: '100dvh' }}
+        style={{ 
+          minWidth: 320, 
+          background: panelBg, 
+          color: text, 
+          width: horairesExtended ? '100vw' : undefined, 
+          maxWidth: horairesExtended ? '100vw' : undefined, 
+          height: '90vh', 
+          maxHeight: '90vh',
+          paddingTop: 'max(0px, env(safe-area-inset-top))',
+          paddingBottom: 'max(0px, env(safe-area-inset-bottom))',
+          paddingLeft: 'max(0px, env(safe-area-inset-left))',
+          paddingRight: 'max(0px, env(safe-area-inset-right))'
+        }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Horaires des messes</h2>
@@ -2611,7 +2664,14 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
       </div>
 
       {/* Chat Widget (ouvre le volet) */}
-      <div className="fixed top-4 left-4 z-50 cursor-pointer" onClick={() => { closeAllLeftPanels(); setChatOpen(true); }}>
+      <div 
+        className="fixed z-50 cursor-pointer" 
+        style={{
+          top: 'calc(1rem + env(safe-area-inset-top))',
+          left: 'calc(1rem + env(safe-area-inset-left))'
+        }}
+        onClick={() => { closeAllLeftPanels(); setChatOpen(true); }}
+      >
         <button
           className="rounded-full shadow flex items-center justify-center cursor-pointer"
           style={{ width: 32, height: 32, background: btnBg, color: text, border: btnBorder, fontSize: 16, padding: 0, borderWidth: 1, borderStyle: 'solid' }}
@@ -2624,8 +2684,21 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
       {/* Contact Link */}
       <a
         href="#"
-        className="fixed top-4 right-4 z-50 rounded-full shadow flex items-center justify-center cursor-pointer"
-        style={{ width: 32, height: 32, background: btnBg, color: text, border: btnBorder, fontSize: 16, padding: 0, borderWidth: 1, borderStyle: 'solid', textDecoration: 'none' }}
+        className="fixed z-50 rounded-full shadow flex items-center justify-center cursor-pointer"
+        style={{ 
+          width: 32, 
+          height: 32, 
+          background: btnBg, 
+          color: text, 
+          border: btnBorder, 
+          fontSize: 16, 
+          padding: 0, 
+          borderWidth: 1, 
+          borderStyle: 'solid', 
+          textDecoration: 'none',
+          top: 'calc(1rem + env(safe-area-inset-top))',
+          right: 'calc(1rem + env(safe-area-inset-right))'
+        }}
         aria-label="Contact"
         onClick={e => { e.preventDefault(); setShowContactPopup(true); }}
       >
@@ -2748,7 +2821,13 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
           box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
         }
       `}</style>
-      <div className="fixed inset-x-0 top-1/2 -translate-y-1/2 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-5 z-50 px-2 sm:px-4 place-items-center">
+      <div 
+        className="fixed inset-x-0 top-1/2 -translate-y-1/2 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-5 z-50 place-items-center"
+        style={{
+          paddingLeft: 'calc(0.5rem + env(safe-area-inset-left))',
+          paddingRight: 'calc(0.5rem + env(safe-area-inset-right))'
+        }}
+      >
         <button
           className="cursor-pointer emoji-btn"
           style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
@@ -2895,7 +2974,19 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         className={`fixed top-0 right-0 w-full sm:w-1/3 max-w-lg shadow-2xl z-[100] transition-transform duration-500 ease-in-out flex flex-col
         ${bibleOpen ? "translate-x-0" : "translate-x-full"}
         ${bibleExtended ? "w-full max-w-full" : "sm:w-1/3 max-w-lg"}`}
-        style={{ minWidth: 320, background: panelBg, color: text, width: bibleExtended ? '100vw' : undefined, maxWidth: bibleExtended ? '100vw' : undefined, height: '100dvh', maxHeight: '100dvh' }}
+        style={{ 
+          minWidth: 320, 
+          background: panelBg, 
+          color: text, 
+          width: bibleExtended ? '100vw' : undefined, 
+          maxWidth: bibleExtended ? '100vw' : undefined, 
+          height: '90vh', 
+          maxHeight: '90vh',
+          paddingTop: 'max(0px, env(safe-area-inset-top))',
+          paddingBottom: 'max(0px, env(safe-area-inset-bottom))',
+          paddingLeft: 'max(0px, env(safe-area-inset-left))',
+          paddingRight: 'max(0px, env(safe-area-inset-right))'
+        }}
       >
         <div className="flex items-center justify-between p-4 border-b border-neutral-700">
           <h2 className="text-xl font-bold" style={{ color: text, fontSize: 21 }}>Bible</h2>
