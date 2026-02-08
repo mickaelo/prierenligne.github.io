@@ -1926,7 +1926,7 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         </div>
         <div className="flex-1 overflow-y-auto px-4 pt-2 pb-4 space-y-4">
           {/* Interface de filtres */}
-          <div className="sticky top-0 z-10 rounded-lg mb-3 py-2 px-3" style={{ background: "rgba(15,23,42,0.9)", border: "1px solid rgba(255,255,255,0.15)", backdropFilter: 'blur(8px)' }}>
+          <div className="sticky top-0 z-10 rounded-lg mb-3 py-2 px-3" style={{ background: bg, border: "1px solid rgba(255,255,255,0.15)", backdropFilter: 'blur(8px)' }}>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 items-end">
               {/* Filtre par langue */}
               <div>
@@ -2750,7 +2750,7 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
       <div className="fixed inset-x-0 top-1/2 -translate-y-1/2 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-5 z-50 px-2 sm:px-4 place-items-center">
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
+          style={{ background: '#ffffff', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 40, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
           onClick={() => { closeAllLeftPanels(); setPrayerOpen((open) => !open); }}
         >
           <span>🙏</span>
@@ -2758,7 +2758,7 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
+          style={{ background: '#ffffff', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 40, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', width: 120, height: 120 }}
           onClick={() => { closeAllLeftPanels(); setLectioOpen((open) => !open); }}
         >
           <span>📖</span>
@@ -2766,7 +2766,7 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 40, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllRightPanels(); setMesseOpen((open) => !open); }}
         >
           <span>⛪</span>
@@ -2774,7 +2774,7 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 40, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllRightPanels(); setChapeletOpen(!chapeletOpen); }}
         >
           <span>📿</span>
@@ -2782,7 +2782,7 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 40, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllLeftPanels(); setHorairesLeftOpen(!horairesLeftOpen); }}
         >
           <span>🕐</span>
@@ -2790,7 +2790,7 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         </button>
         <button
           className="cursor-pointer emoji-btn"
-          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 40, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { closeAllRightPanels(); setBibleOpen(!bibleOpen); }}
         >
           <span>✝️</span>
@@ -2800,7 +2800,7 @@ Oremus : Concede nos famulos tuos, quaesumus Domine Deus, perpetua mentis et cor
         <button
           key={icons[0].label}
           className="cursor-pointer"
-          style={{ background: '#ffffff', border: '2px solid #64748b', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 56, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
+          style={{ background: '#ffffff', borderRadius: 24, boxShadow: '0 4px 18px rgba(0,0,0,0.6)', padding: 12, minWidth: 0, fontSize: 40, color: '#111827', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}
           onClick={() => { setCarouselIndex(0); setShowIconCarousel(true); }}
           aria-label={icons[0].label}
         >
